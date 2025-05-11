@@ -48,16 +48,17 @@ async function playBassDrum() {
 }
 async function playTriangleNotes(notes) {
   await ensureAudio();
-  const duration = 0.29;  // Medium length: between 0.19 and 0.42
-  const hold = 0.07;      // Shorter hold for a percussive but not abrupt sound
+  const duration = 0.29;
+  const hold = 0.07;
+  const TRIANGLE_GAIN = 0.38; // Lowered by 5% from 0.4
 
   notes.forEach((note, i) => {
     const osc = ctx.createOscillator();
     osc.type = "triangle";
     osc.frequency.setValueAtTime(midiToFreq(note), ctx.currentTime);
     const gain = ctx.createGain();
-    gain.gain.setValueAtTime(0.4, ctx.currentTime);
-    gain.gain.setValueAtTime(0.4, ctx.currentTime + hold);
+    gain.gain.setValueAtTime(TRIANGLE_GAIN, ctx.currentTime);
+    gain.gain.setValueAtTime(TRIANGLE_GAIN, ctx.currentTime + hold);
     gain.gain.linearRampToValueAtTime(0.012, ctx.currentTime + duration);
     osc.connect(gain).connect(masterGain);
     osc.start(ctx.currentTime + 0.01 * i);
@@ -96,13 +97,14 @@ const rhythmBox2 = "https://raw.githubusercontent.com/VisualMusicalMinds/Musical
 const rhythmBox3 = "https://raw.githubusercontent.com/VisualMusicalMinds/Musical-Images/48e79626ae5b3638784c98a6f73ec0e342cf9894/Cartoon%20RhythmBox3.svg";
 const rhythmBox4 = "https://raw.githubusercontent.com/VisualMusicalMinds/Musical-Images/48e79626ae5b3638784c98a6f73ec0e342cf9894/Cartoon%20RhythmBox4.svg";
 
+// Added bass note for each chord as requested, and updated Am to remove C4
 const rhythmChordNotes = {
-  'C':  ['C4', 'E4', 'G4', 'C5'],
-  'Dm': ['D4', 'F4', 'A4'],
-  'Em': ['E4', 'G4', 'B4'],
-  'F':  ['C4', 'F4', 'A4', 'C5'],
-  'G':  ['D4', 'G4', 'B4'],
-  'Am': ['C4', 'E4', 'A4', 'C5']
+  'C':  ['C3', 'C4', 'E4', 'G4', 'C5'],
+  'Dm': ['D3', 'D4', 'F4', 'A4'],
+  'Em': ['E3', 'E4', 'G4', 'B4'],
+  'F':  ['F3', 'C4', 'F4', 'A4', 'C5'],
+  'G':  ['G3', 'D4', 'G4', 'B4'],
+  'Am': ['A3', 'E4', 'A4', 'C5']
 };
 
 function setSlotColorAndStyle(slotIndex, select) {
@@ -470,3 +472,11 @@ document.addEventListener("DOMContentLoaded", function() {
   updateSlotHighlights();
   updatePictureHighlights();
 });
+
+// --- Additional Recommendations for Pleasant Triangle Synth Chords ---
+// 1. Lower gain as you did (already done).
+// 2. Consider adding a gentle lowpass filter per triangle note (e.g., 2500 Hz) to remove harsh upper partials.
+// 3. Optionally, slightly detune the triangle notes by a few cents (+/- 2 cents) for a softer, chorus effect.
+// 4. Avoid "start" clicks by ramping up gain from 0 to max over the first 0.005s (attack).
+// 5. Optionally, use a compressor node before masterGain for additional smoothness.
+// These are optional and would require more involved changes if you'd like to try them!
