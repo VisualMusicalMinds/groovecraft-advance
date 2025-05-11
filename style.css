@@ -185,22 +185,15 @@ input[type="number"].bpm-input {
   justify-content: center;
   margin-top: calc(var(--box-size) * 0.04);
   margin-bottom: calc(var(--box-size) * 0.05);
-  font-size: calc(var(--box-size) * 0.08);
-  color: #333;
   user-select: none;
 }
 
 .brush-toggle input[type="checkbox"] {
-  margin-right: 5px;
   cursor: pointer;
-  width: calc(var(--box-size) * 0.10);
-  height: calc(var(--box-size) * 0.10);
-}
-
-.brush-toggle label {
-  cursor: pointer;
-  font-weight: 500;
-  color: #1976d2;
+  width: calc(var(--box-size) * 0.20); /* Doubled from 0.10 */
+  height: calc(var(--box-size) * 0.20); /* Doubled from 0.10 */
+  margin: 0; /* Remove margin since there's no label */
+  accent-color: #1976d2; /* Add accent color for better visibility */
 }
 
 .note-rects { 
@@ -421,10 +414,6 @@ input[type="number"].bpm-input {
   .top-row {
     margin-bottom: calc(var(--box-size) * 0.25); /* Adjust spacing for smaller screens */
   }
-  
-  .brush-toggle {
-    font-size: calc(var(--box-size) * 0.09);
-  }
 }
 
 @media (max-width: 480px) {
@@ -440,10 +429,6 @@ input[type="number"].bpm-input {
   .top-row {
     gap: calc(var(--box-gap) * 0.6);
     margin-bottom: calc(var(--box-size) * 0.2); /* Further adjust spacing */
-  }
-  
-  .brush-toggle label {
-    font-size: calc(var(--box-size) * 0.1);
   }
 }
 
