@@ -12,6 +12,9 @@ async function ensureAudio() {
   }
 }
 async function playBrush() {
+  // Check if brush sounds are enabled
+  if (!isBrushEnabled()) return;
+  
   await ensureAudio();
   const duration = 0.09;
   const bufferSize = ctx.sampleRate * duration;
@@ -32,6 +35,13 @@ async function playBrush() {
   noise.start();
   noise.stop(ctx.currentTime + duration);
 }
+
+// Function to check if brush sounds are enabled
+function isBrushEnabled() {
+  const brushToggle = document.getElementById('brushToggle');
+  return brushToggle && brushToggle.checked;
+}
+
 async function playBassDrum() {
   await ensureAudio();
   const duration = 0.19;
@@ -276,7 +286,7 @@ function playEighthNoteStep() {
 
   // 2. Quarter note pulse: picture highlight and brush sound
   if (rhythmStep % 2 === 0) {
-    playBrush();
+    playBrush(); // Now this checks if brush sounds are enabled
     updatePictureHighlights();
     pictureHighlightStep = (pictureHighlightStep + 1) % 4;
   }
@@ -425,6 +435,15 @@ document.addEventListener("DOMContentLoaded", function() {
       e.preventDefault();
     }
   });
+
+  // Brush toggle listener
+  const brushToggle = document.getElementById('brushToggle');
+  if (brushToggle) {
+    brushToggle.addEventListener('change', function() {
+      // Nothing needs to be done immediately - playBrush will check this value
+      // when it's called
+    });
+  }
 
   let bpmHoldInterval = null, bpmHoldTimeout = null;
   function stepBpm(dir) {
