@@ -177,6 +177,32 @@ input[type="number"].bpm-input {
   outline: none;
 }
 .bpm-arrow:active, .bpm-arrow:focus-visible { color: #135ba1; background: #e3eafd; }
+
+/* Brush toggle styling */
+.brush-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: calc(var(--box-size) * 0.04);
+  margin-bottom: calc(var(--box-size) * 0.05);
+  font-size: calc(var(--box-size) * 0.08);
+  color: #333;
+  user-select: none;
+}
+
+.brush-toggle input[type="checkbox"] {
+  margin-right: 5px;
+  cursor: pointer;
+  width: calc(var(--box-size) * 0.10);
+  height: calc(var(--box-size) * 0.10);
+}
+
+.brush-toggle label {
+  cursor: pointer;
+  font-weight: 500;
+  color: #1976d2;
+}
+
 .note-rects { 
   display: flex;
   flex: 1 1 auto;
@@ -395,6 +421,10 @@ input[type="number"].bpm-input {
   .top-row {
     margin-bottom: calc(var(--box-size) * 0.25); /* Adjust spacing for smaller screens */
   }
+  
+  .brush-toggle {
+    font-size: calc(var(--box-size) * 0.09);
+  }
 }
 
 @media (max-width: 480px) {
@@ -410,6 +440,10 @@ input[type="number"].bpm-input {
   .top-row {
     gap: calc(var(--box-gap) * 0.6);
     margin-bottom: calc(var(--box-size) * 0.2); /* Further adjust spacing */
+  }
+  
+  .brush-toggle label {
+    font-size: calc(var(--box-size) * 0.1);
   }
 }
 
@@ -436,5 +470,10 @@ input[type="number"].bpm-input {
   .bottom-grid {
     transform: scale(0.9);
     transform-origin: top center;
+  }
+  
+  .brush-toggle {
+    margin-top: calc(var(--box-size) * 0.03);
+    margin-bottom: calc(var(--box-size) * 0.03);
   }
 }
