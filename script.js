@@ -298,7 +298,9 @@ function playEighthNoteStep() {
 // Highlight always 4 slots in sequence, including "empty"
 function updateSlotHighlights() {
   for (let i = 0; i < slotIds.length; i++) unhighlightSlot(i);
-  highlightSlot(slotHighlightStep % 4);
+  if (isPlaying) { // Only highlight if playing
+    highlightSlot(slotHighlightStep % 4);
+  }
 }
 function highlightSlot(idx) {
   document.getElementById(slotIds[idx]).classList.add('enlarged');
@@ -310,7 +312,9 @@ function unhighlightSlot(idx) {
 // Highlight only one picture box at a time (quarter note pulse)
 function updatePictureHighlights() {
   for (let i = 0; i < 4; i++) unhighlightPicture(i);
-  highlightPicture(pictureHighlightStep % 4);
+  if (isPlaying) { // Only highlight if playing
+    highlightPicture(pictureHighlightStep % 4);
+  }
 }
 function highlightPicture(idx) {
   document.getElementById('bottomPic'+idx).classList.add('picture-highlighted');
@@ -337,8 +341,6 @@ function clearAll() {
   document.querySelectorAll('.bottom-rhythm-box').forEach(box => box.classList.remove('active'));
   updateRhythmPictures();
   setPlaying(false);
-  updateSlotHighlights();
-  updatePictureHighlights();
 }
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -468,15 +470,19 @@ document.addEventListener("DOMContentLoaded", function() {
 
   // Initial setup
   updateRhythmPictures();
-  setPlaying(false);
-  updateSlotHighlights();
-  updatePictureHighlights();
+  
+  // Ensure nothing is highlighted at start
+  for (let i = 0; i < slotIds.length; i++) {
+    unhighlightSlot(i);
+  }
+  for (let i = 0; i < 4; i++) {
+    unhighlightPicture(i);
+  }
+  
+  // Make sure isPlaying is false at start
+  isPlaying = false;
+  const playIcon = document.getElementById('playIcon');
+  const pauseIcon = document.getElementById('pauseIcon');
+  playIcon.style.display = "block";
+  pauseIcon.style.display = "none";
 });
-
-// --- Additional Recommendations for Pleasant Triangle Synth Chords ---
-// 1. Lower gain as you did (already done).
-// 2. Consider adding a gentle lowpass filter per triangle note (e.g., 2500 Hz) to remove harsh upper partials.
-// 3. Optionally, slightly detune the triangle notes by a few cents (+/- 2 cents) for a softer, chorus effect.
-// 4. Avoid "start" clicks by ramping up gain from 0 to max over the first 0.005s (attack).
-// 5. Optionally, use a compressor node before masterGain for additional smoothness.
-// These are optional and would require more involved changes if you'd like to try them!
