@@ -1,6 +1,6 @@
 :root {
-  /* Base sizes that will be adjusted with viewport */
-  --base-box-size: min(113px, 23vw, 23vh);
+  /* Base sizes adjusted to actual app content dimensions */
+  --base-box-size: min(113px, 19vw);
   --box-size: var(--base-box-size);
   --box-gap: max(8px, calc(var(--box-size) * 0.25));
   --columns: 5;
@@ -21,13 +21,15 @@ body {
   min-height: 100vh;
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .app-container {
-  margin: 0 auto;
-  padding: max(10px, 2vh) max(5px, 2vw);
-  width: 100%;
+  margin: 0;
+  padding: 0;
+  width: auto; /* Allow container to fit content */
   max-width: 100vw;
   box-sizing: border-box;
   display: flex;
@@ -37,7 +39,7 @@ body {
 
 .top-row,
 .bottom-grid-container {
-  width: 100%;
+  width: fit-content; /* Fit the actual content */
   max-width: calc(var(--columns) * var(--box-size) + (var(--columns) - 1) * var(--box-gap));
   display: flex;
   flex-direction: row;
@@ -46,7 +48,7 @@ body {
 
 .top-row {
   gap: var(--box-gap);
-  margin-bottom: clamp(10px, 3vh, 20px);
+  margin-bottom: max(10px, 2vh);
   background: rgba(200,200,200,0.03);
   flex-wrap: nowrap;
 }
@@ -66,7 +68,7 @@ body {
   width: var(--box-size);
   aspect-ratio: 3/5;
   background: #fff;
-  margin-bottom: clamp(3px, 1vh, 5px);
+  margin-bottom: max(3px, 1vh);
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -86,8 +88,8 @@ body {
 .slot-box {
   border: none;
   box-shadow: none;
-  padding-top: clamp(3px, calc(var(--box-size) * 0.06), 7px);
-  padding-bottom: clamp(3px, calc(var(--box-size) * 0.06), 7px);
+  padding-top: calc(var(--box-size) * 0.06);
+  padding-bottom: calc(var(--box-size) * 0.06);
   transition: transform 0.20s cubic-bezier(.7,1.8,.6,1.1);
 }
 .slot-box.enlarged {
@@ -100,17 +102,17 @@ body {
 }
 .bpm-clear-stack-inner { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
 .refresh-btn {
-  width: clamp(35px, calc(var(--box-size) * 0.5), 55px);
-  height: clamp(35px, calc(var(--box-size) * 0.5), 55px);
-  margin-top: clamp(5px, calc(var(--box-size) * 0.08), 9px);
-  margin-bottom: clamp(4px, calc(var(--box-size) * 0.07), 8px);
+  width: calc(var(--box-size) * 0.5);
+  height: calc(var(--box-size) * 0.5);
+  margin-top: calc(var(--box-size) * 0.08);
+  margin-bottom: calc(var(--box-size) * 0.07);
   display: flex;
   align-items: center;
   justify-content: center;
   border: none;
   background: #e3f1ff;
   color: #1a6fc2;
-  font-size: clamp(1.8em, calc(var(--box-size) * 0.022), 2.53em);
+  font-size: calc(var(--box-size) * 0.22);
   border-radius: 50%;
   box-shadow: 0 2px 7px rgba(0,0,0,0.09);
   transition: background 0.16s, color 0.16s, transform 0.16s;
@@ -122,12 +124,12 @@ body {
   transform: rotate(-24deg) scale(1.08);
 }
 .refresh-icon { 
-  width: clamp(25px, calc(var(--box-size) * 0.33), 37px); 
-  height: clamp(25px, calc(var(--box-size) * 0.33), 37px);
+  width: calc(var(--box-size) * 0.33);
+  height: calc(var(--box-size) * 0.33);
   display: block;
 }
 .bpm-input-block { 
-  width: clamp(60px, calc(var(--box-size) * 0.7), 80px);
+  width: calc(var(--box-size) * 0.7);
   margin: 0;
   display: flex;
   flex-direction: column;
@@ -138,15 +140,15 @@ input[type="number"].bpm-input::-webkit-inner-spin-button,
 input[type="number"].bpm-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 input[type="number"].bpm-input[type=number] { -moz-appearance: textfield; }
 input[type="number"].bpm-input {
-  width: clamp(40px, calc(var(--box-size) * 0.47), 53px);
-  font-size: clamp(1em, calc(var(--box-size) * 0.012), 1.38em);
+  width: calc(var(--box-size) * 0.47);
+  font-size: calc(var(--box-size) * 0.12);
   border: 1.7px solid #1976d2;
   outline: none;
   text-align: center;
   background: #fafdff;
   margin: 0 2px;
   padding: 2px 0;
-  height: clamp(30px, calc(var(--box-size) * 0.36), 41px);
+  height: calc(var(--box-size) * 0.36);
   box-sizing: border-box;
   appearance: textfield;
   border-radius: 0;
@@ -154,16 +156,16 @@ input[type="number"].bpm-input {
 .bpm-stepper { 
   display: flex;
   flex-direction: column;
-  margin-left: clamp(2px, calc(var(--box-size) * 0.045), 5px);
+  margin-left: calc(var(--box-size) * 0.045);
   user-select: none;
-  height: clamp(30px, calc(var(--box-size) * 0.36), 41px);
+  height: calc(var(--box-size) * 0.36);
   justify-content: center;
 }
 .bpm-arrow {
-  width: clamp(18px, calc(var(--box-size) * 0.2), 23px);
-  height: clamp(16px, calc(var(--box-size) * 0.185), 21px);
+  width: calc(var(--box-size) * 0.2);
+  height: calc(var(--box-size) * 0.185);
   text-align: center;
-  font-size: clamp(16px, calc(var(--box-size) * 0.18), 20.7px);
+  font-size: calc(var(--box-size) * 0.18);
   border: none;
   background: none;
   color: #1976d2;
@@ -180,23 +182,23 @@ input[type="number"].bpm-input {
   width: 100%;
   align-items: center;
   justify-content: center;
-  min-height: clamp(30px, calc(var(--box-size) * 0.45), 51px);
-  margin-top: clamp(4px, calc(var(--box-size) * 0.06), 7px);
-  margin-bottom: clamp(2px, calc(var(--box-size) * 0.035), 4px);
+  min-height: calc(var(--box-size) * 0.45);
+  margin-top: calc(var(--box-size) * 0.06);
+  margin-bottom: calc(var(--box-size) * 0.035);
 }
 .note-rect {
   flex: 1 1 auto;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: clamp(1.4em, calc(var(--box-size) * 0.02), 2.21em);
+  font-size: calc(var(--box-size) * 0.2);
   font-weight: bold;
   color: #fff;
   height: 100%;
   text-shadow: 0 1px 2px rgba(0,0,0,0.10);
   user-select: none;
   min-width: 0;
-  min-height: clamp(25px, calc(var(--box-size) * 0.35), 39px);
+  min-height: calc(var(--box-size) * 0.35);
 }
 .note-C { background: #F44336; }
 .note-D { background: #FF9800; }
@@ -206,24 +208,24 @@ input[type="number"].bpm-input {
 .note-A { background: #1760af; }
 .note-B { background: #9C27B0; }
 .dash-img-slot {
-  width: clamp(50px, calc(var(--box-size) * 0.75), 85px);
-  height: clamp(50px, calc(var(--box-size) * 0.75), 85px);
+  width: calc(var(--box-size) * 0.75);
+  height: calc(var(--box-size) * 0.75);
   display: block;
-  margin: clamp(4px, calc(var(--box-size) * 0.06), 7px) auto 0 auto;
+  margin: calc(var(--box-size) * 0.06) auto 0 auto;
   object-fit: contain;
 }
 .chord-select {
-  font-size: clamp(0.9em, calc(var(--box-size) * 0.0095), 1.07em);
-  width: clamp(64px, calc(var(--box-size) * 0.81), 92px);
+  font-size: calc(var(--box-size) * 0.095);
+  width: calc(var(--box-size) * 0.81);
   min-width: 64px;
   max-width: 103px;
   margin-top: auto;
-  margin-bottom: clamp(2px, calc(var(--box-size) * 0.03), 3.5px);
-  padding: clamp(1.5px, calc(var(--box-size) * 0.02), 2.3px) clamp(1.5px, calc(var(--box-size) * 0.02), 2.3px);
+  margin-bottom: calc(var(--box-size) * 0.03);
+  padding: calc(var(--box-size) * 0.02) calc(var(--box-size) * 0.02);
   border: 1.7px solid #bbb;
   touch-action: manipulation;
-  min-height: clamp(18px, calc(var(--box-size) * 0.2), 23px);
-  max-height: clamp(22px, calc(var(--box-size) * 0.25), 28px);
+  min-height: calc(var(--box-size) * 0.2);
+  max-height: calc(var(--box-size) * 0.25);
   z-index: 10;
   position: relative;
   background: #fff;
@@ -264,8 +266,7 @@ input[type="number"].bpm-input {
 .bottom-grid-container {
   margin: 0 auto;
   background: rgba(100,100,100,0.01);
-  width: 100%;
-  max-width: calc(var(--columns) * var(--box-size) + (var(--columns) - 1) * var(--box-gap));
+  width: fit-content; /* Fit the actual content */
 }
 .bottom-grid {
   display: grid;
@@ -285,21 +286,21 @@ input[type="number"].bpm-input {
   background: transparent;
 }
 .circle-play-btn {
-  width: clamp(40px, calc(var(--box-size) * 0.55), 62px);
-  height: clamp(40px, calc(var(--box-size) * 0.55), 62px);
+  width: calc(var(--box-size) * 0.55);
+  height: calc(var(--box-size) * 0.55);
   border: none;
   background: #1976d2;
   color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: clamp(1.8em, calc(var(--box-size) * 0.023), 2.65em);
+  font-size: calc(var(--box-size) * 0.23);
   box-shadow: 0 2.3px 8px rgba(0,0,0,0.17);
   cursor: pointer;
   transition: background 0.18s, box-shadow 0.18s, transform 0.14s;
   margin-right: 0;
-  min-width: clamp(40px, calc(var(--box-size) * 0.55), 62px);
-  min-height: clamp(40px, calc(var(--box-size) * 0.55), 62px);
+  min-width: calc(var(--box-size) * 0.55);
+  min-height: calc(var(--box-size) * 0.55);
   user-select: none;
   border-radius: 50%;
 }
@@ -317,7 +318,7 @@ input[type="number"].bpm-input {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: clamp(1em, calc(var(--box-size) * 0.011), 1.25em);
+  font-size: calc(var(--box-size) * 0.11);
   font-weight: bold;
   color: #aaa;
   border: 2px dashed #ccc;
@@ -366,7 +367,7 @@ input[type="number"].bpm-input {
   user-select: none;
   transition: background 0.15s, border-color 0.15s, transform 0.13s cubic-bezier(.8,1.8,.7,1.2);
   position: relative;
-  font-size: clamp(0.9em, calc(var(--box-size) * 0.0095), 1.08em);
+  font-size: calc(var(--box-size) * 0.095);
   box-sizing: border-box;
   width: 50%;
   height: 100%;
@@ -378,64 +379,54 @@ input[type="number"].bpm-input {
 .bottom-rhythm-box-text {
   position: absolute; top: 0; left: 0; right: 0; bottom: 0;
   display: flex; align-items: center; justify-content: center;
-  font-size: clamp(1em, calc(var(--box-size) * 0.011), 1.23em); 
+  font-size: calc(var(--box-size) * 0.11);
   color: #444; font-weight: bold; pointer-events: none; user-select: none;
   letter-spacing: 0.01em;
 }
 
-/* Responsive media queries */
+/* Responsive media queries optimized for app's actual dimensions */
 @media (max-width: 600px) {
   :root {
-    --base-box-size: min(75px, 18vw, 18vh);
-  }
-  
-  .app-container {
-    padding: 10px 5px;
+    --base-box-size: min(85px, 18vw);
   }
 }
 
 @media (max-width: 480px) {
   :root {
-    --base-box-size: min(65px, 17vw, 17vh);
+    --base-box-size: min(70px, 17vw);
+  }
+  
+  .app-container {
+    padding: 5px 0;
   }
   
   .top-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(var(--box-size), 1fr));
-    grid-gap: var(--box-gap);
-    justify-content: center;
-    width: 90%;
+    gap: calc(var(--box-gap) * 0.6);
   }
 }
 
 @media (max-width: 400px) {
   :root {
-    --base-box-size: min(55px, 16vw, 16vh);
-  }
-}
-
-/* Touch device optimizations */
-@media (hover: none) {
-  .bottom-rhythm-box {
-    min-height: 30px; /* Ensure touch targets are large enough */
-  }
-  
-  .chord-select {
-    padding: 4px; /* Larger padding for touch interfaces */
-  }
-}
-
-/* Height-constrained environments */
-@media (max-height: 600px) {
-  :root {
-    --base-box-size: min(80px, 20vw, 15vh);
-  }
-  
-  .app-container {
-    padding-top: 10px;
+    --base-box-size: min(60px, 16vw);
   }
   
   .top-row {
-    margin-bottom: 10px;
+    gap: calc(var(--box-gap) * 0.5);
+  }
+}
+
+/* Handle very small screens with potential wrapping */
+@media (max-width: 350px) {
+  .top-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(var(--box-size), 45vw), 1fr));
+    width: calc(var(--box-size) * 2 + var(--box-gap));
+    justify-content: center;
+    gap: 5px;
+  }
+  
+  .bottom-grid {
+    transform: scale(0.9);
+    transform-origin: top center;
   }
 }
