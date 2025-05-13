@@ -234,14 +234,16 @@ input[type="number"].bpm-input {
   margin: calc(var(--box-size) * 0.06) auto 0 auto;
   object-fit: contain;
 }
+
+/* --- CHORD SELECT FONT SIZE UPDATED BELOW --- */
 .chord-select {
-  font-size: calc(var(--box-size) * 0.095);
+  font-size: calc(var(--box-size) * 0.14); /* INCREASED from 0.095 to 0.14 */
   width: calc(var(--box-size) * 0.81);
   min-width: 64px;
   max-width: 103px;
   margin-top: auto;
   margin-bottom: calc(var(--box-size) * 0.03);
-  padding: calc(var(--box-size) * 0.02) calc(var(--box-size) * 0.02);
+  padding: calc(var(--box-size) * 0.03) calc(var(--box-size) * 0.03); /* Slightly increased padding */
   border: 1.7px solid #bbb;
   touch-action: manipulation;
   min-height: calc(var(--box-size) * 0.2);
@@ -257,6 +259,13 @@ input[type="number"].bpm-input {
   border-radius: 0;
   transition: background 0.2s, color 0.2s;
 }
+
+/* Increase font size for dropdown options as well */
+.chord-select option { 
+  text-align: center; 
+  font-size: 1.25em; /* INCREASED from 1.13em to 1.25em */
+  font-family: Georgia, 'Times New Roman', Times, serif; 
+}
 .chord-select.c-selected-c { background: var(--color-c); color: #fff; }
 .chord-select.c-selected-dm { background: var(--color-d); color: #fff; }
 .chord-select.c-selected-em { background: var(--color-e); color: #fff; }
@@ -271,7 +280,6 @@ input[type="number"].bpm-input {
 .chord-select.c-selected-am {
   border-color: #888;
 }
-.chord-select option { text-align: center; font-size: 1.13em; font-family: Georgia, 'Times New Roman', Times, serif; }
 .chord-select option[value="C"]  { background: #F44336; color: #fff; }
 .chord-select option[value="Dm"] { background: #FF9800; color: #fff; }
 .chord-select option[value="Em"] { background: #FFD600; color: #fff; }
