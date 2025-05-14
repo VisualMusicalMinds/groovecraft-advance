@@ -10,12 +10,17 @@
     <div class="top-row" id="top-row">
       <div class="box-space">
         <div class="bpm-clear-stack">
-          <div class="bpm-clear-stack-inner">
+          <div class="bpm-clear-stack-inner" style="display: flex; flex-direction: column; align-items: center;">
             <button id="clear" class="refresh-btn" title="Clear All" aria-label="Clear All" tabindex="0">
               <svg class="refresh-icon" viewBox="0 0 24 24">
                 <path d="M12 5V2L7 6.5l5 4.5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z" fill="currentColor"/>
               </svg>
             </button>
+            <div class="instrument-waveform-dial" id="waveform-dial">
+              <div class="waveform-arrow" id="wave-left" tabindex="0">&#9664;</div>
+              <div id="waveform-name" class="waveform-name">triangle</div>
+              <div class="waveform-arrow" id="wave-right" tabindex="0">&#9654;</div>
+            </div>
             <div class="bpm-input-block">
               <div class="bpm-input-row">
                 <input type="number" id="bpmInput" class="bpm-input" min="30" max="300" value="90" inputmode="numeric" autocomplete="off" />
