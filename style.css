@@ -129,51 +129,86 @@ body {
   display: block;
 }
 
-/* ---- WAVEFORM/INSTRUMENT DIAL ---- */
+/* ---- WAVEFORM/INSTRUMENT DIAL (Responsive & inline arrows/text) ---- */
 .instrument-waveform-dial {
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   background: #fafdff;
   border-radius: 0.6em;
   margin-bottom: 9px;
   margin-top: 0px;
-  padding: 0.15em 0.5em;
+  padding: 0.12em 0.46em;
   font-family: 'EB Garamond', Garamond, 'Times New Roman', Times, serif;
   font-weight: 700;
-  font-size: 1.25em;
+  font-size: clamp(1rem, min(2.8vw, 2.8vh, 2em), 2em);
   box-shadow: 0 0.5px 2px #0001;
   outline: none;
   user-select: none;
   gap: 0.45em;
   min-width: 0;
   min-height: 0;
+  width: 100%;
+  max-width: 300px;
 }
+
 .waveform-arrow {
-  font-size: 1.3em;
+  font-size: 1.1em;
   color: #1976d2;
   cursor: pointer;
-  padding: 2px 7px;
+  padding: 0.08em 0.25em;
   user-select: none;
   transition: color 0.15s, background 0.12s;
   border-radius: 0.33em;
+  display: flex;
+  align-items: center;
+  height: 1.4em;
 }
 .waveform-arrow:active, .waveform-arrow:focus-visible {
   color: #135ba1;
   background: #e3eafd;
 }
 .waveform-name {
-  min-width: 70px;
+  min-width: 58px;
+  max-width: 120px;
   text-align: center;
   color: #444;
   font-family: 'EB Garamond', Garamond, 'Times New Roman', Times, serif;
   font-weight: 700;
-  font-size: 1.12em;
+  font-size: 1em;
   letter-spacing: 0.01em;
   padding: 0.08em 0.4em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex-shrink: 1;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* ---- END WAVEFORM/INSTRUMENT DIAL ---- */
+/* Responsive adjustments for small screens */
+@media (max-width: 600px) {
+  .instrument-waveform-dial {
+    font-size: clamp(1rem, min(2.2vw, 2.2vh, 1.3em), 1.3em);
+    max-width: 200px;
+  }
+  .waveform-name {
+    min-width: 42px;
+    font-size: 0.97em;
+    padding: 0.05em 0.2em;
+  }
+}
+
+@media (max-width: 400px) {
+  .instrument-waveform-dial {
+    font-size: 1em;
+    max-width: 140px;
+    padding: 0.09em 0.19em;
+  }
+}
 
 .bpm-input-block { 
   width: calc(var(--box-size) * 0.7);
