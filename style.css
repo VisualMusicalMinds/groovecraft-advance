@@ -1,5 +1,4 @@
 :root {
-  /* Base sizes adjusted to actual app content dimensions */
   --base-box-size: min(113px, 19vw);
   --box-size: var(--base-box-size);
   --box-gap: max(8px, calc(var(--box-size) * 0.25));
@@ -29,8 +28,8 @@ body {
 .app-container {
   margin: 0;
   padding: 0;
-  width: auto; /* Allow container to fit content */
-  max-width: calc(100vw - 20px); /* Add some side margin */
+  width: auto;
+  max-width: calc(100vw - 20px);
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -39,7 +38,7 @@ body {
 
 .top-row,
 .bottom-grid-container {
-  width: fit-content; /* Fit the actual content */
+  width: fit-content;
   max-width: calc(var(--columns) * var(--box-size) + (var(--columns) - 1) * var(--box-gap));
   display: flex;
   flex-direction: row;
@@ -48,10 +47,10 @@ body {
 
 .top-row {
   gap: var(--box-gap);
-  margin-bottom: calc(var(--box-size) * 0.3); /* Increased space between rows */
+  margin-bottom: calc(var(--box-size) * 0.3);
   background: rgba(200,200,200,0.03);
   flex-wrap: nowrap;
-  padding-right: calc(var(--box-size) * 0.05); /* Add right margin to prevent clipping */
+  padding-right: calc(var(--box-size) * 0.05);
 }
 
 .box-space {
@@ -129,6 +128,53 @@ body {
   height: calc(var(--box-size) * 0.33);
   display: block;
 }
+
+/* ---- WAVEFORM/INSTRUMENT DIAL ---- */
+.instrument-waveform-dial {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fafdff;
+  border-radius: 0.6em;
+  margin-bottom: 9px;
+  margin-top: 0px;
+  padding: 0.15em 0.5em;
+  font-family: 'EB Garamond', Garamond, 'Times New Roman', Times, serif;
+  font-weight: 700;
+  font-size: 1.25em;
+  box-shadow: 0 0.5px 2px #0001;
+  outline: none;
+  user-select: none;
+  gap: 0.45em;
+  min-width: 0;
+  min-height: 0;
+}
+.waveform-arrow {
+  font-size: 1.3em;
+  color: #1976d2;
+  cursor: pointer;
+  padding: 2px 7px;
+  user-select: none;
+  transition: color 0.15s, background 0.12s;
+  border-radius: 0.33em;
+}
+.waveform-arrow:active, .waveform-arrow:focus-visible {
+  color: #135ba1;
+  background: #e3eafd;
+}
+.waveform-name {
+  min-width: 70px;
+  text-align: center;
+  color: #444;
+  font-family: 'EB Garamond', Garamond, 'Times New Roman', Times, serif;
+  font-weight: 700;
+  font-size: 1.12em;
+  letter-spacing: 0.01em;
+  padding: 0.08em 0.4em;
+}
+
+/* ---- END WAVEFORM/INSTRUMENT DIAL ---- */
+
 .bpm-input-block { 
   width: calc(var(--box-size) * 0.7);
   margin: 0;
@@ -190,10 +236,10 @@ input[type="number"].bpm-input {
 
 .brush-toggle input[type="checkbox"] {
   cursor: pointer;
-  width: calc(var(--box-size) * 0.20); /* Doubled from 0.10 */
-  height: calc(var(--box-size) * 0.20); /* Doubled from 0.10 */
-  margin: 0; /* Remove margin since there's no label */
-  accent-color: #1976d2; /* Add accent color for better visibility */
+  width: calc(var(--box-size) * 0.20);
+  height: calc(var(--box-size) * 0.20);
+  margin: 0;
+  accent-color: #1976d2;
 }
 
 .note-rects { 
@@ -235,15 +281,14 @@ input[type="number"].bpm-input {
   object-fit: contain;
 }
 
-/* --- CHORD SELECT FONT SIZE UPDATED BELOW --- */
 .chord-select {
-  font-size: calc(var(--box-size) * 0.14); /* INCREASED from 0.095 to 0.14 */
+  font-size: calc(var(--box-size) * 0.14);
   width: calc(var(--box-size) * 0.81);
   min-width: 64px;
   max-width: 103px;
   margin-top: auto;
   margin-bottom: calc(var(--box-size) * 0.03);
-  padding: calc(var(--box-size) * 0.03) calc(var(--box-size) * 0.03); /* Slightly increased padding */
+  padding: calc(var(--box-size) * 0.03) calc(var(--box-size) * 0.03);
   border: 1.7px solid #bbb;
   touch-action: manipulation;
   min-height: calc(var(--box-size) * 0.2);
@@ -260,10 +305,9 @@ input[type="number"].bpm-input {
   transition: background 0.2s, color 0.2s;
 }
 
-/* Increase font size for dropdown options as well */
 .chord-select option { 
   text-align: center; 
-  font-size: 1.25em; /* INCREASED from 1.13em to 1.25em */
+  font-size: 1.25em;
   font-family: Georgia, 'Times New Roman', Times, serif; 
 }
 .chord-select.c-selected-c { background: var(--color-c); color: #fff; }
@@ -294,8 +338,8 @@ input[type="number"].bpm-input {
 .bottom-grid-container {
   margin: 0 auto;
   background: rgba(100,100,100,0.01);
-  width: fit-content; /* Fit the actual content */
-  padding-right: calc(var(--box-size) * 0.05); /* Add right margin to prevent clipping */
+  width: fit-content;
+  padding-right: calc(var(--box-size) * 0.05);
 }
 .bottom-grid {
   display: grid;
@@ -413,14 +457,12 @@ input[type="number"].bpm-input {
   letter-spacing: 0.01em;
 }
 
-/* Responsive media queries optimized for app's actual dimensions */
 @media (max-width: 600px) {
   :root {
     --base-box-size: min(85px, 18vw);
   }
-  
   .top-row {
-    margin-bottom: calc(var(--box-size) * 0.25); /* Adjust spacing for smaller screens */
+    margin-bottom: calc(var(--box-size) * 0.25);
   }
 }
 
@@ -428,15 +470,13 @@ input[type="number"].bpm-input {
   :root {
     --base-box-size: min(70px, 17vw);
   }
-  
   .app-container {
     padding: 5px 0;
     margin: 5px;
   }
-  
   .top-row {
     gap: calc(var(--box-gap) * 0.6);
-    margin-bottom: calc(var(--box-size) * 0.2); /* Further adjust spacing */
+    margin-bottom: calc(var(--box-size) * 0.2);
   }
 }
 
@@ -444,13 +484,11 @@ input[type="number"].bpm-input {
   :root {
     --base-box-size: min(60px, 16vw);
   }
-  
   .top-row {
     gap: calc(var(--box-gap) * 0.5);
   }
 }
 
-/* Handle very small screens with potential wrapping */
 @media (max-width: 350px) {
   .top-row {
     display: grid;
@@ -459,12 +497,10 @@ input[type="number"].bpm-input {
     justify-content: center;
     gap: 5px;
   }
-  
   .bottom-grid {
     transform: scale(0.9);
     transform-origin: top center;
   }
-  
   .brush-toggle {
     margin-top: calc(var(--box-size) * 0.03);
     margin-bottom: calc(var(--box-size) * 0.03);
