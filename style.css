@@ -129,7 +129,6 @@ body {
   display: block;
 }
 
-/* ---- WAVEFORM/INSTRUMENT DIAL (Responsive & inline arrows/text) ---- */
 .instrument-waveform-dial {
   display: flex;
   flex-direction: row;
@@ -142,7 +141,8 @@ body {
   padding: 0.12em 0.46em;
   font-family: 'EB Garamond', Garamond, 'Times New Roman', Times, serif;
   font-weight: 700;
-  font-size: clamp(0.85rem, 2.8vw, 1.6em);
+  /* Make the font size smaller at all sizes */
+  font-size: clamp(0.75rem, 1.3vw, 1.06em);
   box-shadow: 0 0.5px 2px #0001;
   outline: none;
   user-select: none;
@@ -153,17 +153,16 @@ body {
   max-width: 300px;
 }
 
-/* Responsive: shrink font on smaller screens */
 @media (max-width: 600px) {
   .instrument-waveform-dial {
-    font-size: clamp(0.80rem, 2vw, 1.15em);
+    font-size: clamp(0.68rem, 1.1vw, 0.96em);
     max-width: 200px;
   }
 }
 
 @media (max-width: 400px) {
   .instrument-waveform-dial {
-    font-size: clamp(0.72rem, 1.5vw, 1em);
+    font-size: clamp(0.60rem, 0.96vw, 0.88em);
     max-width: 140px;
     padding: 0.09em 0.19em;
   }
