@@ -597,4 +597,55 @@ document.addEventListener("DOMContentLoaded", function() {
   const pauseIcon = document.getElementById('pauseIcon');
   playIcon.style.display = "block";
   pauseIcon.style.display = "none";
+
+  // --- SECTION A/B TOGGLE LOGIC ---
+  const sectionA = document.getElementById('sectionA');
+  const sectionB = document.getElementById('sectionB');
+  function setSection(selected) {
+    if (selected === 'A') {
+      sectionA.classList.add('active');
+      sectionB.classList.remove('active');
+      sectionA.setAttribute('aria-pressed', 'true');
+      sectionB.setAttribute('aria-pressed', 'false');
+    } else {
+      sectionA.classList.remove('active');
+      sectionB.classList.add('active');
+      sectionA.setAttribute('aria-pressed', 'false');
+      sectionB.setAttribute('aria-pressed', 'true');
+    }
+  }
+  // Make sure only one is ever active
+  sectionA.addEventListener('click', function() {
+    setSection('A');
+  });
+  sectionB.addEventListener('click', function() {
+    setSection('B');
+  });
+  sectionA.addEventListener('keydown', function(e) {
+    if (e.key === " " || e.key === "Enter" || e.key === "ArrowLeft" || e.key === "ArrowUp") {
+      e.preventDefault();
+      setSection('A');
+      sectionA.focus();
+    } else if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+      e.preventDefault();
+      setSection('B');
+      sectionB.focus();
+    }
+  });
+  sectionB.addEventListener('keydown', function(e) {
+    if (e.key === " " || e.key === "Enter" || e.key === "ArrowRight" || e.key === "ArrowDown") {
+      e.preventDefault();
+      setSection('B');
+      sectionB.focus();
+    } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+      e.preventDefault();
+      setSection('A');
+      sectionA.focus();
+    }
+  });
+  // Set tab roles for accessibility
+  sectionA.setAttribute('role', 'button');
+  sectionB.setAttribute('role', 'button');
+  sectionA.setAttribute('aria-pressed', 'true');
+  sectionB.setAttribute('aria-pressed', 'false');
 });
