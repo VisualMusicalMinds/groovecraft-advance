@@ -146,7 +146,7 @@ body {
   box-shadow: 0 0.5px 2px #0001;
   outline: none;
   user-select: none;
-  gap: 0.15em;
+  gap: 0.10em;
   min-width: 0;
   min-height: 0;
   width: 100%;
