@@ -142,7 +142,7 @@ body {
   padding: 0.12em 0.46em;
   font-family: 'EB Garamond', Garamond, 'Times New Roman', Times, serif;
   font-weight: 700;
-  font-size: clamp(1rem, min(2.8vw, 2.8vh, 2em), 2em);
+  font-size: clamp(0.85rem, 2.8vw, 1.6em);
   box-shadow: 0 0.5px 2px #0001;
   outline: none;
   user-select: none;
@@ -151,6 +151,22 @@ body {
   min-height: 0;
   width: 100%;
   max-width: 300px;
+}
+
+/* Responsive: shrink font on smaller screens */
+@media (max-width: 600px) {
+  .instrument-waveform-dial {
+    font-size: clamp(0.80rem, 2vw, 1.15em);
+    max-width: 200px;
+  }
+}
+
+@media (max-width: 400px) {
+  .instrument-waveform-dial {
+    font-size: clamp(0.72rem, 1.5vw, 1em);
+    max-width: 140px;
+    padding: 0.09em 0.19em;
+  }
 }
 
 .waveform-arrow {
