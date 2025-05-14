@@ -1,20 +1,83 @@
 // --- Sound Synthesis Variables ---
-let ctx = null, masterGain = null;
+let ctx = null, masterGain = null, compressor = null;
+let customVoiceWave = null;
+const waveforms = ['sine', 'triangle', 'square', 'sawtooth', 'voice'];
+let currentWaveformIndex = 1;
+let currentWaveform = waveforms[currentWaveformIndex];
+
+function setupCustomVoiceWave() {
+  // Build the custom periodic wave for "voice"
+  const harmonics = 20;
+  const real = new Float32Array(harmonics);
+  const imag = new Float32Array(harmonics);
+  real[1] = 1;
+  real[2] = 0.15;
+  real[3] = 0.1;
+  real[4] = 0.05;
+  for (let i = 5; i < harmonics; i++) real[i] = 0;
+  if (ctx) {
+    customVoiceWave = ctx.createPeriodicWave(real, imag);
+  }
+}
+
 async function ensureAudio() {
   if (!ctx) {
     ctx = new (window.AudioContext || window.webkitAudioContext)();
     masterGain = ctx.createGain();
     masterGain.gain.value = 1;
-    masterGain.connect(ctx.destination);
+    // Add compressor as in Chord Tower
+    compressor = ctx.createDynamicsCompressor();
+    compressor.threshold.value = -24;
+    compressor.knee.value = 30;
+    compressor.ratio.value = 12;
+    compressor.attack.value = 0.003;
+    compressor.release.value = 0.25;
+    compressor.connect(ctx.destination);
+    masterGain.connect(compressor);
+    setupCustomVoiceWave();
   }
+  if (!customVoiceWave) setupCustomVoiceWave();
   if (ctx.state !== "running") {
     await ctx.resume();
   }
 }
+
+// --- Instrument Dial Logic ---
+function updateWaveformDisplay() {
+  document.getElementById("waveform-name").textContent = currentWaveform;
+}
+function handleWaveformDial(dir) {
+  currentWaveformIndex = (currentWaveformIndex + dir + waveforms.length) % waveforms.length;
+  currentWaveform = waveforms[currentWaveformIndex];
+  updateWaveformDisplay();
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  // Wire up waveform dial
+  document.getElementById("wave-left").onclick = () => handleWaveformDial(-1);
+  document.getElementById("wave-right").onclick = () => handleWaveformDial(1);
+  // Optional: Keyboard support for accessibility
+  document.getElementById("wave-left").addEventListener("keydown", (e) => {
+    if (e.key === " " || e.key === "Enter" || e.key === "ArrowLeft") {
+      e.preventDefault();
+      handleWaveformDial(-1);
+      document.getElementById("wave-left").focus();
+    }
+  });
+  document.getElementById("wave-right").addEventListener("keydown", (e) => {
+    if (e.key === " " || e.key === "Enter" || e.key === "ArrowRight") {
+      e.preventDefault();
+      handleWaveformDial(1);
+      document.getElementById("wave-right").focus();
+    }
+  });
+  updateWaveformDisplay();
+});
+
+// --------- SOUND PLAYERS ----------
+
 async function playBrush() {
-  // Check if brush sounds are enabled
   if (!isBrushEnabled()) return;
-  
   await ensureAudio();
   const duration = 0.09;
   const bufferSize = ctx.sampleRate * duration;
@@ -36,7 +99,6 @@ async function playBrush() {
   noise.stop(ctx.currentTime + duration);
 }
 
-// Function to check if brush sounds are enabled
 function isBrushEnabled() {
   const brushToggle = document.getElementById('brushToggle');
   return brushToggle && brushToggle.checked;
@@ -56,27 +118,95 @@ async function playBassDrum() {
   osc.start();
   osc.stop(ctx.currentTime + duration);
 }
+
+// Play notes using the currently selected instrument
 async function playTriangleNotes(notes) {
   await ensureAudio();
   const duration = 0.29;
   const hold = 0.07;
-  const TRIANGLE_GAIN = 0.38; // Lowered by 5% from 0.4
+  const TRIANGLE_GAIN = 0.38;
+  const VOICE_GAIN = 0.36;
+  const SQUARE_GAIN = 0.30;
+  const SAW_GAIN = 0.28;
+  const SINE_GAIN = 0.36;
 
   notes.forEach((note, i) => {
-    const osc = ctx.createOscillator();
-    osc.type = "triangle";
-    osc.frequency.setValueAtTime(midiToFreq(note), ctx.currentTime);
-    const gain = ctx.createGain();
-    gain.gain.setValueAtTime(TRIANGLE_GAIN, ctx.currentTime);
-    gain.gain.setValueAtTime(TRIANGLE_GAIN, ctx.currentTime + hold);
-    gain.gain.linearRampToValueAtTime(0.012, ctx.currentTime + duration);
-    osc.connect(gain).connect(masterGain);
-    osc.start(ctx.currentTime + 0.01 * i);
-    osc.stop(ctx.currentTime + duration + 0.01 * i);
+    const freq = midiToFreq(note);
+    let osc, gain, lfo, lfoGain, filter;
+    gain = ctx.createGain();
+
+    // Default: off at first for pop prevention
+    gain.gain.setValueAtTime(0, ctx.currentTime);
+
+    if (currentWaveform === "voice") {
+      osc = ctx.createOscillator();
+      osc.setPeriodicWave(customVoiceWave);
+      osc.frequency.value = freq;
+
+      // Vibrato LFO
+      lfo = ctx.createOscillator();
+      lfoGain = ctx.createGain();
+      lfo.frequency.setValueAtTime(1.5, ctx.currentTime);
+      lfo.frequency.linearRampToValueAtTime(5, ctx.currentTime + 1);
+      lfoGain.gain.setValueAtTime(2.0, ctx.currentTime);
+      lfo.connect(lfoGain);
+      lfoGain.connect(osc.frequency);
+      lfo.start();
+
+      // Lowpass filter
+      filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(1200, ctx.currentTime);
+      filter.Q.value = 1;
+      osc.connect(filter);
+      filter.connect(gain);
+
+      // Envelope
+      const attackTime = 0.08;
+      const decayTime = 0.18;
+      const sustainLevel = VOICE_GAIN * 0.6;
+      const maxLevel = VOICE_GAIN * 1.0;
+      gain.gain.linearRampToValueAtTime(maxLevel, ctx.currentTime + attackTime);
+      gain.gain.linearRampToValueAtTime(sustainLevel, ctx.currentTime + attackTime + decayTime);
+      gain.gain.linearRampToValueAtTime(0.001, ctx.currentTime + duration);
+
+      gain.connect(masterGain);
+      osc.start(ctx.currentTime + 0.01 * i);
+      osc.stop(ctx.currentTime + duration + 0.01 * i + 0.08);
+
+      lfo.stop(ctx.currentTime + duration + 0.01 * i + 0.08);
+    } else {
+      osc = ctx.createOscillator();
+      osc.type = currentWaveform;
+      osc.frequency.value = freq;
+      filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(1200, ctx.currentTime);
+      filter.Q.value = 1;
+      osc.connect(filter);
+      filter.connect(gain);
+
+      // Set gain depending on waveform
+      let targetGain =
+        currentWaveform === "triangle" ? TRIANGLE_GAIN
+        : currentWaveform === "square" ? SQUARE_GAIN
+        : currentWaveform === "sawtooth" ? SAW_GAIN
+        : SINE_GAIN;
+
+      // Attack
+      const attackTime = 0.015;
+      gain.gain.linearRampToValueAtTime(targetGain, ctx.currentTime + attackTime);
+      gain.gain.setValueAtTime(targetGain, ctx.currentTime + attackTime + hold);
+      gain.gain.linearRampToValueAtTime(0.012, ctx.currentTime + duration);
+
+      gain.connect(masterGain);
+      osc.start(ctx.currentTime + 0.01 * i);
+      osc.stop(ctx.currentTime + duration + 0.01 * i);
+    }
   });
 }
+
 function midiToFreq(n) {
-  // Accepts "C4", "D#4", etc.
   const notes = {'C':0,'C#':1,'D':2,'D#':3,'E':4,'F':5,'F#':6,'G':7,'G#':8,'A':9,'A#':10,'B':11};
   let note = n.slice(0, n.length-1), octave = parseInt(n[n.length-1]);
   if (n.length > 2 && n[1] === '#') { note = n.slice(0,2); octave = parseInt(n.slice(2)); }
@@ -167,7 +297,7 @@ function updateRhythmPictures() {
     const box2 = document.querySelector(`.bottom-rhythm-box[data-pair="${pair}"][data-which="1"]`);
     const picDiv = document.getElementById('bottomPic'+pair);
     const img = picDiv.querySelector('.bottom-picture-img');
-    let url = dashImgUrl; // Default
+    let url = dashImgUrl;
     if (box1.classList.contains('active') && !box2.classList.contains('active')) {
       url = rhythmBox2;
     } else if (box1.classList.contains('active') && box2.classList.contains('active')) {
@@ -184,9 +314,9 @@ function updateRhythmPictures() {
 let isPlaying = false;
 let rhythmInterval = null;
 let slotIds = ['slot0', 'slot1', 'slot2', 'slot3'];
-let slotHighlightStep = 0;       // 0-3, always cycles through all slots
-let pictureHighlightStep = 0;    // 0-3, always cycles through all pictures
-let rhythmStep = 0;              // 0-7, for 8th notes (rhythm boxes)
+let slotHighlightStep = 0;
+let pictureHighlightStep = 0;
+let rhythmStep = 0;
 
 function getBpmInputValue() {
   const bpmInput = document.getElementById('bpmInput');
@@ -224,7 +354,6 @@ function setPlaying(playing) {
 
 function startMainAnimation() {
   stopMainAnimation();
-  // Restore steps if bpm change, else reset
   if (typeof startMainAnimation.preservedSteps === "object" && startMainAnimation.preservedSteps.keep) {
     slotHighlightStep = startMainAnimation.preservedSteps.slotHighlightStep;
     pictureHighlightStep = startMainAnimation.preservedSteps.pictureHighlightStep;
@@ -238,7 +367,6 @@ function startMainAnimation() {
   updateSlotHighlights();
   updatePictureHighlights();
   const bpm = getBpmInputValue();
-  // interval = 8th note (half of quarter note)
   const intervalMs = (60 / bpm) * 1000 / 2;
   playEighthNoteStep();
   rhythmInterval = setInterval(playEighthNoteStep, intervalMs);
@@ -261,19 +389,14 @@ function restartAnimationWithBpm() {
   }
 }
 
-// Play cycle: called every 8th note
 function playEighthNoteStep() {
-  // 1. Rhythm box (every 8th note)
-  // Which slot is currently active for this measure?
   const currentSlotIdx = slotHighlightStep % 4;
   const currentSelect = document.getElementById(`slot${currentSlotIdx}`).querySelector('.chord-select');
 
-  // Which rhythm box in the measure? (which rhythmStep of this slot's measure: 0-7)
   const whichBox = rhythmStep % 8;
   const pair = Math.floor(whichBox / 2);
   const which = whichBox % 2;
   const box = document.querySelector(`.bottom-rhythm-box[data-pair="${pair}"][data-which="${which}"]`);
-  // Only play sound if the box is active
   if (box && box.classList.contains('active')) {
     if (currentSelect.value === "") {
       playBassDrum();
@@ -284,31 +407,25 @@ function playEighthNoteStep() {
     }
   }
 
-  // 2. Quarter note pulse: picture highlight and brush sound
   if (rhythmStep % 2 === 0) {
-    playBrush(); // Now this checks if brush sounds are enabled
+    playBrush();
     updatePictureHighlights();
     pictureHighlightStep = (pictureHighlightStep + 1) % 4;
   }
 
-  // 3. Whole note: chord slot highlight (every 8 8th notes)
   if (rhythmStep === 0) {
     updateSlotHighlights();
   }
 
-  // 4. Step forward
   rhythmStep = (rhythmStep + 1) % 8;
-
-  // 5. Only after all 8 rhythm steps, advance slotHighlightStep
   if (rhythmStep === 0) {
     slotHighlightStep = (slotHighlightStep + 1) % 4;
   }
 }
 
-// Highlight always 4 slots in sequence, including "empty"
 function updateSlotHighlights() {
   for (let i = 0; i < slotIds.length; i++) unhighlightSlot(i);
-  if (isPlaying) { // Only highlight if playing
+  if (isPlaying) {
     highlightSlot(slotHighlightStep % 4);
   }
 }
@@ -319,10 +436,9 @@ function unhighlightSlot(idx) {
   document.getElementById(slotIds[idx]).classList.remove('enlarged');
 }
 
-// Highlight only one picture box at a time (quarter note pulse)
 function updatePictureHighlights() {
   for (let i = 0; i < 4; i++) unhighlightPicture(i);
-  if (isPlaying) { // Only highlight if playing
+  if (isPlaying) {
     highlightPicture(pictureHighlightStep % 4);
   }
 }
@@ -354,7 +470,6 @@ function clearAll() {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-  // Chord select listeners
   document.querySelectorAll('.chord-select').forEach((select, idx) => {
     select.addEventListener('change', function() {
       setSlotColorAndStyle(idx, select);
@@ -362,7 +477,6 @@ document.addEventListener("DOMContentLoaded", function() {
     setSlotColorAndStyle(idx, select);
   });
 
-  // Rhythm box listeners
   document.querySelectorAll('.bottom-rhythm-box').forEach(box => {
     box.addEventListener('click', function(e) {
       box.classList.toggle('active');
@@ -383,7 +497,6 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   });
 
-  // Play/Pause
   const playPauseBtn = document.getElementById('playPauseBtn');
   playPauseBtn.addEventListener('click', function() {
     setPlaying(!isPlaying);
@@ -399,7 +512,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   });
 
-  // BPM events
   const bpmInput = document.getElementById('bpmInput');
   const bpmUp = document.getElementById('bpmUp');
   const bpmDown = document.getElementById('bpmDown');
@@ -436,7 +548,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   });
 
-  // Brush toggle listener
   const brushToggle = document.getElementById('brushToggle');
   if (brushToggle) {
     brushToggle.addEventListener('change', function() {
@@ -480,25 +591,21 @@ document.addEventListener("DOMContentLoaded", function() {
   bpmUp.addEventListener('click', function() { stepBpm(+1); });
   bpmDown.addEventListener('click', function() { stepBpm(-1); });
 
-  // Clear
   document.getElementById('clear').addEventListener('click', clearAll);
   document.getElementById('clear').addEventListener('touchstart', function(e) {
     e.preventDefault();
     clearAll();
   }, {passive: false});
 
-  // Initial setup
   updateRhythmPictures();
-  
-  // Ensure nothing is highlighted at start
+
   for (let i = 0; i < slotIds.length; i++) {
     unhighlightSlot(i);
   }
   for (let i = 0; i < 4; i++) {
     unhighlightPicture(i);
   }
-  
-  // Make sure isPlaying is false at start
+
   isPlaying = false;
   const playIcon = document.getElementById('playIcon');
   const pauseIcon = document.getElementById('pauseIcon');
