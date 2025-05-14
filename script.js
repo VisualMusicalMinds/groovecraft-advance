@@ -1,12 +1,12 @@
 // --- Sound Synthesis Variables ---
 let ctx = null, masterGain = null, compressor = null;
 let customVoiceWave = null;
-const waveforms = ['sine', 'triangle', 'square', 'sawtooth', 'voice'];
+// CHANGED: use 'saw' instead of 'sawtooth'
+const waveforms = ['sine', 'triangle', 'square', 'saw', 'voice'];
 let currentWaveformIndex = 1;
 let currentWaveform = waveforms[currentWaveformIndex];
 
 function setupCustomVoiceWave() {
-  // Build the custom periodic wave for "voice"
   const harmonics = 20;
   const real = new Float32Array(harmonics);
   const imag = new Float32Array(harmonics);
@@ -25,7 +25,6 @@ async function ensureAudio() {
     ctx = new (window.AudioContext || window.webkitAudioContext)();
     masterGain = ctx.createGain();
     masterGain.gain.value = 1;
-    // Add compressor as in Chord Tower
     compressor = ctx.createDynamicsCompressor();
     compressor.threshold.value = -24;
     compressor.knee.value = 30;
@@ -53,10 +52,8 @@ function handleWaveformDial(dir) {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-  // Wire up waveform dial
   document.getElementById("wave-left").onclick = () => handleWaveformDial(-1);
   document.getElementById("wave-right").onclick = () => handleWaveformDial(1);
-  // Optional: Keyboard support for accessibility
   document.getElementById("wave-left").addEventListener("keydown", (e) => {
     if (e.key === " " || e.key === "Enter" || e.key === "ArrowLeft") {
       e.preventDefault();
@@ -134,16 +131,12 @@ async function playTriangleNotes(notes) {
     const freq = midiToFreq(note);
     let osc, gain, lfo, lfoGain, filter;
     gain = ctx.createGain();
-
-    // Default: off at first for pop prevention
     gain.gain.setValueAtTime(0, ctx.currentTime);
 
     if (currentWaveform === "voice") {
       osc = ctx.createOscillator();
       osc.setPeriodicWave(customVoiceWave);
       osc.frequency.value = freq;
-
-      // Vibrato LFO
       lfo = ctx.createOscillator();
       lfoGain = ctx.createGain();
       lfo.frequency.setValueAtTime(1.5, ctx.currentTime);
@@ -152,16 +145,12 @@ async function playTriangleNotes(notes) {
       lfo.connect(lfoGain);
       lfoGain.connect(osc.frequency);
       lfo.start();
-
-      // Lowpass filter
       filter = ctx.createBiquadFilter();
       filter.type = 'lowpass';
       filter.frequency.setValueAtTime(1200, ctx.currentTime);
       filter.Q.value = 1;
       osc.connect(filter);
       filter.connect(gain);
-
-      // Envelope
       const attackTime = 0.08;
       const decayTime = 0.18;
       const sustainLevel = VOICE_GAIN * 0.6;
@@ -169,15 +158,14 @@ async function playTriangleNotes(notes) {
       gain.gain.linearRampToValueAtTime(maxLevel, ctx.currentTime + attackTime);
       gain.gain.linearRampToValueAtTime(sustainLevel, ctx.currentTime + attackTime + decayTime);
       gain.gain.linearRampToValueAtTime(0.001, ctx.currentTime + duration);
-
       gain.connect(masterGain);
       osc.start(ctx.currentTime + 0.01 * i);
       osc.stop(ctx.currentTime + duration + 0.01 * i + 0.08);
-
       lfo.stop(ctx.currentTime + duration + 0.01 * i + 0.08);
     } else {
       osc = ctx.createOscillator();
-      osc.type = currentWaveform;
+      // CHANGED: Use AudioContext's 'sawtooth' for 'saw'
+      osc.type = currentWaveform === "saw" ? "sawtooth" : currentWaveform;
       osc.frequency.value = freq;
       filter = ctx.createBiquadFilter();
       filter.type = 'lowpass';
@@ -186,14 +174,12 @@ async function playTriangleNotes(notes) {
       osc.connect(filter);
       filter.connect(gain);
 
-      // Set gain depending on waveform
       let targetGain =
         currentWaveform === "triangle" ? TRIANGLE_GAIN
         : currentWaveform === "square" ? SQUARE_GAIN
-        : currentWaveform === "sawtooth" ? SAW_GAIN
+        : currentWaveform === "saw" ? SAW_GAIN
         : SINE_GAIN;
 
-      // Attack
       const attackTime = 0.015;
       gain.gain.linearRampToValueAtTime(targetGain, ctx.currentTime + attackTime);
       gain.gain.setValueAtTime(targetGain, ctx.currentTime + attackTime + hold);
