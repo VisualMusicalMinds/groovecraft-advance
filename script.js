@@ -329,7 +329,9 @@ const rhythmChordNotes = {
 function setSlotColorAndStyle(slotIndex, select) {
   setSlotContent(slotIndex, select.value);
   select.classList.remove(
-    'c-selected-c', 'c-selected-dm', 'c-selected-em', 'c-selected-f', 'c-selected-g', 'c-selected-am'
+    'c-selected-c', 'c-selected-dm', 'c-selected-em', 
+    'c-selected-f', 'c-selected-g', 'c-selected-am',
+    'c-selected-d', 'c-selected-e', 'c-selected-bb'
   );
   switch(select.value) {
     case 'C':  select.classList.add('c-selected-c'); break;
@@ -338,6 +340,9 @@ function setSlotColorAndStyle(slotIndex, select) {
     case 'F':  select.classList.add('c-selected-f'); break;
     case 'G':  select.classList.add('c-selected-g'); break;
     case 'Am': select.classList.add('c-selected-am'); break;
+    case 'D':  select.classList.add('c-selected-d'); break;
+    case 'E':  select.classList.add('c-selected-e'); break;
+    case 'Bb': select.classList.add('c-selected-bb'); break;
     default: break;
   }
 }
