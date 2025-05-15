@@ -7,121 +7,114 @@
 </head>
 <body>
   <div class="app-container">
-    <div class="top-row" id="top-row">
-      <div class="box-space">
-        <div class="bpm-clear-stack">
-          <div class="bpm-clear-stack-inner" style="display: flex; flex-direction: column; align-items: center;">
-            <button id="clear" class="refresh-btn" title="Clear All" aria-label="Clear All" tabindex="0">
-              <svg class="refresh-icon" viewBox="0 0 24 24">
-                <path d="M12 5V2L7 6.5l5 4.5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z" fill="currentColor"/>
-              </svg>
-            </button>
-            <div class="instrument-waveform-dial" id="waveform-dial">
-              <div class="waveform-arrow" id="wave-left" tabindex="0">&#9664;</div>
-              <div id="waveform-name" class="waveform-name">triangle</div>
-              <div class="waveform-arrow" id="wave-right" tabindex="0">&#9654;</div>
+    <!-- NEW TOP BAR -->
+    <div class="top-bar">
+      <div class="play-btn-cell">
+        <button id="playPauseBtn" class="circle-play-btn" title="Play" aria-label="Play/Pause" tabindex="0">
+          <svg id="playIcon" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="2 2 20 20" style="display:block;">
+            <polygon points="7,5 19,12 7,19" fill="white"/>
+          </svg>
+          <svg id="pauseIcon" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="2 2 20 20" style="display:none;">
+            <rect x="7" y="5" width="4" height="14" fill="white"/>
+            <rect x="15" y="5" width="4" height="14" fill="white"/>
+          </svg>
+        </button>
+      </div>
+      <div class="bpm-clear-stack">
+        <div class="bpm-clear-stack-inner" style="display: flex; flex-direction: column; align-items: center;">
+          <button id="clear" class="refresh-btn" title="Clear All" aria-label="Clear All" tabindex="0">
+            <svg class="refresh-icon" viewBox="0 0 24 24">
+              <path d="M12 5V2L7 6.5l5 4.5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z" fill="currentColor"/>
+            </svg>
+          </button>
+          <div class="instrument-waveform-dial" id="waveform-dial">
+            <div class="waveform-arrow" id="wave-left" tabindex="0">&#9664;</div>
+            <div id="waveform-name" class="waveform-name">triangle</div>
+            <div class="waveform-arrow" id="wave-right" tabindex="0">&#9654;</div>
+          </div>
+          <div class="bpm-input-block">
+            <div class="bpm-input-row">
+              <input type="number" id="bpmInput" class="bpm-input" min="30" max="300" value="90" inputmode="numeric" autocomplete="off" />
+              <div class="bpm-stepper">
+                <button type="button" class="bpm-arrow" id="bpmUp" tabindex="0" aria-label="Increment BPM">&#9650;</button>
+                <button type="button" class="bpm-arrow" id="bpmDown" tabindex="0" aria-label="Decrement BPM">&#9660;</button>
+              </div>
             </div>
-            <div class="bpm-input-block">
-              <div class="bpm-input-row">
-                <input type="number" id="bpmInput" class="bpm-input" min="30" max="300" value="90" inputmode="numeric" autocomplete="off" />
-                <div class="bpm-stepper">
-                  <button type="button" class="bpm-arrow" id="bpmUp" tabindex="0" aria-label="Increment BPM">&#9650;</button>
-                  <button type="button" class="bpm-arrow" id="bpmDown" tabindex="0" aria-label="Decrement BPM">&#9660;</button>
-                </div>
-              </div>
-              <div class="brush-toggle">
-                <input type="checkbox" id="brushToggle" checked title="Toggle Brush Sound" aria-label="Toggle Brush Sound" />
-              </div>
+            <div class="brush-toggle">
+              <input type="checkbox" id="brushToggle" checked title="Toggle Brush Sound" aria-label="Toggle Brush Sound" />
             </div>
           </div>
         </div>
       </div>
-      <div class="box-space">
-        <div class="slot-box" id="slot0">
-          <div class="note-rects"></div>
-          <img class="dash-img-slot" src="https://raw.githubusercontent.com/VisualMusicalMinds/Musical-Images/1100d582ac41ba2d0b1794da6dd96026a3869249/Cartoon%20RhythmBox5.svg" alt="Rhythm Box Rest" />
-          <select class="chord-select">
-            <option value="">-</option>
-            <option value="empty"></option>
-            <option value="C">C / I</option>
-            <option value="Dm">Dm / ii</option>
-            <option value="Em">Em / iii</option>
-            <option value="F">F / IV</option>
-            <option value="G">G / V</option>
-            <option value="Am">Am / vi</option>
-          </select>
-        </div>
-      </div>
-      <div class="box-space">
-        <div class="slot-box" id="slot1">
-          <div class="note-rects"></div>
-          <img class="dash-img-slot" src="https://raw.githubusercontent.com/VisualMusicalMinds/Musical-Images/1100d582ac41ba2d0b1794da6dd96026a3869249/Cartoon%20RhythmBox5.svg" alt="Rhythm Box Rest" />
-          <select class="chord-select">
-            <option value="">-</option>
-            <option value="empty"></option>
-            <option value="C">C / I</option>
-            <option value="Dm">Dm / ii</option>
-            <option value="Em">Em / iii</option>
-            <option value="F">F / IV</option>
-            <option value="G">G / V</option>
-            <option value="Am">Am / vi</option>
-          </select>
-        </div>
-      </div>
-      <div class="box-space">
-        <div class="slot-box" id="slot2">
-          <div class="note-rects"></div>
-          <img class="dash-img-slot" src="https://raw.githubusercontent.com/VisualMusicalMinds/Musical-Images/1100d582ac41ba2d0b1794da6dd96026a3869249/Cartoon%20RhythmBox5.svg" alt="Rhythm Box Rest" />
-          <select class="chord-select">
-            <option value="">-</option>
-            <option value="empty"></option>
-            <option value="C">C / I</option>
-            <option value="Dm">Dm / ii</option>
-            <option value="Em">Em / iii</option>
-            <option value="F">F / IV</option>
-            <option value="G">G / V</option>
-            <option value="Am">Am / vi</option>
-          </select>
-        </div>
-      </div>
-      <div class="box-space">
-        <div class="slot-box" id="slot3">
-          <div class="note-rects"></div>
-          <img class="dash-img-slot" src="https://raw.githubusercontent.com/VisualMusicalMinds/Musical-Images/1100d582ac41ba2d0b1794da6dd96026a3869249/Cartoon%20RhythmBox5.svg" alt="Rhythm Box Rest" />
-          <select class="chord-select">
-            <option value="">-</option>
-            <option value="empty"></option>
-            <option value="C">C / I</option>
-            <option value="Dm">Dm / ii</option>
-            <option value="Em">Em / iii</option>
-            <option value="F">F / IV</option>
-            <option value="G">G / V</option>
-            <option value="Am">Am / vi</option>
-          </select>
-        </div>
-      </div>
-      <div class="box-space">
-        <div class="section-selector">        
-          <div class="section-buttons">
-            <button id="sectionA" class="section-btn active" tabindex="0" aria-label="Section A">A</button>
-            <button id="sectionB" class="section-btn" tabindex="0" aria-label="Section B">B</button>
-          </div>
+      <div class="section-selector">
+        <div class="section-buttons">
+          <button id="sectionA" class="section-btn active" tabindex="0" aria-label="Section A">A</button>
+          <button id="sectionB" class="section-btn" tabindex="0" aria-label="Section B">B</button>
         </div>
       </div>
     </div>
+    <!-- NEW SLOT ROW -->
+    <div class="slot-row">
+      <div class="slot-box" id="slot0">
+        <div class="note-rects"></div>
+        <img class="dash-img-slot" src="https://raw.githubusercontent.com/VisualMusicalMinds/Musical-Images/1100d582ac41ba2d0b1794da6dd96026a3869249/Cartoon%20RhythmBox5.svg" alt="Rhythm Box Rest" />
+        <select class="chord-select">
+          <option value="">-</option>
+          <option value="empty"></option>
+          <option value="C">C / I</option>
+          <option value="Dm">Dm / ii</option>
+          <option value="Em">Em / iii</option>
+          <option value="F">F / IV</option>
+          <option value="G">G / V</option>
+          <option value="Am">Am / vi</option>
+        </select>
+      </div>
+      <div class="slot-box" id="slot1">
+        <div class="note-rects"></div>
+        <img class="dash-img-slot" src="https://raw.githubusercontent.com/VisualMusicalMinds/Musical-Images/1100d582ac41ba2d0b1794da6dd96026a3869249/Cartoon%20RhythmBox5.svg" alt="Rhythm Box Rest" />
+        <select class="chord-select">
+          <option value="">-</option>
+          <option value="empty"></option>
+          <option value="C">C / I</option>
+          <option value="Dm">Dm / ii</option>
+          <option value="Em">Em / iii</option>
+          <option value="F">F / IV</option>
+          <option value="G">G / V</option>
+          <option value="Am">Am / vi</option>
+        </select>
+      </div>
+      <div class="slot-box" id="slot2">
+        <div class="note-rects"></div>
+        <img class="dash-img-slot" src="https://raw.githubusercontent.com/VisualMusicalMinds/Musical-Images/1100d582ac41ba2d0b1794da6dd96026a3869249/Cartoon%20RhythmBox5.svg" alt="Rhythm Box Rest" />
+        <select class="chord-select">
+          <option value="">-</option>
+          <option value="empty"></option>
+          <option value="C">C / I</option>
+          <option value="Dm">Dm / ii</option>
+          <option value="Em">Em / iii</option>
+          <option value="F">F / IV</option>
+          <option value="G">G / V</option>
+          <option value="Am">Am / vi</option>
+        </select>
+      </div>
+      <div class="slot-box" id="slot3">
+        <div class="note-rects"></div>
+        <img class="dash-img-slot" src="https://raw.githubusercontent.com/VisualMusicalMinds/Musical-Images/1100d582ac41ba2d0b1794da6dd96026a3869249/Cartoon%20RhythmBox5.svg" alt="Rhythm Box Rest" />
+        <select class="chord-select">
+          <option value="">-</option>
+          <option value="empty"></option>
+          <option value="C">C / I</option>
+          <option value="Dm">Dm / ii</option>
+          <option value="Em">Em / iii</option>
+          <option value="F">F / IV</option>
+          <option value="G">G / V</option>
+          <option value="Am">Am / vi</option>
+        </select>
+      </div>
+    </div>
+    <!-- RHYTHM GRID: unchanged -->
     <div class="bottom-grid-container" id="bottom-grid-container">
       <div class="bottom-grid" id="bottom-grid">
-        <div class="play-btn-cell">
-          <button id="playPauseBtn" class="circle-play-btn" title="Play" aria-label="Play/Pause" tabindex="0">
-            <svg id="playIcon" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="2 2 20 20" style="display:block;">
-              <polygon points="7,5 19,12 7,19" fill="white"/>
-            </svg>
-            <svg id="pauseIcon" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="2 2 20 20" style="display:none;">
-              <rect x="7" y="5" width="4" height="14" fill="white"/>
-              <rect x="15" y="5" width="4" height="14" fill="white"/>
-            </svg>
-          </button>
-        </div>
         <div class="bottom-picture" id="bottomPic0" style="grid-row:1; grid-column:2;">
           <img class="bottom-picture-img" src="https://raw.githubusercontent.com/VisualMusicalMinds/Musical-Images/48e79626ae5b3638784c98a6f73ec0e342cf9894/Cartoon%20RhythmBox1.svg" alt="Rhythm Box" />
         </div>
