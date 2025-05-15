@@ -290,7 +290,10 @@ const chordTones = {
   'Em':  ['E', 'G', 'A'],
   'F':   ['F', 'A', 'C'],
   'G':   ['G', 'B', 'D'],
-  'Am':  ['A', 'C', 'E']
+  'Am':  ['A', 'C', 'E'],
+  'D':   ['D', 'F♯', 'A'], // Using unicode sharp symbol
+  'E':   ['E', 'G♯', 'B'], // Using unicode sharp symbol
+  'Bb':  ['B♭', 'D', 'F']  // Using unicode flat symbol
 };
 const noteColorClass = {
   'C': 'note-C',
@@ -299,7 +302,10 @@ const noteColorClass = {
   'F': 'note-F',
   'G': 'note-G',
   'A': 'note-A',
-  'B': 'note-B'
+  'B': 'note-B',
+    'F♯': 'note-F', // Using the F base color
+  'G♯': 'note-G', // Using the G base color
+  'B♭': 'note-B'  // Using the B color
 };
 const restDashImgUrl = "https://raw.githubusercontent.com/VisualMusicalMinds/Musical-Images/1100d582ac41ba2d0b1794da6dd96026a3869249/Cartoon%20RhythmBox5.svg";
 const dashImgUrl = "https://raw.githubusercontent.com/VisualMusicalMinds/Musical-Images/48e79626ae5b3638784c98a6f73ec0e342cf9894/Cartoon%20RhythmBox1.svg";
@@ -314,7 +320,10 @@ const rhythmChordNotes = {
   'Em': ['E3', 'E4', 'G4', 'B4'],
   'F':  ['F3', 'C4', 'F4', 'A4', 'C5'],
   'G':  ['G3', 'D4', 'G4', 'B4'],
-  'Am': ['A3', 'E4', 'A4', 'C5']
+  'Am': ['A3', 'E4', 'A4', 'C5'],
+    'D':  ['D3', 'D4', 'F#4', 'A4'],
+  'E':  ['E3', 'E4', 'G#4', 'B4'],
+  'Bb': ['Bb3', 'D4', 'F4', 'Bb4']
 };
 
 function setSlotColorAndStyle(slotIndex, select) {
