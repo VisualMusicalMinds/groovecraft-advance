@@ -371,9 +371,27 @@ function setSlotContent(slotIndex, chord) {
     return;
   }
   const tones = chordTones[chord];
-  noteRects.innerHTML = tones.map(note =>
-    `<div class="note-rect ${noteColorClass[note]}">${note}</div>`
-  ).join('');
+  
+  if (!tones) return;
+  
+  noteRects.innerHTML = tones.map(note => {
+    let displayNote = note;
+    
+    // Format notes with accidentals
+    if (note.includes('♯')) {
+      const baseLetter = note.charAt(0);
+      return `<div class="note-rect ${noteColorClass[note]}">
+        ${baseLetter}<span class="accidental sharp">♯</span>
+      </div>`;
+    } else if (note.includes('♭')) {
+      const baseLetter = note.charAt(0);
+      return `<div class="note-rect ${noteColorClass[note]}">
+        ${baseLetter}<span class="accidental flat">♭</span>
+      </div>`;
+    } else {
+      return `<div class="note-rect ${noteColorClass[note]}">${note}</div>`;
+    }
+  }).join('');
 }
 function updateRhythmPictures() {
   for (let pair = 0; pair < 4; ++pair) {
