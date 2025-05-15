@@ -6,6 +6,13 @@ const waveforms = ['sine', 'triangle', 'square', 'saw', 'voice'];
 let currentWaveformIndex = 1;
 let currentWaveform = waveforms[currentWaveformIndex];
 
+// A/B toggle variables
+let currentToggle = 'A'; // Default to A
+let progressionA = ['', '', '', '']; // Store the chord selections for A
+let progressionB = ['', '', '', '']; // Store the chord selections for B
+let rhythmBoxesA = Array(8).fill(false); // Store the rhythm box states for A (8 boxes total)
+let rhythmBoxesB = Array(8).fill(false); // Store the rhythm box states for B (8 boxes total)
+
 function setupCustomVoiceWave() {
   const harmonics = 20;
   const real = new Float32Array(harmonics);
@@ -51,6 +58,62 @@ function handleWaveformDial(dir) {
   updateWaveformDisplay();
 }
 
+// --- A/B Toggle Functions ---
+function saveCurrentProgression() {
+  // Save the current chord selections and rhythm boxes state to the current toggle
+  const chordValues = Array.from(document.querySelectorAll('.chord-select')).map(select => select.value);
+  const rhythmBoxStates = Array.from(document.querySelectorAll('.bottom-rhythm-box')).map(box => box.classList.contains('active'));
+  
+  if (currentToggle === 'A') {
+    progressionA = [...chordValues];
+    rhythmBoxesA = [...rhythmBoxStates];
+  } else {
+    progressionB = [...chordValues];
+    rhythmBoxesB = [...rhythmBoxStates];
+  }
+}
+
+function loadProgression(toggle) {
+  // Load the chord selections and rhythm box states from the specified toggle
+  const progression = toggle === 'A' ? progressionA : progressionB;
+  const rhythmBoxStates = toggle === 'A' ? rhythmBoxesA : rhythmBoxesB;
+  
+  // Set chord selections
+  document.querySelectorAll('.chord-select').forEach((select, idx) => {
+    select.value = progression[idx];
+    setSlotColorAndStyle(idx, select);
+  });
+  
+  // Set rhythm box states
+  document.querySelectorAll('.bottom-rhythm-box').forEach((box, idx) => {
+    if (rhythmBoxStates[idx]) {
+      box.classList.add('active');
+    } else {
+      box.classList.remove('active');
+    }
+  });
+  
+  // Update rhythm pictures based on new state
+  updateRhythmPictures();
+}
+
+function switchToggle(toggle) {
+  if (currentToggle === toggle) return; // No change needed
+  
+  // Save current state to current toggle
+  saveCurrentProgression();
+  
+  // Update toggle state
+  currentToggle = toggle;
+  
+  // Update toggle buttons UI
+  document.getElementById('toggleA').classList.toggle('ab-active', toggle === 'A');
+  document.getElementById('toggleB').classList.toggle('ab-active', toggle === 'B');
+  
+  // Load the state from the newly selected toggle
+  loadProgression(toggle);
+}
+
 document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("wave-left").onclick = () => handleWaveformDial(-1);
   document.getElementById("wave-right").onclick = () => handleWaveformDial(1);
@@ -69,6 +132,27 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   });
   updateWaveformDisplay();
+
+  // Initialize A/B toggle button listeners
+  document.getElementById('toggleA').addEventListener('click', () => switchToggle('A'));
+  document.getElementById('toggleB').addEventListener('click', () => switchToggle('B'));
+  
+  // Also add keyboard navigation for the A/B toggle
+  document.getElementById('toggleA').addEventListener('keydown', (e) => {
+    if (e.key === " " || e.key === "Enter") {
+      e.preventDefault();
+      switchToggle('A');
+    }
+  });
+  document.getElementById('toggleB').addEventListener('keydown', (e) => {
+    if (e.key === " " || e.key === "Enter") {
+      e.preventDefault();
+      switchToggle('B');
+    }
+  });
+  
+  // Initialize progression A with current state
+  saveCurrentProgression();
 });
 
 // --------- SOUND PLAYERS ----------
@@ -436,6 +520,7 @@ function unhighlightPicture(idx) {
 }
 
 function clearAll() {
+  // Clear the chord selections
   for (let i = 0; i < 4; i++) {
     const slot = document.getElementById('slot'+i);
     slot.querySelector('.note-rects').innerHTML = '';
@@ -450,8 +535,14 @@ function clearAll() {
       img.style.display = "block";
     }
   }
+  
+  // Clear the rhythm boxes
   document.querySelectorAll('.bottom-rhythm-box').forEach(box => box.classList.remove('active'));
   updateRhythmPictures();
+  
+  // Update the current progression in memory (A or B)
+  saveCurrentProgression();
+  
   setPlaying(false);
 }
 
@@ -459,6 +550,8 @@ document.addEventListener("DOMContentLoaded", function() {
   document.querySelectorAll('.chord-select').forEach((select, idx) => {
     select.addEventListener('change', function() {
       setSlotColorAndStyle(idx, select);
+      // Save current state whenever a chord is changed
+      saveCurrentProgression();
     });
     setSlotColorAndStyle(idx, select);
   });
@@ -467,11 +560,15 @@ document.addEventListener("DOMContentLoaded", function() {
     box.addEventListener('click', function(e) {
       box.classList.toggle('active');
       updateRhythmPictures();
+      // Save current state whenever rhythm boxes are toggled
+      saveCurrentProgression();
     });
     box.addEventListener('touchstart', function(e) {
       e.preventDefault();
       box.classList.toggle('active');
       updateRhythmPictures();
+      // Save current state on touch
+      saveCurrentProgression();
     }, {passive: false});
     box.setAttribute('tabindex', '0');
     box.addEventListener('keydown', function(e) {
@@ -479,6 +576,8 @@ document.addEventListener("DOMContentLoaded", function() {
         e.preventDefault();
         box.classList.toggle('active');
         updateRhythmPictures();
+        // Save current state on keyboard interaction
+        saveCurrentProgression();
       }
     });
   });
