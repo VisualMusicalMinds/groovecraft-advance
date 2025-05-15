@@ -403,12 +403,10 @@ input[type="number"].bpm-input {
   background-blend-mode: normal !important;
 }
 .bottom-grid-container {
-  width: 100%;
-  max-width: 900px;
   margin: 0 auto;
   background: rgba(100,100,100,0.01);
+  width: fit-content;
   padding-right: calc(var(--box-size) * 0.05);
-  box-sizing: border-box;
 }
 .bottom-grid {
   display: grid;
@@ -526,7 +524,17 @@ input[type="number"].bpm-input {
   letter-spacing: 0.01em;
 }
 
-/* --- Section button styling stays as in previous version --- */
+/* --- Section button styling --- */
+.section-selector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: calc(var(--box-size) * 0.12);
+  margin-bottom: calc(var(--box-size) * 0.12);
+  width: 100%;
+}
+
 .section-buttons {
   display: flex;
   flex-direction: column;
@@ -606,6 +614,7 @@ input[type="number"].bpm-input {
   }
 }
 
+/* Stack the top bar vertically when screen is narrow */
 @media (max-width: 600px) {
   .top-bar {
     flex-direction: column;
