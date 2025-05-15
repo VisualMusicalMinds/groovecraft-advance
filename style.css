@@ -152,48 +152,7 @@ body {
   width: 100%;
   max-width: 300px;
 }
-/* A/B toggle styles */
-.ab-toggle-container {
-  display: flex;
-  justify-content: center;
-  margin: calc(var(--box-size) * 0.08) 0;
-  gap: 2px;
-  user-select: none;
-}
 
-.ab-toggle-btn {
-  width: calc(var(--box-size) * 0.25);
-  height: calc(var(--box-size) * 0.25);
-  font-size: calc(var(--box-size) * 0.14);
-  font-weight: bold;
-  border: 1.5px solid #1976d2;
-  background: #f5f5f5;
-  color: #1976d2;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.16s, color 0.16s;
-  border-radius: 0;
-  padding: 0;
-}
-
-.ab-toggle-btn.ab-active {
-  background: #1976d2;
-  color: #fff;
-}
-
-.ab-toggle-btn:hover, 
-.ab-toggle-btn:focus-visible {
-  background: #e3f1ff;
-  color: #135ba1;
-}
-
-.ab-toggle-btn.ab-active:hover,
-.ab-toggle-btn.ab-active:focus-visible {
-  background: #135ba1;
-  color: #fff;
-}
 @media (max-width: 600px) {
   .instrument-waveform-dial {
     font-size: clamp(0.68rem, 1.1vw, 0.96em);
@@ -407,12 +366,19 @@ input[type="number"].bpm-input {
 .chord-select.c-selected-f { background: var(--color-f); color: #fff; }
 .chord-select.c-selected-g { background: var(--color-g); color: #fff; }
 .chord-select.c-selected-am { background: var(--color-a); color: #fff; }
+.chord-select.c-selected-d { background: var(--color-d); color: #fff; }
+.chord-select.c-selected-e { background: var(--color-e); color: #fff; }
+.chord-select.c-selected-bb { background: var(--color-b); color: #fff; }
+
 .chord-select.c-selected-c,
 .chord-select.c-selected-dm,
 .chord-select.c-selected-em,
 .chord-select.c-selected-f,
 .chord-select.c-selected-g,
-.chord-select.c-selected-am {
+.chord-select.c-selected-am,
+.chord-select.c-selected-d,
+.chord-select.c-selected-e,
+.chord-select.c-selected-bb {
   border-color: #888;
 }
 .chord-select option[value="C"]  { background: #F44336; color: #fff; }
@@ -421,6 +387,9 @@ input[type="number"].bpm-input {
 .chord-select option[value="F"]  { background: #4CAF50; color: #fff; }
 .chord-select option[value="G"]  { background: #17b99a; color: #fff; }
 .chord-select option[value="Am"] { background: #1760af; color: #fff; }
+.chord-select option[value="D"]  { background: #FF9800; color: #fff; }
+.chord-select option[value="E"]  { background: #FFD600; color: #fff; }
+.chord-select option[value="Bb"] { background: #9C27B0; color: #fff; }
 .chord-select option:checked,
 .chord-select option[selected] {
   filter: none !important;
@@ -596,46 +565,14 @@ input[type="number"].bpm-input {
     margin-top: calc(var(--box-size) * 0.03);
     margin-bottom: calc(var(--box-size) * 0.03);
   }
-}/* Adding the A/B toggle styles to the existing CSS */
-
-.ab-toggle-container {
-  display: flex;
-  justify-content: center;
-  margin: calc(var(--box-size) * 0.08) 0;
-  gap: 2px;
-  user-select: none;
 }
 
-.ab-toggle-btn {
-  width: calc(var(--box-size) * 0.25);
-  height: calc(var(--box-size) * 0.25);
-  font-size: calc(var(--box-size) * 0.14);
-  font-weight: bold;
-  border: 1.5px solid #1976d2;
-  background: #f5f5f5;
-  color: #1976d2;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.16s, color 0.16s;
-  border-radius: 0;
-  padding: 0;
-}
-
-.ab-toggle-btn.ab-active {
-  background: #1976d2;
-  color: #fff;
-}
-
-.ab-toggle-btn:hover, 
-.ab-toggle-btn:focus-visible {
-  background: #e3f1ff;
-  color: #135ba1;
-}
-
-.ab-toggle-btn.ab-active:hover,
-.ab-toggle-btn.ab-active:focus-visible {
-  background: #135ba1;
-  color: #fff;
+/* Accidental styling */
+.accidental {
+  font-size: 0.6em;
+  vertical-align: super;
+  position: relative;
+  top: -0.2em;
+  left: -0.1em;
+  line-height: 0;
 }
