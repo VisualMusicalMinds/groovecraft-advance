@@ -277,9 +277,22 @@ async function playTriangleNotes(notes) {
 }
 
 function midiToFreq(n) {
-  const notes = {'C':0,'C#':1,'D':2,'D#':3,'E':4,'F':5,'F#':6,'G':7,'G#':8,'A':9,'A#':10,'B':11};
-  let note = n.slice(0, n.length-1), octave = parseInt(n[n.length-1]);
-  if (n.length > 2 && n[1] === '#') { note = n.slice(0,2); octave = parseInt(n.slice(2)); }
+  const notes = {'C':0,'C#':1,'Db':1,'D':2,'D#':3,'Eb':3,'E':4,'F':5,'F#':6,'Gb':6,'G':7,'G#':8,'Ab':8,'A':9,'A#':10,'Bb':10,'B':11};
+   let note, octave;
+  if (n.includes('♭')) {
+    note = n.slice(0, 2); // For unicode flat symbol
+    octave = parseInt(n.slice(2));
+  } else if (n.includes('♯')) {
+    note = n.slice(0, 2); // For unicode sharp symbol
+    octave = parseInt(n.slice(2));
+  } else if (n.length > 2 && (n[1] === '#' || n[1] === 'b')) {
+    note = n.slice(0, 2);
+    octave = parseInt(n.slice(2));
+  } else {
+    note = n.slice(0, n.length-1);
+    octave = parseInt(n[n.length-1]);
+  }
+  
   return 440 * Math.pow(2, (notes[note]+(octave-4)*12-9)/12);
 }
 
