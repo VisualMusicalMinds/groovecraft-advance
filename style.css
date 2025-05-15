@@ -316,7 +316,7 @@ input[type="number"].bpm-input:focus {
 /* --- REFINED A/B TOGGLE --- */
 .ab-toggle-container {
   display: flex;
-  width: 120px;
+  width: 90px;
   margin: 10px auto 8px auto;
   background: #e3f1ff;
   border-radius: 999px;
@@ -329,7 +329,7 @@ input[type="number"].bpm-input:focus {
   flex: 1 1 0;
   background: transparent;
   border: none;
-  padding: 12px 0;
+  padding: 6px 0;
   font-size: .95em;
   font-family: inherit;
   font-weight: 600;
