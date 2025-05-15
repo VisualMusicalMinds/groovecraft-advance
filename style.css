@@ -559,41 +559,43 @@ input[type="number"].bpm-input {
 .section-selector {
   display: flex;
   flex-direction: column;
-  align-items: stretch;
+  align-items: center;
   justify-content: center;
+  margin-top: calc(var(--box-size) * 0.12);
+  margin-bottom: calc(var(--box-size) * 0.12);
   width: 100%;
-  margin-top: calc(var(--box-size) * 0.1);
-  margin-bottom: calc(var(--box-size) * 0.1);
-  min-width: 140px;
-  max-width: 300px;
 }
 
 .section-buttons {
   display: flex;
-  flex-direction: column;
-  gap: 0.40em;
+  gap: 0.26em;
+  justify-content: center;
+  align-items: center;
   width: 100%;
+  margin-top: 0.1em;
 }
 
 .section-btn {
-  width: 100%;
-  min-width: 120px;
-  min-height: calc(var(--box-size) * 0.55);
+  flex: 1 1 0;
+  padding: 0.44em 1.5em;
   font-size: calc(var(--box-size) * 0.19);
   font-weight: bold;
-  border-radius: 1.2em;
-  border: 2.5px solid #1976d2;
   background: #e3f1ff;
   color: #1760af;
-  transition: background 0.16s, color 0.15s, border-color 0.16s, transform 0.11s;
-  cursor: pointer;
+  border: 2.5px solid #1976d2;
+  border-radius: 1.6em;
+  transition: 
+    background 0.16s, 
+    color 0.15s, 
+    border-color 0.16s, 
+    transform 0.11s;
   outline: none;
-  box-shadow: 0 2px 9px rgba(25, 118, 210, 0.05);
-  margin: 0;
+  cursor: pointer;
+  margin: 0 0.13em;
   letter-spacing: 0.03em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  box-shadow: 0 2px 9px rgba(25, 118, 210, 0.05);
+  position: relative;
+  z-index: 1;
 }
 
 .section-btn.active,
@@ -603,7 +605,7 @@ input[type="number"].bpm-input {
   border-color: #1760af;
   z-index: 2;
   box-shadow: 0 2.5px 12px rgba(25, 118, 210, 0.10);
-  transform: scale(1.04);
+  transform: scale(1.07);
 }
 
 .section-btn:not(.active):hover {
@@ -615,12 +617,15 @@ input[type="number"].bpm-input {
 
 /* Responsive for small screens */
 @media (max-width: 600px) {
-  .section-selector {
-    min-width: 90px;
-    max-width: 180px;
+  .section-btn {
+    font-size: calc(var(--box-size) * 0.15);
+    padding: 0.35em 1.15em;
   }
+}
+
+@media (max-width: 400px) {
   .section-btn {
     font-size: calc(var(--box-size) * 0.13);
-    min-height: calc(var(--box-size) * 0.37);
+    padding: 0.27em 0.7em;
   }
 }
