@@ -371,6 +371,45 @@ input[type="number"].bpm-input:focus {
 .note-G { background: #17b99a; }
 .note-A { background: #1760af; }
 .note-B { background: #9C27B0; }
+
+/* 7th chord note styling */
+.note-7th {
+  background:;
+  color:;
+  font-size:;
+  opacity: 0.90;
+  border-radius: 0px;
+  margin-left: 0px;
+  margin-right: 0px;
+}
+
+/* Floating "7" button for 7th chord toggle */
+.seventh-btn {
+  position: absolute;
+  bottom: 50px;
+  right: 1px;
+  width: 28px;
+  height: 28px;
+  background: transparent;
+  border: 0px solid #1976d2;
+  border-radius: 90%;
+  color: #fff;
+  font-size: 1.55em;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 0px 0px rgba(25,118,210,0.13);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  transition: background 0.13s, color 0.13s, border 0.13s;
+}
+.seventh-btn.active, .seventh-btn:active, .seventh-btn:focus-visible {
+  background: #1976d2;
+  color: #fff;
+  border-color: #135ba1;
+}
+
 .dash-img-slot {
   width: calc(var(--box-size) * 0.75);
   height: calc(var(--box-size) * 0.75);
