@@ -1,665 +1,859 @@
-:root {
-  --base-box-size: min(113px, 19vw);
-  --box-size: var(--base-box-size);
-  --box-gap: max(8px, calc(var(--box-size) * 0.25));
-  --columns: 5;
-  --color-c: #F44336;
-  --color-d: #FF9800;
-  --color-e: #FFD600;
-  --color-f: #4CAF50;
-  --color-g: #17b99a;
-  --color-a: #1760af;
-  --color-b: #9C27B0;
-  --picture-highlight: #ffeb3b;
-}
+// --- Sound Synthesis Variables ---
+let ctx = null, masterGain = null, compressor = null;
+let customVoiceWave = null;
+const waveforms = ['sine', 'triangle', 'square', 'saw', 'voice'];
+let currentWaveformIndex = 1;
+let currentWaveform = waveforms[currentWaveformIndex];
 
-body {
-  font-family: Arial, sans-serif;
-  background: #fff;
-  text-align: center;
-  min-height: 100vh;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+// A/B toggle variables
+let currentToggle = 'A'; // Default to A
+let progressionA = ['', '', '', ''];
+let progressionB = ['', '', '', ''];
+let rhythmBoxesA = Array(8).fill(false);
+let rhythmBoxesB = Array(8).fill(false);
+// 7th chord toggles per slot for A and B
+let seventhA = [false, false, false, false];
+let seventhB = [false, false, false, false];
 
-.app-container {
-  margin: 0;
-  padding: 0;
-  width: auto;
-  max-width: calc(100vw - 20px);
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.top-row,
-.bottom-grid-container {
-  width: fit-content;
-  max-width: calc(var(--columns) * var(--box-size) + (var(--columns) - 1) * var(--box-gap));
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: stretch;
-}
-
-.top-row {
-  gap: var(--box-gap);
-  margin-bottom: calc(var(--box-size) * 0.3);
-  background: rgba(200,200,200,0.03);
-  flex-wrap: nowrap;
-  padding-right: calc(var(--box-size) * 0.05);
-  align-items: stretch;
-}
-
-.box-space {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: var(--box-size);
-  min-width: var(--box-size);
-  background: none;
-  flex-shrink: 0;
-  height: auto;
-}
-
-.slot-box,
-.bpm-clear-stack {
-  width: var(--box-size);
-  background: #fff;
-  margin-bottom: max(3px, 1vh);
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  min-width: var(--box-size);
-  max-width: var(--box-size);
-  position: relative;
-  overflow: visible;
-  user-select: none;
-  border: none;
-  box-shadow: none;
-  transition: transform 0.20s cubic-bezier(.7,1.8,.6,1.1);
-  height: 100%;
-}
-
-.slot-box {
-  border: none;
-  box-shadow: none;
-  padding-top: calc(var(--box-size) * 0.06);
-  padding-bottom: calc(var(--box-size) * 0.06);
-  transition: transform 0.20s cubic-bezier(.7,1.8,.6,1.1);
-  height: 100%;
-}
-.slot-box.enlarged {
-  transform: scale(1.25);
-  z-index: 5;
-}
-
-.bpm-clear-stack {
-  border: none;
-  box-shadow: none;
-  overflow: visible;
-  height: auto;
-}
-
-.bpm-clear-stack-inner {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-}
-
-.refresh-btn {
-  width: calc(var(--box-size) * 0.5);
-  height: calc(var(--box-size) * 0.5);
-  margin-top: calc(var(--box-size) * 0.08);
-  margin-bottom: calc(var(--box-size) * 0.07);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  background: #e3f1ff;
-  color: #1a6fc2;
-  font-size: calc(var(--box-size) * 0.22);
-  border-radius: 50%;
-  box-shadow: 0 2px 7px rgba(0,0,0,0.09);
-  transition: background 0.16s, color 0.16s, transform 0.16s;
-  cursor: pointer;
-}
-.refresh-btn:hover, .refresh-btn:active, .refresh-btn:focus-visible {
-  background: #b9e2ff;
-  color: #0b396d;
-  transform: rotate(-24deg) scale(1.08);
-}
-.refresh-icon { 
-  width: calc(var(--box-size) * 0.33);
-  height: calc(var(--box-size) * 0.33);
-  display: block;
-}
-
-.instrument-waveform-dial {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  background: #fafdff;
-  border-radius: 0.6em;
-  margin-bottom: 9px;
-  margin-top: 0px;
-  padding: 0.12em 0.46em;
-  font-family: 'EB Garamond', Garamond, 'Times New Roman', Times, serif;
-  font-weight: 700;
-  font-size: clamp(0.75rem, 1.3vw, 1.06em);
-  box-shadow: 0 0.5px 2px #0001;
-  outline: none;
-  user-select: none;
-  gap: 0.10em;
-  min-width: 0;
-  min-height: 0;
-  width: 100%;
-  max-width: 300px;
-}
-
-@media (max-width: 600px) {
-  .instrument-waveform-dial {
-    font-size: clamp(0.68rem, 1.1vw, 0.96em);
-    max-width: 200px;
+function setupCustomVoiceWave() {
+  const harmonics = 20;
+  const real = new Float32Array(harmonics);
+  const imag = new Float32Array(harmonics);
+  real[1] = 1;
+  real[2] = 0.15;
+  real[3] = 0.1;
+  real[4] = 0.05;
+  for (let i = 5; i < harmonics; i++) real[i] = 0;
+  if (ctx) {
+    customVoiceWave = ctx.createPeriodicWave(real, imag);
   }
 }
 
-@media (max-width: 400px) {
-  .instrument-waveform-dial {
-    font-size: clamp(0.60rem, 0.96vw, 0.88em);
-    max-width: 140px;
-    padding: 0.09em 0.19em;
+async function ensureAudio() {
+  if (!ctx) {
+    ctx = new (window.AudioContext || window.webkitAudioContext)();
+    masterGain = ctx.createGain();
+    masterGain.gain.value = 1;
+    compressor = ctx.createDynamicsCompressor();
+    compressor.threshold.value = -24;
+    compressor.knee.value = 30;
+    compressor.ratio.value = 12;
+    compressor.attack.value = 0.003;
+    compressor.release.value = 0.25;
+    compressor.connect(ctx.destination);
+    masterGain.connect(compressor);
+    setupCustomVoiceWave();
+  }
+  if (!customVoiceWave) setupCustomVoiceWave();
+  if (ctx.state !== "running") {
+    await ctx.resume();
   }
 }
 
-.waveform-arrow {
-  font-size: 1.1em;
-  color: #1976d2;
-  cursor: pointer;
-  padding: 0.08em 0.25em;
-  user-select: none;
-  transition: color 0.15s, background 0.12s;
-  border-radius: 0.33em;
-  display: flex;
-  align-items: center;
-  height: 1.4em;
+// --- Instrument Dial Logic ---
+function updateWaveformDisplay() {
+  document.getElementById("waveform-name").textContent = currentWaveform;
 }
-.waveform-arrow:active, .waveform-arrow:focus-visible {
-  color: #135ba1;
-  background: #e3eafd;
-}
-.waveform-name {
-  min-width: 58px;
-  max-width: 120px;
-  text-align: center;
-  color: #444;
-  font-family: 'EB Garamond', Garamond, 'Times New Roman', Times, serif;
-  font-weight: 700;
-  font-size: 1em;
-  letter-spacing: 0.01em;
-  padding: 0.08em 0.4em;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  flex-shrink: 1;
-  flex-grow: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+function handleWaveformDial(dir) {
+  currentWaveformIndex = (currentWaveformIndex + dir + waveforms.length) % waveforms.length;
+  currentWaveform = waveforms[currentWaveformIndex];
+  updateWaveformDisplay();
 }
 
-/* --- REFINED BPM INPUT --- */
-.bpm-input-block { 
-  width: calc(var(--box-size) * 0.7);
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.bpm-input-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  margin-bottom: 2px;
-  gap: 4px;
-  min-height: unset;
-}
-input[type="number"].bpm-input::-webkit-inner-spin-button,
-input[type="number"].bpm-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-input[type="number"].bpm-input[type=number] { -moz-appearance: textfield; }
-input[type="number"].bpm-input {
-  width: 60px;
-  font-size: 1.2em;
-  border: 1.5px solid #1976d2;
-  border-radius: 6px;
-  outline: none;
-  text-align: center;
-  background: #fafdff;
-  margin: 0 2px;
-  padding: 6px 0 6px 0;
-  height: 34px;
-  min-height: unset;
-  box-sizing: border-box;
-  appearance: textfield;
-  transition: border 0.14s;
-}
-input[type="number"].bpm-input:focus {
-  border-color: #135ba1;
-}
-.bpm-stepper { 
-  display: flex;
-  flex-direction: column;
-  margin-left: 4px;
-  user-select: none;
-  height: 34px;
-  justify-content: center;
-  gap: 2px;
-}
-.bpm-arrow {
-  width: 23px;
-  height: 16px;
-  font-size: 1.0em;
-  border: none;
-  background: none;
-  color: #1976d2;
-  cursor: pointer;
-  padding: 0;
-  margin: 0 auto;
-  border-radius: 3px;
-  line-height: 1;
-  transition: background 0.15s, color 0.15s;
-}
-.bpm-arrow:active, .bpm-arrow:focus-visible { color: #135ba1; background: #e3eafd; }
-
-/* Brush toggle styling */
-.brush-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: calc(var(--box-size) * 0.04);
-  margin-bottom: calc(var(--box-size) * 0.05);
-  user-select: none;
-}
-
-.brush-toggle input[type="checkbox"] {
-  cursor: pointer;
-  width: calc(var(--box-size) * 0.20);
-  height: calc(var(--box-size) * 0.20);
-  margin: 0;
-  accent-color: #1976d2;
-}
-
-/* --- REFINED A/B TOGGLE --- */
-.ab-toggle-container {
-  display: flex;
-  width: 120px;
-  margin: 10px auto 8px auto;
-  background: #e3f1ff;
-  border-radius: 999px;
-  box-shadow: 0 1px 2px #0001;
-  overflow: hidden;
-  border: 1.5px solid #b5d6f8;
-}
-
-.ab-toggle-btn {
-  flex: 1 1 0;
-  background: transparent;
-  border: none;
-  padding: 12px 0;
-  font-size: 1.15em;
-  font-family: inherit;
-  font-weight: 600;
-  color: #1976d2;
-  cursor: pointer;
-  border-radius: 999px;
-  transition: background 0.16s, color 0.16s;
-  outline: none;
-  margin: 0;
-}
-.ab-toggle-btn:not(:last-child) {
-  border-right: 1px solid #b5d6f8;
-}
-.ab-toggle-btn.ab-active {
-  background: #1976d2;
-  color: #fff;
-  box-shadow: 0 1px 4px #1976d226;
-  z-index: 1;
-}
-.ab-toggle-btn:focus-visible {
-  outline: 2px solid #135ba1;
-  z-index: 2;
-}
-
-.note-rects { 
-  display: flex;
-  flex: 1 1 auto;
-  width: 100%;
-  align-items: center;
-  justify-content: center;
-  min-height: calc(var(--box-size) * 0.45);
-  margin-top: calc(var(--box-size) * 0.06);
-  margin-bottom: calc(var(--box-size) * 0.035);
-}
-.note-rect {
-  flex: 1 1 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(var(--box-size) * 0.2);
-  font-weight: bold;
-  color: #fff;
-  height: 100%;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.10);
-  user-select: none;
-  min-width: 0;
-  min-height: calc(var(--box-size) * 0.35);
-}
-.note-C { background: #F44336; }
-.note-D { background: #FF9800; }
-.note-E { background: #FFD600;}
-.note-F { background: #4CAF50; }
-.note-G { background: #17b99a; }
-.note-A { background: #1760af; }
-.note-B { background: #9C27B0; }
-
-/* 7th chord note styling */
-.note-7th {
-  background:;
-  color:;
-  font-size:;
-  opacity: 0.90;
-  border-radius: 0px;
-  margin-left: 0px;
-  margin-right: 0px;
-}
-
-/* Floating "7" button for 7th chord toggle */
-.seventh-btn {
-  position: absolute;
-  bottom: 50px;
-  right: 1px;
-  width: 28px;
-  height: 28px;
-  background: transparent;
-  border: 0px solid #1976d2;
-  border-radius: 90%;
-  color: #fff;
-  font-size: 1.55em;
-  font-weight: bold;
-  cursor: pointer;
-  box-shadow: 0 0px 0px rgba(25,118,210,0.13);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 20;
-  transition: background 0.13s, color 0.13s, border 0.13s;
-}
-.seventh-btn.active, .seventh-btn:active, .seventh-btn:focus-visible {
-  background: #1976d2;
-  color: #fff;
-  border-color: #135ba1;
-}
-
-.dash-img-slot {
-  width: calc(var(--box-size) * 0.75);
-  height: calc(var(--box-size) * 0.75);
-  display: block;
-  margin: calc(var(--box-size) * 0.06) auto 0 auto;
-  object-fit: contain;
-}
-
-.chord-select {
-  font-size: calc(var(--box-size) * 0.14);
-  width: calc(var(--box-size) * 0.81);
-  min-width: 64px;
-  max-width: 103px;
-  margin-top: auto;
-  margin-bottom: calc(var(--box-size) * 0.03);
-  padding: calc(var(--box-size) * 0.03) calc(var(--box-size) * 0.03);
-  border: 1.7px solid #bbb;
-  touch-action: manipulation;
-  min-height: calc(var(--box-size) * 0.2);
-  max-height: calc(var(--box-size) * 0.25);
-  z-index: 10;
-  position: relative;
-  background: #fff;
-  color: #222;
-  text-align-last: center;
-  box-sizing: border-box;
-  display: block;
-  align-self: center;
-  border-radius: 0;
-  transition: background 0.2s, color 0.2s;
-}
-
-.chord-select option { 
-  text-align: center; 
-  font-size: 1.25em;
-  font-family: Georgia, 'Times New Roman', Times, serif; 
-}
-.chord-select.c-selected-c { background: var(--color-c); color: #fff; }
-.chord-select.c-selected-dm { background: var(--color-d); color: #fff; }
-.chord-select.c-selected-em { background: var(--color-e); color: #fff; }
-.chord-select.c-selected-f { background: var(--color-f); color: #fff; }
-.chord-select.c-selected-g { background: var(--color-g); color: #fff; }
-.chord-select.c-selected-am { background: var(--color-a); color: #fff; }
-.chord-select.c-selected-d { background: var(--color-d); color: #fff; }
-.chord-select.c-selected-e { background: var(--color-e); color: #fff; }
-.chord-select.c-selected-bb { background: var(--color-b); color: #fff; }
-
-.chord-select.c-selected-c,
-.chord-select.c-selected-dm,
-.chord-select.c-selected-em,
-.chord-select.c-selected-f,
-.chord-select.c-selected-g,
-.chord-select.c-selected-am,
-.chord-select.c-selected-d,
-.chord-select.c-selected-e,
-.chord-select.c-selected-bb {
-  border-color: #888;
-}
-.chord-select option[value="C"]  { background: #F44336; color: #fff; }
-.chord-select option[value="Dm"] { background: #FF9800; color: #fff; }
-.chord-select option[value="Em"] { background: #FFD600; color: #fff; }
-.chord-select option[value="F"]  { background: #4CAF50; color: #fff; }
-.chord-select option[value="G"]  { background: #17b99a; color: #fff; }
-.chord-select option[value="Am"] { background: #1760af; color: #fff; }
-.chord-select option[value="D"]  { background: #FF9800; color: #fff; }
-.chord-select option[value="E"]  { background: #FFD600; color: #fff; }
-.chord-select option[value="Bb"] { background: #9C27B0; color: #fff; }
-.chord-select option:checked,
-.chord-select option[selected] {
-  filter: none !important;
-  background-blend-mode: normal !important;
-}
-.bottom-grid-container {
-  margin: 0 auto;
-  background: rgba(100,100,100,0.01);
-  width: fit-content;
-  padding-right: calc(var(--box-size) * 0.05);
-}
-.bottom-grid {
-  display: grid;
-  grid-template-columns: var(--box-size) repeat(4, var(--box-size));
-  grid-template-rows: var(--box-size) calc(var(--box-size) / 2);
-  gap: 0;
-  width: 100%;
-  height: calc(var(--box-size) + var(--box-size) / 2);
-  background: rgba(200,200,200,0.01);
-}
-.play-btn-cell {
-  grid-row: 1 / span 2;
-  grid-column: 1 / 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-}
-.circle-play-btn {
-  width: calc(var(--box-size) * 0.55);
-  height: calc(var(--box-size) * 0.55);
-  border: none;
-  background: #1976d2;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(var(--box-size) * 0.23);
-  box-shadow: 0 2.3px 8px rgba(0,0,0,0.17);
-  cursor: pointer;
-  transition: background 0.18s, box-shadow 0.18s, transform 0.14s;
-  margin-right: 0;
-  min-width: calc(var(--box-size) * 0.55);
-  min-height: calc(var(--box-size) * 0.55);
-  user-select: none;
-  border-radius: 50%;
-}
-.circle-play-btn:hover,
-.circle-play-btn:focus-visible {
-  background: #135ba1;
-  box-shadow: 0 2px 12px rgba(25, 118, 210, 0.18);
-  transform: scale(1.06);
-}
-.bottom-picture {
-  width: 100%;
-  height: 100%;
-  aspect-ratio: 1/1;
-  background: #e0e0e0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(var(--box-size) * 0.11);
-  font-weight: bold;
-  color: #aaa;
-  border: 2px dashed #ccc;
-  margin: 0;
-  overflow: hidden;
-  box-sizing: border-box;
-  object-fit: cover;
-  background: rgba(230,230,230,0.22);
-  grid-row: 1;
-  position: relative;
-  transition: background 0.2s;
-}
-.bottom-picture.picture-highlighted {
-  background: var(--picture-highlight);
-}
-.picture-placeholder { font-size: 1.4em; color: #bbb; padding: 0 4px; }
-.bottom-picture-img {
-  width: 90%;
-  height: 90%;
-  object-fit: contain;
-  display: block;
-  margin: 0 auto;
-  position: absolute;
-  top: 5%;
-  left: 5%;
-  pointer-events: none;
-  user-select: none;
-}
-.rhythm-box-pair {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: stretch;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  gap: 0;
-  grid-row: 2;
-  background: none;
-}
-.bottom-rhythm-box {
-  background: #e0e0e0;
-  border: 2.3px solid #aaa;
-  cursor: pointer;
-  display: inline-block;
-  user-select: none;
-  transition: background 0.15s, border-color 0.15s, transform 0.13s cubic-bezier(.8,1.8,.7,1.2);
-  position: relative;
-  font-size: calc(var(--box-size) * 0.095);
-  box-sizing: border-box;
-  width: 50%;
-  height: 100%;
-  aspect-ratio: 1/1;
-  margin: 0;
-  border-radius: 0;
-}
-.bottom-rhythm-box.active { background: #4caf50; border-color: #388e3c; }
-.bottom-rhythm-box-text {
-  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-  display: flex; align-items: center; justify-content: center;
-  font-size: calc(var(--box-size) * 0.11);
-  color: #444; font-weight: bold; pointer-events: none; user-select: none;
-  letter-spacing: 0.01em;
-}
-
-@media (max-width: 600px) {
-  :root {
-    --base-box-size: min(85px, 18vw);
-  }
-  .top-row {
-    margin-bottom: calc(var(--box-size) * 0.25);
+// --- A/B Toggle Functions ---
+function saveCurrentProgression() {
+  // Save the current chord selections, rhythm boxes state, and 7th toggles to the current toggle
+  const chordValues = Array.from(document.querySelectorAll('.chord-select')).map(select => select.value);
+  const rhythmBoxStates = Array.from(document.querySelectorAll('.bottom-rhythm-box')).map(box => box.classList.contains('active'));
+  const seventhStates = Array.from(document.querySelectorAll('.seventh-btn')).map(btn => btn.classList.contains('active'));
+  if (currentToggle === 'A') {
+    progressionA = [...chordValues];
+    rhythmBoxesA = [...rhythmBoxStates];
+    seventhA = [...seventhStates];
+  } else {
+    progressionB = [...chordValues];
+    rhythmBoxesB = [...rhythmBoxStates];
+    seventhB = [...seventhStates];
   }
 }
 
-@media (max-width: 480px) {
-  :root {
-    --base-box-size: min(70px, 17vw);
+function loadProgression(toggle) {
+  // Load the chord selections, rhythm box states, and 7th toggles from the specified toggle
+  const progression = toggle === 'A' ? progressionA : progressionB;
+  const rhythmBoxStates = toggle === 'A' ? rhythmBoxesA : rhythmBoxesB;
+  const seventhStates = toggle === 'A' ? seventhA : seventhB;
+
+  // Set chord selections
+  document.querySelectorAll('.chord-select').forEach((select, idx) => {
+    select.value = progression[idx];
+    setSlotColorAndStyle(idx, select, seventhStates[idx]);
+  });
+
+  // Set rhythm box states
+  document.querySelectorAll('.bottom-rhythm-box').forEach((box, idx) => {
+    if (rhythmBoxStates[idx]) {
+      box.classList.add('active');
+    } else {
+      box.classList.remove('active');
+    }
+  });
+
+  // Set 7th button states
+  document.querySelectorAll('.seventh-btn').forEach((btn, idx) => {
+    if (seventhStates[idx]) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+
+  updateRhythmPictures();
+}
+
+function switchToggle(toggle) {
+  if (currentToggle === toggle) return; // No change needed
+
+  // Save current state to current toggle
+  saveCurrentProgression();
+
+  // Update toggle state
+  currentToggle = toggle;
+
+  // Update toggle buttons UI
+  document.getElementById('toggleA').classList.toggle('ab-active', toggle === 'A');
+  document.getElementById('toggleB').classList.toggle('ab-active', toggle === 'B');
+
+  // Load the state from the newly selected toggle
+  loadProgression(toggle);
+}
+
+// --- 7th Chord Logic ---
+
+// Minor 7th for all chords (dominant 7th for major triads, minor 7th for minor triads)
+const chordTones = {
+  'C':   ['C', 'E', 'G'],
+  'Dm':  ['D', 'F', 'A'],
+  'Em':  ['E', 'G', 'B'],
+  'F':   ['F', 'A', 'C'],
+  'G':   ['G', 'B', 'D'],
+  'Am':  ['A', 'C', 'E'],
+  'D':   ['D', 'F♯', 'A'],
+  'E':   ['E', 'G♯', 'B'],
+  'Bb':  ['B♭', 'D', 'F']
+};
+// The additional note for a minor 7th (or dominant 7th for major chords)
+const chordSevenths = {
+  'C':   'B♭',
+  'Dm':  'C',
+  'Em':  'D',
+  'F':   'E♭',
+  'G':   'F',
+  'Am':  'G',
+  'D':   'C',
+  'E':   'D',
+  'Bb':  'A♭'
+};
+// Used for playback, must use pitch names with octave!
+const rhythmChordNotes = {
+  'C':  ['C3', 'C4', 'E4', 'G4', 'C5'],
+  'Dm': ['D3', 'D4', 'F4', 'A4'],
+  'Em': ['E3', 'E4', 'G4', 'B4'],
+  'F':  ['F3', 'C4', 'F4', 'A4', 'C5'],
+  'G':  ['G3', 'D4', 'G4', 'B4'],
+  'Am': ['A3', 'E4', 'A4', 'C5'],
+  'D':  ['D3', 'D4', 'F#4', 'A4'],
+  'E':  ['E3', 'E4', 'G#4', 'B4'],
+  'Bb': ['Bb3', 'D4', 'F4', 'Bb4']
+};
+const rhythmChordSeventhNotes = {
+  'C':  'Bb4',
+  'Dm': 'C5',
+  'Em': 'D5',
+  'F':  'Eb5',
+  'G':  'F4',
+  'Am': 'G4',
+  'D':  'C5',
+  'E':  'D5',
+  'Bb': 'Ab4'
+};
+
+const noteColorClass = {
+  'C': 'note-C',
+  'D': 'note-D',
+  'E': 'note-E',
+  'F': 'note-F',
+  'G': 'note-G',
+  'A': 'note-A',
+  'B': 'note-B',
+  'F♯': 'note-F',
+  'G♯': 'note-G',
+  'B♭': 'note-B',
+  'E♭': 'note-E',
+  'A♭': 'note-A'
+};
+
+const restDashImgUrl = "https://raw.githubusercontent.com/VisualMusicalMinds/Musical-Images/1100d582ac41ba2d0b1794da6dd96026a3869249/Cartoon%20RhythmBox5.svg";
+const dashImgUrl = "https://raw.githubusercontent.com/VisualMusicalMinds/Musical-Images/48e79626ae5b3638784c98a6f73ec0e342cf9894/Cartoon%20RhythmBox1.svg";
+const rhythmBox2 = "https://raw.githubusercontent.com/VisualMusicalMinds/Musical-Images/48e79626ae5b3638784c98a6f73ec0e342cf9894/Cartoon%20RhythmBox2.svg";
+const rhythmBox3 = "https://raw.githubusercontent.com/VisualMusicalMinds/Musical-Images/48e79626ae5b3638784c98a6f73ec0e342cf9894/Cartoon%20RhythmBox3.svg";
+const rhythmBox4 = "https://raw.githubusercontent.com/VisualMusicalMinds/Musical-Images/48e79626ae5b3638784c98a6f73ec0e342cf9894/Cartoon%20RhythmBox4.svg";
+
+// --- UI Slot Content and Color ---
+function setSlotColorAndStyle(slotIndex, select, addSeventhArg) {
+  // Determine whether to add the 7th based on currentToggle and state arrays
+  let addSeventh;
+  if (typeof addSeventhArg === 'boolean') {
+    addSeventh = addSeventhArg;
+  } else {
+    let seventhArr = currentToggle === 'A' ? seventhA : seventhB;
+    addSeventh = seventhArr[slotIndex];
   }
-  .app-container {
-    padding: 5px 0;
-    margin: 5px;
-  }
-  .top-row {
-    gap: calc(var(--box-gap) * 0.6);
-    margin-bottom: calc(var(--box-size) * 0.2);
+  setSlotContent(slotIndex, select.value, addSeventh);
+  select.classList.remove(
+    'c-selected-c', 'c-selected-dm', 'c-selected-em', 
+    'c-selected-f', 'c-selected-g', 'c-selected-am',
+    'c-selected-d', 'c-selected-e', 'c-selected-bb'
+  );
+  switch(select.value) {
+    case 'C':  select.classList.add('c-selected-c'); break;
+    case 'Dm': select.classList.add('c-selected-dm'); break;
+    case 'Em': select.classList.add('c-selected-em'); break;
+    case 'F':  select.classList.add('c-selected-f'); break;
+    case 'G':  select.classList.add('c-selected-g'); break;
+    case 'Am': select.classList.add('c-selected-am'); break;
+    case 'D':  select.classList.add('c-selected-d'); break;
+    case 'E':  select.classList.add('c-selected-e'); break;
+    case 'Bb': select.classList.add('c-selected-bb'); break;
+    default: break;
   }
 }
 
-@media (max-width: 400px) {
-  :root {
-    --base-box-size: min(60px, 16vw);
+function setSlotContent(slotIndex, chord, addSeventh) {
+  const slot = document.getElementById('slot' + slotIndex);
+  const noteRects = slot.querySelector('.note-rects');
+  let img = slot.querySelector('.dash-img-slot');
+  noteRects.innerHTML = '';
+  if (chord === "") {
+    if (!img) {
+      img = document.createElement('img');
+      img.className = 'dash-img-slot';
+      img.src = restDashImgUrl;
+      img.alt = "Rhythm Box Rest";
+      slot.insertBefore(img, slot.querySelector('.chord-select'));
+    } else {
+      img.src = restDashImgUrl;
+      img.alt = "Rhythm Box Rest";
+      img.style.display = "block";
+    }
+    return;
+  } else {
+    if (img) img.style.display = "none";
   }
-  .top-row {
-    gap: calc(var(--box-gap) * 0.5);
+  slot.className = 'slot-box';
+  if (!chord || chord === "empty" || chord === "") {
+    return;
+  }
+  const tones = chordTones[chord];
+  if (!tones) return;
+
+  let rects = tones.map(note => {
+    if (note.includes('♯')) {
+      const baseLetter = note.charAt(0);
+      return `<div class="note-rect ${noteColorClass[note]}">
+        ${baseLetter}<span class="accidental sharp">♯</span>
+      </div>`;
+    } else if (note.includes('♭')) {
+      const baseLetter = note.charAt(0);
+      return `<div class="note-rect ${noteColorClass[note]}">
+        ${baseLetter}<span class="accidental flat">♭</span>
+      </div>`;
+    } else {
+      return `<div class="note-rect ${noteColorClass[note]}">${note}</div>`;
+    }
+  });
+
+  // Add the seventh if enabled and the chord has a defined 7th
+  if (addSeventh && chordSevenths[chord]) {
+    let note = chordSevenths[chord];
+    let baseLetter = note.charAt(0);
+    let colorClass = noteColorClass[note] || noteColorClass[baseLetter];
+    let display;
+    if (note.includes('♯')) {
+      display = `<div class="note-rect note-7th ${colorClass}">
+        ${baseLetter}<span class="accidental sharp">♯</span>
+      </div>`;
+    } else if (note.includes('♭')) {
+      display = `<div class="note-rect note-7th ${colorClass}">
+        ${baseLetter}<span class="accidental flat">♭</span>
+      </div>`;
+    } else {
+      display = `<div class="note-rect note-7th ${colorClass}">${note}</div>`;
+    }
+    rects.push(display);
+}
+  noteRects.innerHTML = rects.join('');
+}
+
+// --- 7th Button Logic ---
+function toggleSeventh(idx) {
+  let seventhArr = currentToggle === 'A' ? seventhA : seventhB;
+  seventhArr[idx] = !seventhArr[idx];
+  updateSeventhBtnStates();
+  // Re-render the slot content
+  const select = document.getElementById('slot'+idx).querySelector('.chord-select');
+  setSlotColorAndStyle(idx, select, seventhArr[idx]);
+  saveCurrentProgression();
+}
+function updateSeventhBtnStates() {
+  let seventhArr = currentToggle === 'A' ? seventhA : seventhB;
+  document.querySelectorAll('.seventh-btn').forEach((btn, idx) => {
+    btn.classList.toggle('active', seventhArr[idx]);
+  });
+}
+
+// --- Rhythm Pictures ---
+function updateRhythmPictures() {
+  for (let pair = 0; pair < 4; ++pair) {
+    const box1 = document.querySelector(`.bottom-rhythm-box[data-pair="${pair}"][data-which="0"]`);
+    const box2 = document.querySelector(`.bottom-rhythm-box[data-pair="${pair}"][data-which="1"]`);
+    const picDiv = document.getElementById('bottomPic'+pair);
+    const img = picDiv.querySelector('.bottom-picture-img');
+    let url = dashImgUrl;
+    if (box1.classList.contains('active') && !box2.classList.contains('active')) {
+      url = rhythmBox2;
+    } else if (box1.classList.contains('active') && box2.classList.contains('active')) {
+      url = rhythmBox3;
+    } else if (!box1.classList.contains('active') && box2.classList.contains('active')) {
+      url = rhythmBox4;
+    }
+    img.src = url;
   }
 }
 
-@media (max-width: 350px) {
-  .top-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(var(--box-size), 45vw), 1fr));
-    width: calc(var(--box-size) * 2 + var(--box-gap));
-    justify-content: center;
-    gap: 5px;
-  }
-  .bottom-grid {
-    transform: scale(0.9);
-    transform-origin: top center;
-  }
-  .brush-toggle {
-    margin-top: calc(var(--box-size) * 0.03);
-    margin-bottom: calc(var(--box-size) * 0.03);
+// --- Playback logic ---
+
+let isPlaying = false;
+let rhythmInterval = null;
+let slotIds = ['slot0', 'slot1', 'slot2', 'slot3'];
+let slotHighlightStep = 0;
+let pictureHighlightStep = 0;
+let rhythmStep = 0;
+
+function getBpmInputValue() {
+  const bpmInput = document.getElementById('bpmInput');
+  let val = parseInt(bpmInput.value, 10);
+  if (isNaN(val)) val = 90;
+  return val;
+}
+function setBpmInputValue(val) {
+  const bpmInput = document.getElementById('bpmInput');
+  bpmInput.value = val;
+}
+function clampBpm(val) {
+  return Math.max(30, Math.min(300, val));
+}
+
+function setPlaying(playing) {
+  isPlaying = playing;
+  const playIcon = document.getElementById('playIcon');
+  const pauseIcon = document.getElementById('pauseIcon');
+  const playPauseBtn = document.getElementById('playPauseBtn');
+  if (isPlaying) {
+    playIcon.style.display = "none";
+    pauseIcon.style.display = "block";
+    playPauseBtn.title = "Pause";
+    playPauseBtn.setAttribute('aria-label', 'Pause');
+    startMainAnimation();
+  } else {
+    playIcon.style.display = "block";
+    pauseIcon.style.display = "none";
+    playPauseBtn.title = "Play";
+    playPauseBtn.setAttribute('aria-label', 'Play');
+    stopMainAnimation();
   }
 }
 
-/* Accidental styling */
-.accidental {
-  font-size: 0.6em;
-  vertical-align: super;
-  position: relative;
-  top: -0.2em;
-  left: -0.1em;
-  line-height: 0;
+function startMainAnimation() {
+  stopMainAnimation();
+  if (typeof startMainAnimation.preservedSteps === "object" && startMainAnimation.preservedSteps.keep) {
+    slotHighlightStep = startMainAnimation.preservedSteps.slotHighlightStep;
+    pictureHighlightStep = startMainAnimation.preservedSteps.pictureHighlightStep;
+    rhythmStep = startMainAnimation.preservedSteps.rhythmStep;
+    startMainAnimation.preservedSteps.keep = false;
+  } else {
+    slotHighlightStep = 0;
+    pictureHighlightStep = 0;
+    rhythmStep = 0;
+  }
+  updateSlotHighlights();
+  updatePictureHighlights();
+  const bpm = getBpmInputValue();
+  const intervalMs = (60 / bpm) * 1000 / 2;
+  playEighthNoteStep();
+  rhythmInterval = setInterval(playEighthNoteStep, intervalMs);
 }
+
+function stopMainAnimation() {
+  if (rhythmInterval) clearInterval(rhythmInterval);
+  for (let i = 0; i < slotIds.length; i++) unhighlightSlot(i);
+  for (let i = 0; i < 4; i++) unhighlightPicture(i);
+}
+
+function restartAnimationWithBpm() {
+  if (isPlaying) {
+    if (!startMainAnimation.preservedSteps) startMainAnimation.preservedSteps = {};
+    startMainAnimation.preservedSteps.keep = true;
+    startMainAnimation.preservedSteps.slotHighlightStep = slotHighlightStep;
+    startMainAnimation.preservedSteps.pictureHighlightStep = pictureHighlightStep;
+    startMainAnimation.preservedSteps.rhythmStep = rhythmStep;
+    startMainAnimation();
+  }
+}
+
+function playEighthNoteStep() {
+  const currentSlotIdx = slotHighlightStep % 4;
+  const currentSelect = document.getElementById(`slot${currentSlotIdx}`).querySelector('.chord-select');
+  const whichBox = rhythmStep % 8;
+  const pair = Math.floor(whichBox / 2);
+  const which = whichBox % 2;
+  const box = document.querySelector(`.bottom-rhythm-box[data-pair="${pair}"][data-which="${which}"]`);
+  if (box && box.classList.contains('active')) {
+    if (currentSelect.value === "") {
+      playBassDrum();
+    } else if (currentSelect.value === "empty") {
+      // Play nothing
+    } else {
+      // Handle 7th
+      let addSeventh = (currentToggle === 'A' ? seventhA : seventhB)[currentSlotIdx];
+      let notes = rhythmChordNotes[currentSelect.value] ? [...rhythmChordNotes[currentSelect.value]] : [];
+      if (addSeventh && rhythmChordSeventhNotes[currentSelect.value]) {
+        notes.push(rhythmChordSeventhNotes[currentSelect.value]);
+      }
+      playTriangleNotes(notes);
+    }
+  }
+
+  if (rhythmStep % 2 === 0) {
+    playBrush();
+    updatePictureHighlights();
+    pictureHighlightStep = (pictureHighlightStep + 1) % 4;
+  }
+
+  if (rhythmStep === 0) {
+    updateSlotHighlights();
+  }
+
+  rhythmStep = (rhythmStep + 1) % 8;
+  if (rhythmStep === 0) {
+    slotHighlightStep = (slotHighlightStep + 1) % 4;
+  }
+}
+
+function updateSlotHighlights() {
+  for (let i = 0; i < slotIds.length; i++) unhighlightSlot(i);
+  if (isPlaying) {
+    highlightSlot(slotHighlightStep % 4);
+  }
+}
+function highlightSlot(idx) {
+  document.getElementById(slotIds[idx]).classList.add('enlarged');
+}
+function unhighlightSlot(idx) {
+  document.getElementById(slotIds[idx]).classList.remove('enlarged');
+}
+
+function updatePictureHighlights() {
+  for (let i = 0; i < 4; i++) unhighlightPicture(i);
+  if (isPlaying) {
+    highlightPicture(pictureHighlightStep % 4);
+  }
+}
+function highlightPicture(idx) {
+  document.getElementById('bottomPic'+idx).classList.add('picture-highlighted');
+}
+function unhighlightPicture(idx) {
+  document.getElementById('bottomPic'+idx).classList.remove('picture-highlighted');
+}
+
+function clearAll() {
+  // Clear the chord selections
+  for (let i = 0; i < 4; i++) {
+    const slot = document.getElementById('slot'+i);
+    slot.querySelector('.note-rects').innerHTML = '';
+    const select = slot.querySelector('.chord-select');
+    select.selectedIndex = 0;
+    setSlotColorAndStyle(i, select, false);
+    slot.classList.remove('enlarged');
+    let img = slot.querySelector('.dash-img-slot');
+    if (img) {
+      img.src = restDashImgUrl;
+      img.alt = "Rhythm Box Rest";
+      img.style.display = "block";
+    }
+    // Clear 7th button
+    const btn = slot.querySelector('.seventh-btn');
+    if (btn) btn.classList.remove('active');
+  }
+
+  // Clear the rhythm boxes
+  document.querySelectorAll('.bottom-rhythm-box').forEach(box => box.classList.remove('active'));
+  updateRhythmPictures();
+
+  // Clear 7th arrays
+  if(currentToggle === 'A'){
+    seventhA = [false, false, false, false];
+  }else{
+    seventhB = [false, false, false, false];
+  }
+  updateSeventhBtnStates();
+
+  // Update the current progression in memory (A or B)
+  saveCurrentProgression();
+
+  setPlaying(false);
+}
+
+// --------- SOUND PLAYERS ----------
+
+async function playBrush() {
+  if (!isBrushEnabled()) return;
+  await ensureAudio();
+  const duration = 0.09;
+  const bufferSize = ctx.sampleRate * duration;
+  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+  const noise = ctx.createBufferSource();
+  noise.buffer = buffer;
+  const filter = ctx.createBiquadFilter();
+  filter.type = "bandpass";
+  filter.frequency.value = 2000;
+  filter.Q.value = 1.8;
+  const gain = ctx.createGain();
+  gain.gain.value = 0.5;
+  gain.gain.setValueAtTime(0.5, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+  noise.connect(filter).connect(gain).connect(masterGain);
+  noise.start();
+  noise.stop(ctx.currentTime + duration);
+}
+
+function isBrushEnabled() {
+  const brushToggle = document.getElementById('brushToggle');
+  return brushToggle && brushToggle.checked;
+}
+
+async function playBassDrum() {
+  await ensureAudio();
+  const duration = 0.19;
+  const osc = ctx.createOscillator();
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(140, ctx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(42, ctx.currentTime + duration * 0.85);
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(1, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+  osc.connect(gain).connect(masterGain);
+  osc.start();
+  osc.stop(ctx.currentTime + duration);
+}
+
+// Play notes using the currently selected instrument
+async function playTriangleNotes(notes) {
+  await ensureAudio();
+  const duration = 0.29;
+  const hold = 0.07;
+  const TRIANGLE_GAIN = 0.38;
+  const VOICE_GAIN = 0.36;
+  const SQUARE_GAIN = 0.30;
+  const SAW_GAIN = 0.28;
+  const SINE_GAIN = 0.36;
+
+  notes.forEach((note, i) => {
+    const freq = midiToFreq(note);
+    let osc, gain, lfo, lfoGain, filter;
+    gain = ctx.createGain();
+    gain.gain.setValueAtTime(0, ctx.currentTime);
+
+    if (currentWaveform === "voice") {
+      osc = ctx.createOscillator();
+      osc.setPeriodicWave(customVoiceWave);
+      osc.frequency.value = freq;
+      lfo = ctx.createOscillator();
+      lfoGain = ctx.createGain();
+      lfo.frequency.setValueAtTime(1.5, ctx.currentTime);
+      lfo.frequency.linearRampToValueAtTime(5, ctx.currentTime + 1);
+      lfoGain.gain.setValueAtTime(2.0, ctx.currentTime);
+      lfo.connect(lfoGain);
+      lfoGain.connect(osc.frequency);
+      lfo.start();
+      filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(1200, ctx.currentTime);
+      filter.Q.value = 1;
+      osc.connect(filter);
+      filter.connect(gain);
+      const attackTime = 0.08;
+      const decayTime = 0.18;
+      const sustainLevel = VOICE_GAIN * 0.6;
+      const maxLevel = VOICE_GAIN * 1.0;
+      gain.gain.linearRampToValueAtTime(maxLevel, ctx.currentTime + attackTime);
+      gain.gain.linearRampToValueAtTime(sustainLevel, ctx.currentTime + attackTime + decayTime);
+      gain.gain.linearRampToValueAtTime(0.001, ctx.currentTime + duration);
+      gain.connect(masterGain);
+      osc.start(ctx.currentTime + 0.01 * i);
+      osc.stop(ctx.currentTime + duration + 0.01 * i + 0.08);
+      lfo.stop(ctx.currentTime + duration + 0.01 * i + 0.08);
+    } else {
+      osc = ctx.createOscillator();
+      osc.type = currentWaveform === "saw" ? "sawtooth" : currentWaveform;
+      osc.frequency.value = freq;
+      filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(1200, ctx.currentTime);
+      filter.Q.value = 1;
+      osc.connect(filter);
+      filter.connect(gain);
+
+      let targetGain =
+        currentWaveform === "triangle" ? TRIANGLE_GAIN
+        : currentWaveform === "square" ? SQUARE_GAIN
+        : currentWaveform === "saw" ? SAW_GAIN
+        : SINE_GAIN;
+
+      const attackTime = 0.015;
+      gain.gain.linearRampToValueAtTime(targetGain, ctx.currentTime + attackTime);
+      gain.gain.setValueAtTime(targetGain, ctx.currentTime + attackTime + hold);
+      gain.gain.linearRampToValueAtTime(0.012, ctx.currentTime + duration);
+
+      gain.connect(masterGain);
+      osc.start(ctx.currentTime + 0.01 * i);
+      osc.stop(ctx.currentTime + duration + 0.01 * i);
+    }
+  });
+}
+
+function midiToFreq(n) {
+  // Accepts note strings like C4, F#4, Bb4, etc.
+  const notes = {'C':0,'C#':1,'Db':1,'D':2,'D#':3,'Eb':3,'E':4,'F':5,'F#':6,'Gb':6,'G':7,'G#':8,'Ab':8,'A':9,'A#':10,'Bb':10,'B':11,
+    'F♯':6, 'G♯':8, 'B♭':10, 'E♭':3, 'A♭':8 };
+   let note, octave;
+  if (n.includes('♭')) {
+    note = n.slice(0, 2);
+    octave = parseInt(n.slice(2));
+  } else if (n.includes('♯')) {
+    note = n.slice(0, 2);
+    octave = parseInt(n.slice(2));
+  } else if (n.length > 2 && (n[1] === '#' || n[1] === 'b')) {
+    note = n.slice(0, 2);
+    octave = parseInt(n.slice(2));
+  } else {
+    note = n.slice(0, n.length-1);
+    octave = parseInt(n[n.length-1]);
+  }
+  return 440 * Math.pow(2, (notes[note]+(octave-4)*12-9)/12);
+}
+
+// --- DOMContentLoaded & Event Listeners ---
+document.addEventListener("DOMContentLoaded", function() {
+  document.getElementById("wave-left").onclick = () => handleWaveformDial(-1);
+  document.getElementById("wave-right").onclick = () => handleWaveformDial(1);
+  document.getElementById("wave-left").addEventListener("keydown", (e) => {
+    if (e.key === " " || e.key === "Enter" || e.key === "ArrowLeft") {
+      e.preventDefault();
+      handleWaveformDial(-1);
+      document.getElementById("wave-left").focus();
+    }
+  });
+  document.getElementById("wave-right").addEventListener("keydown", (e) => {
+    if (e.key === " " || e.key === "Enter" || e.key === "ArrowRight") {
+      e.preventDefault();
+      handleWaveformDial(1);
+      document.getElementById("wave-right").focus();
+    }
+  });
+  updateWaveformDisplay();
+
+  // Initialize A/B toggle button listeners
+  document.getElementById('toggleA').addEventListener('click', () => switchToggle('A'));
+  document.getElementById('toggleB').addEventListener('click', () => switchToggle('B'));
+  document.getElementById('toggleA').addEventListener('keydown', (e) => {
+    if (e.key === " " || e.key === "Enter") {
+      e.preventDefault();
+      switchToggle('A');
+    }
+  });
+  document.getElementById('toggleB').addEventListener('keydown', (e) => {
+    if (e.key === " " || e.key === "Enter") {
+      e.preventDefault();
+      switchToggle('B');
+    }
+  });
+
+  // Chord select
+  document.querySelectorAll('.chord-select').forEach((select, idx) => {
+    select.addEventListener('change', function() {
+      setSlotColorAndStyle(idx, select);
+      saveCurrentProgression();
+    });
+    setSlotColorAndStyle(idx, select);
+  });
+
+  // 7th buttons
+  document.querySelectorAll('.seventh-btn').forEach((btn, idx) => {
+    btn.addEventListener('click', function() {
+      toggleSeventh(idx);
+    });
+    btn.addEventListener('keydown', function(e) {
+      if (e.key === " " || e.key === "Enter") {
+        e.preventDefault();
+        toggleSeventh(idx);
+      }
+    });
+  });
+
+  // Rhythm boxes
+  document.querySelectorAll('.bottom-rhythm-box').forEach(box => {
+    box.addEventListener('click', function(e) {
+      box.classList.toggle('active');
+      updateRhythmPictures();
+      saveCurrentProgression();
+    });
+    box.addEventListener('touchstart', function(e) {
+      e.preventDefault();
+      box.classList.toggle('active');
+      updateRhythmPictures();
+      saveCurrentProgression();
+    }, {passive: false});
+    box.setAttribute('tabindex', '0');
+    box.addEventListener('keydown', function(e) {
+      if (e.key === " " || e.key === "Enter") {
+        e.preventDefault();
+        box.classList.toggle('active');
+        updateRhythmPictures();
+        saveCurrentProgression();
+      }
+    });
+  });
+
+  // Play/Pause button
+  const playPauseBtn = document.getElementById('playPauseBtn');
+  playPauseBtn.addEventListener('click', function() {
+    setPlaying(!isPlaying);
+  });
+  playPauseBtn.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    setPlaying(!isPlaying);
+  }, {passive: false});
+  playPauseBtn.addEventListener('keydown', function(e) {
+    if (e.key === " " || e.key === "Enter") {
+      e.preventDefault();
+      setPlaying(!isPlaying);
+    }
+  });
+
+  // BPM input and stepper
+  const bpmInput = document.getElementById('bpmInput');
+  const bpmUp = document.getElementById('bpmUp');
+  const bpmDown = document.getElementById('bpmDown');
+
+  bpmInput.addEventListener('blur', function() {
+    let v = parseInt(bpmInput.value, 10);
+    if (isNaN(v)) v = 90;
+    v = clampBpm(v);
+    setBpmInputValue(v);
+    restartAnimationWithBpm();
+  });
+  bpmInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      let v = parseInt(bpmInput.value, 10);
+      if (isNaN(v)) v = 90;
+      v = clampBpm(v);
+      setBpmInputValue(v);
+      restartAnimationWithBpm();
+      bpmInput.blur();
+    } else if (e.key === 'ArrowUp') {
+      let v = parseInt(bpmInput.value, 10);
+      if (isNaN(v)) v = 90;
+      v = clampBpm(v + 1);
+      setBpmInputValue(v);
+      restartAnimationWithBpm();
+      e.preventDefault();
+    } else if (e.key === 'ArrowDown') {
+      let v = parseInt(bpmInput.value, 10);
+      if (isNaN(v)) v = 90;
+      v = clampBpm(v - 1);
+      setBpmInputValue(v);
+      restartAnimationWithBpm();
+      e.preventDefault();
+    }
+  });
+
+  // BPM hold (for holding arrow)
+  let bpmHoldInterval = null, bpmHoldTimeout = null;
+  function stepBpm(dir) {
+    let v = parseInt(bpmInput.value, 10);
+    if (isNaN(v)) v = 90;
+    v = clampBpm(v + dir);
+    setBpmInputValue(v);
+    restartAnimationWithBpm();
+  }
+  function startHold(dir) {
+    stepBpm(dir);
+    bpmHoldTimeout = setTimeout(() => {
+      bpmHoldInterval = setInterval(() => stepBpm(dir), 60);
+    }, 500);
+  }
+  function stopHold() {
+    clearTimeout(bpmHoldTimeout);
+    clearInterval(bpmHoldInterval);
+    bpmHoldTimeout = null;
+    bpmHoldInterval = null;
+  }
+  bpmUp.addEventListener('mousedown', e => { startHold(+1); });
+  bpmUp.addEventListener('touchstart', e => { e.preventDefault(); startHold(+1); }, {passive: false});
+  bpmUp.addEventListener('mouseup', stopHold);
+  bpmUp.addEventListener('mouseleave', stopHold);
+  bpmUp.addEventListener('touchend', stopHold);
+  bpmUp.addEventListener('touchcancel', stopHold);
+  bpmDown.addEventListener('mousedown', e => { startHold(-1); });
+  bpmDown.addEventListener('touchstart', e => { e.preventDefault(); startHold(-1); }, {passive: false});
+  bpmDown.addEventListener('mouseup', stopHold);
+  bpmDown.addEventListener('mouseleave', stopHold);
+  bpmDown.addEventListener('touchend', stopHold);
+  bpmDown.addEventListener('touchcancel', stopHold);
+  bpmUp.addEventListener('click', function() { stepBpm(+1); });
+  bpmDown.addEventListener('click', function() { stepBpm(-1); });
+
+  const brushToggle = document.getElementById('brushToggle');
+  if (brushToggle) {
+    brushToggle.addEventListener('change', function() {
+      // Nothing needs to be done immediately - playBrush will check this value when it's called
+    });
+  }
+
+  document.getElementById('clear').addEventListener('click', clearAll);
+  document.getElementById('clear').addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    clearAll();
+  }, {passive: false});
+
+  updateRhythmPictures();
+
+  for (let i = 0; i < slotIds.length; i++) {
+    unhighlightSlot(i);
+  }
+  for (let i = 0; i < 4; i++) {
+    unhighlightPicture(i);
+  }
+
+  isPlaying = false;
+  const playIcon = document.getElementById('playIcon');
+  const pauseIcon = document.getElementById('pauseIcon');
+  playIcon.style.display = "block";
+  pauseIcon.style.display = "none";
+
+  // Initialize A with current state
+  saveCurrentProgression();
+  updateSeventhBtnStates();
+});
