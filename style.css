@@ -383,18 +383,26 @@ input[type="number"].bpm-input:focus {
   margin-right: 0px;
 }
 
+/* 2nd chord note styling (optional: customize if you want) */
+.note-2nd {
+  opacity: 0.90;
+  border-radius: 0px;
+  margin-left: 0px;
+  margin-right: 0px;
+}
+
 /* Floating "7" button for 7th chord toggle */
 .seventh-btn {
   position: absolute;
-  bottom: 50px;
-  right: 1px;
-  width: 28px;
-  height: 28px;
+  bottom: calc(var(--box-size) * 0.40); /* ~16px for default size */
+  right: calc(var(--box-size) * 0.01);
+  width: calc(var(--box-size) * 0.25);
+  height: calc(var(--box-size) * 0.25);
   background: transparent;
   border: 0px solid #1976d2;
   border-radius: 90%;
   color: #fff;
-  font-size: 1.55em;
+  font-size: calc(var(--box-size) * 0.14);
   font-weight: bold;
   cursor: pointer;
   box-shadow: 0 0px 0px rgba(25,118,210,0.13);
@@ -405,6 +413,33 @@ input[type="number"].bpm-input:focus {
   transition: background 0.13s, color 0.13s, border 0.13s;
 }
 .seventh-btn.active, .seventh-btn:active, .seventh-btn:focus-visible {
+  background: #1976d2;
+  color: #fff;
+  border-color: #135ba1;
+}
+
+/* Floating "2" button for 2nd chord toggle (matches .seventh-btn, but higher) */
+.second-btn {
+  position: absolute;
+  bottom: calc(var(--box-size) * 0.64); /* ~38px for default size */
+  right: calc(var(--box-size) * 0.01);
+  width: calc(var(--box-size) * 0.25);
+  height: calc(var(--box-size) * 0.25);
+  background: transparent;
+  border: 0px solid #1976d2;
+  border-radius: 90%;
+  color: #fff;
+  font-size: calc(var(--box-size) * 0.13);
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 0px 0px rgba(25,118,210,0.13);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  transition: background 0.13s, color 0.13s, border 0.13s;
+}
+.second-btn.active, .second-btn:active, .second-btn:focus-visible {
   background: #1976d2;
   color: #fff;
   border-color: #135ba1;
