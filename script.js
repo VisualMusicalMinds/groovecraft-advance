@@ -177,8 +177,8 @@ const rhythmChordNotes = {
   'C':  ['C3', 'C4', 'E4', 'G4', 'C5'],
   'Dm': ['D3', 'D4', 'F4', 'A4'],
   'Em': ['E3', 'E4', 'G4', 'B4'],
-  'F':  ['F3', 'C4', 'F4', 'A4', 'C5'],
-  'G':  ['G3', 'D4', 'G4', 'B4'],
+  'F':  ['F3', 'F4', 'A4', 'C5'],
+  'G':  ['G3', 'G4', 'B4', 'D4'],
   'Am': ['A3', 'E4', 'A4', 'C5'],
   'D':  ['D3', 'D4', 'F#4', 'A4'],
   'E':  ['E3', 'E4', 'G#4', 'B4'],
@@ -743,6 +743,7 @@ function midiToFreq(n) {
 
 // --- Play chord preview on chord select ---
 function playChordPreview(idx) {
+  if (isPlaying) return; // Only preview if NOT playing!
   const select = document.getElementById('slot' + idx).querySelector('.chord-select');
   const chord = select.value;
   if (!chord || chord === "" || chord === "empty") return;
@@ -800,40 +801,40 @@ document.addEventListener("DOMContentLoaded", function() {
     select.addEventListener('change', function() {
       setSlotColorAndStyle(idx, select);
       saveCurrentProgression();
-      playChordPreview(idx); // Play the sound when a chord is selected
+      playChordPreview(idx); // Play the sound when a chord is selected (but only if not playing)
     });
     setSlotColorAndStyle(idx, select);
   });
 
-// 7th buttons
-document.querySelectorAll('.seventh-btn').forEach((btn, idx) => {
-  btn.addEventListener('click', function() {
-    toggleSeventh(idx);
-    playChordPreview(idx); // Play on toggle
-  });
-  btn.addEventListener('keydown', function(e) {
-    if (e.key === " " || e.key === "Enter") {
-      e.preventDefault();
+  // 7th buttons
+  document.querySelectorAll('.seventh-btn').forEach((btn, idx) => {
+    btn.addEventListener('click', function() {
       toggleSeventh(idx);
-      playChordPreview(idx); // Play on toggle with keyboard
-    }
+      playChordPreview(idx); // Play on toggle if not playing
+    });
+    btn.addEventListener('keydown', function(e) {
+      if (e.key === " " || e.key === "Enter") {
+        e.preventDefault();
+        toggleSeventh(idx);
+        playChordPreview(idx); // Play on toggle with keyboard if not playing
+      }
+    });
   });
-});
 
-// 2nd buttons
-document.querySelectorAll('.second-btn').forEach((btn, idx) => {
-  btn.addEventListener('click', function() {
-    toggleSecond(idx);
-    playChordPreview(idx); // Play on toggle
-  });
-  btn.addEventListener('keydown', function(e) {
-    if (e.key === " " || e.key === "Enter") {
-      e.preventDefault();
+  // 2nd buttons
+  document.querySelectorAll('.second-btn').forEach((btn, idx) => {
+    btn.addEventListener('click', function() {
       toggleSecond(idx);
-      playChordPreview(idx); // Play on toggle with keyboard
-    }
+      playChordPreview(idx); // Play on toggle if not playing
+    });
+    btn.addEventListener('keydown', function(e) {
+      if (e.key === " " || e.key === "Enter") {
+        e.preventDefault();
+        toggleSecond(idx);
+        playChordPreview(idx); // Play on toggle with keyboard if not playing
+      }
+    });
   });
-});
 
   // Rhythm boxes
   document.querySelectorAll('.bottom-rhythm-box').forEach(box => {
