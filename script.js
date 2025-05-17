@@ -14,6 +14,9 @@ let rhythmBoxesB = Array(8).fill(false);
 // 7th chord toggles per slot for A and B
 let seventhA = [false, false, false, false];
 let seventhB = [false, false, false, false];
+// 2nd chord toggles per slot for A and B
+let secondA = [false, false, false, false];
+let secondB = [false, false, false, false];
 
 function setupCustomVoiceWave() {
   const harmonics = 20;
@@ -62,31 +65,35 @@ function handleWaveformDial(dir) {
 
 // --- A/B Toggle Functions ---
 function saveCurrentProgression() {
-  // Save the current chord selections, rhythm boxes state, and 7th toggles to the current toggle
+  // Save the current chord selections, rhythm boxes state, 7th toggles, and 2nd toggles to the current toggle
   const chordValues = Array.from(document.querySelectorAll('.chord-select')).map(select => select.value);
   const rhythmBoxStates = Array.from(document.querySelectorAll('.bottom-rhythm-box')).map(box => box.classList.contains('active'));
   const seventhStates = Array.from(document.querySelectorAll('.seventh-btn')).map(btn => btn.classList.contains('active'));
+  const secondStates = Array.from(document.querySelectorAll('.second-btn')).map(btn => btn.classList.contains('active'));
   if (currentToggle === 'A') {
     progressionA = [...chordValues];
     rhythmBoxesA = [...rhythmBoxStates];
     seventhA = [...seventhStates];
+    secondA = [...secondStates];
   } else {
     progressionB = [...chordValues];
     rhythmBoxesB = [...rhythmBoxStates];
     seventhB = [...seventhStates];
+    secondB = [...secondStates];
   }
 }
 
 function loadProgression(toggle) {
-  // Load the chord selections, rhythm box states, and 7th toggles from the specified toggle
+  // Load the chord selections, rhythm box states, 7th toggles, and 2nd toggles from the specified toggle
   const progression = toggle === 'A' ? progressionA : progressionB;
   const rhythmBoxStates = toggle === 'A' ? rhythmBoxesA : rhythmBoxesB;
   const seventhStates = toggle === 'A' ? seventhA : seventhB;
+  const secondStates = toggle === 'A' ? secondA : secondB;
 
   // Set chord selections
   document.querySelectorAll('.chord-select').forEach((select, idx) => {
     select.value = progression[idx];
-    setSlotColorAndStyle(idx, select, seventhStates[idx]);
+    setSlotColorAndStyle(idx, select, seventhStates[idx], secondStates[idx]);
   });
 
   // Set rhythm box states
@@ -100,11 +107,12 @@ function loadProgression(toggle) {
 
   // Set 7th button states
   document.querySelectorAll('.seventh-btn').forEach((btn, idx) => {
-    if (seventhStates[idx]) {
-      btn.classList.add('active');
-    } else {
-      btn.classList.remove('active');
-    }
+    btn.classList.toggle('active', seventhStates[idx]);
+  });
+
+  // Set 2nd button states
+  document.querySelectorAll('.second-btn').forEach((btn, idx) => {
+    btn.classList.toggle('active', secondStates[idx]);
   });
 
   updateRhythmPictures();
@@ -127,9 +135,8 @@ function switchToggle(toggle) {
   loadProgression(toggle);
 }
 
-// --- 7th Chord Logic ---
+// --- Chord Note Data Structures ---
 
-// Minor 7th for all chords (dominant 7th for major triads, minor 7th for minor triads)
 const chordTones = {
   'C':   ['C', 'E', 'G'],
   'Dm':  ['D', 'F', 'A'],
@@ -152,6 +159,18 @@ const chordSevenths = {
   'D':   'C',
   'E':   'D',
   'Bb':  'A♭'
+};
+// The additional note for a 2nd (sus2 or normal 2nd, you can adjust as desired)
+const chordSeconds = {
+  'C':   'D',
+  'Dm':  'E',
+  'Em':  'F♯',
+  'F':   'G',
+  'G':   'A',
+  'Am':  'B',
+  'D':   'E',
+  'E':   'F♯',
+  'Bb':  'C'
 };
 // Used for playback, must use pitch names with octave!
 const rhythmChordNotes = {
@@ -176,6 +195,17 @@ const rhythmChordSeventhNotes = {
   'E':  'D5',
   'Bb': 'Ab4'
 };
+const rhythmChordSecondNotes = {
+  'C':  'D4',
+  'Dm': 'E4',
+  'Em': 'F#4',
+  'F':  'G4',
+  'G':  'A4',
+  'Am': 'B4',
+  'D':  'E4',
+  'E':  'F#4',
+  'Bb': 'C5'
+};
 
 const noteColorClass = {
   'C': 'note-C',
@@ -199,16 +229,22 @@ const rhythmBox3 = "https://raw.githubusercontent.com/VisualMusicalMinds/Musical
 const rhythmBox4 = "https://raw.githubusercontent.com/VisualMusicalMinds/Musical-Images/48e79626ae5b3638784c98a6f73ec0e342cf9894/Cartoon%20RhythmBox4.svg";
 
 // --- UI Slot Content and Color ---
-function setSlotColorAndStyle(slotIndex, select, addSeventhArg) {
-  // Determine whether to add the 7th based on currentToggle and state arrays
-  let addSeventh;
+function setSlotColorAndStyle(slotIndex, select, addSeventhArg, addSecondArg) {
+  // Determine whether to add the 7th/2nd based on currentToggle and state arrays
+  let addSeventh, addSecond;
   if (typeof addSeventhArg === 'boolean') {
     addSeventh = addSeventhArg;
   } else {
     let seventhArr = currentToggle === 'A' ? seventhA : seventhB;
     addSeventh = seventhArr[slotIndex];
   }
-  setSlotContent(slotIndex, select.value, addSeventh);
+  if (typeof addSecondArg === 'boolean') {
+    addSecond = addSecondArg;
+  } else {
+    let secondArr = currentToggle === 'A' ? secondA : secondB;
+    addSecond = secondArr[slotIndex];
+  }
+  setSlotContent(slotIndex, select.value, addSeventh, addSecond);
   select.classList.remove(
     'c-selected-c', 'c-selected-dm', 'c-selected-em', 
     'c-selected-f', 'c-selected-g', 'c-selected-am',
@@ -228,7 +264,7 @@ function setSlotColorAndStyle(slotIndex, select, addSeventhArg) {
   }
 }
 
-function setSlotContent(slotIndex, chord, addSeventh) {
+function setSlotContent(slotIndex, chord, addSeventh, addSecond) {
   const slot = document.getElementById('slot' + slotIndex);
   const noteRects = slot.querySelector('.note-rects');
   let img = slot.querySelector('.dash-img-slot');
@@ -256,6 +292,7 @@ function setSlotContent(slotIndex, chord, addSeventh) {
   const tones = chordTones[chord];
   if (!tones) return;
 
+  // Prepare the basic rects from tones
   let rects = tones.map(note => {
     if (note.includes('♯')) {
       const baseLetter = note.charAt(0);
@@ -271,6 +308,27 @@ function setSlotContent(slotIndex, chord, addSeventh) {
       return `<div class="note-rect ${noteColorClass[note]}">${note}</div>`;
     }
   });
+
+  // Add the second if enabled and the chord has a defined 2nd
+  if (addSecond && chordSeconds[chord]) {
+    let note = chordSeconds[chord];
+    let baseLetter = note.charAt(0);
+    let colorClass = noteColorClass[note] || noteColorClass[baseLetter];
+    let display;
+    if (note.includes('♯')) {
+      display = `<div class="note-rect note-2nd ${colorClass}">
+        ${baseLetter}<span class="accidental sharp">♯</span>
+      </div>`;
+    } else if (note.includes('♭')) {
+      display = `<div class="note-rect note-2nd ${colorClass}">
+        ${baseLetter}<span class="accidental flat">♭</span>
+      </div>`;
+    } else {
+      display = `<div class="note-rect note-2nd ${colorClass}">${note}</div>`;
+    }
+    // Insert the "2" note at the second position (index 1)
+    rects.splice(1, 0, display);
+  }
 
   // Add the seventh if enabled and the chord has a defined 7th
   if (addSeventh && chordSevenths[chord]) {
@@ -290,7 +348,7 @@ function setSlotContent(slotIndex, chord, addSeventh) {
       display = `<div class="note-rect note-7th ${colorClass}">${note}</div>`;
     }
     rects.push(display);
-}
+  }
   noteRects.innerHTML = rects.join('');
 }
 
@@ -301,13 +359,32 @@ function toggleSeventh(idx) {
   updateSeventhBtnStates();
   // Re-render the slot content
   const select = document.getElementById('slot'+idx).querySelector('.chord-select');
-  setSlotColorAndStyle(idx, select, seventhArr[idx]);
+  const secondArr = currentToggle === 'A' ? secondA : secondB;
+  setSlotColorAndStyle(idx, select, seventhArr[idx], secondArr[idx]);
   saveCurrentProgression();
 }
 function updateSeventhBtnStates() {
   let seventhArr = currentToggle === 'A' ? seventhA : seventhB;
   document.querySelectorAll('.seventh-btn').forEach((btn, idx) => {
     btn.classList.toggle('active', seventhArr[idx]);
+  });
+}
+
+// --- 2nd Button Logic ---
+function toggleSecond(idx) {
+  let secondArr = currentToggle === 'A' ? secondA : secondB;
+  secondArr[idx] = !secondArr[idx];
+  updateSecondBtnStates();
+  // Re-render the slot content
+  const select = document.getElementById('slot'+idx).querySelector('.chord-select');
+  const seventhArr = currentToggle === 'A' ? seventhA : seventhB;
+  setSlotColorAndStyle(idx, select, seventhArr[idx], secondArr[idx]);
+  saveCurrentProgression();
+}
+function updateSecondBtnStates() {
+  let secondArr = currentToggle === 'A' ? secondA : secondB;
+  document.querySelectorAll('.second-btn').forEach((btn, idx) => {
+    btn.classList.toggle('active', secondArr[idx]);
   });
 }
 
@@ -423,9 +500,13 @@ function playEighthNoteStep() {
     } else if (currentSelect.value === "empty") {
       // Play nothing
     } else {
-      // Handle 7th
+      // Handle 7th and 2nd
       let addSeventh = (currentToggle === 'A' ? seventhA : seventhB)[currentSlotIdx];
+      let addSecond = (currentToggle === 'A' ? secondA : secondB)[currentSlotIdx];
       let notes = rhythmChordNotes[currentSelect.value] ? [...rhythmChordNotes[currentSelect.value]] : [];
+      if (addSecond && rhythmChordSecondNotes[currentSelect.value]) {
+        notes.push(rhythmChordSecondNotes[currentSelect.value]);
+      }
       if (addSeventh && rhythmChordSeventhNotes[currentSelect.value]) {
         notes.push(rhythmChordSeventhNotes[currentSelect.value]);
       }
@@ -482,7 +563,7 @@ function clearAll() {
     slot.querySelector('.note-rects').innerHTML = '';
     const select = slot.querySelector('.chord-select');
     select.selectedIndex = 0;
-    setSlotColorAndStyle(i, select, false);
+    setSlotColorAndStyle(i, select, false, false);
     slot.classList.remove('enlarged');
     let img = slot.querySelector('.dash-img-slot');
     if (img) {
@@ -491,21 +572,27 @@ function clearAll() {
       img.style.display = "block";
     }
     // Clear 7th button
-    const btn = slot.querySelector('.seventh-btn');
-    if (btn) btn.classList.remove('active');
+    const btn7 = slot.querySelector('.seventh-btn');
+    if (btn7) btn7.classList.remove('active');
+    // Clear 2nd button
+    const btn2 = slot.querySelector('.second-btn');
+    if (btn2) btn2.classList.remove('active');
   }
 
   // Clear the rhythm boxes
   document.querySelectorAll('.bottom-rhythm-box').forEach(box => box.classList.remove('active'));
   updateRhythmPictures();
 
-  // Clear 7th arrays
+  // Clear 7th/2nd arrays
   if(currentToggle === 'A'){
     seventhA = [false, false, false, false];
+    secondA = [false, false, false, false];
   }else{
     seventhB = [false, false, false, false];
+    secondB = [false, false, false, false];
   }
   updateSeventhBtnStates();
+  updateSecondBtnStates();
 
   // Update the current progression in memory (A or B)
   saveCurrentProgression();
@@ -654,6 +741,24 @@ function midiToFreq(n) {
   return 440 * Math.pow(2, (notes[note]+(octave-4)*12-9)/12);
 }
 
+// --- Play chord preview on chord select ---
+function playChordPreview(idx) {
+  const select = document.getElementById('slot' + idx).querySelector('.chord-select');
+  const chord = select.value;
+  if (!chord || chord === "" || chord === "empty") return;
+  // Check if 2nd or 7th is selected for this chord
+  let addSeventh = (currentToggle === 'A' ? seventhA : seventhB)[idx];
+  let addSecond = (currentToggle === 'A' ? secondA : secondB)[idx];
+  let notes = rhythmChordNotes[chord] ? [...rhythmChordNotes[chord]] : [];
+  if (addSecond && rhythmChordSecondNotes[chord]) {
+    notes.push(rhythmChordSecondNotes[chord]);
+  }
+  if (addSeventh && rhythmChordSeventhNotes[chord]) {
+    notes.push(rhythmChordSeventhNotes[chord]);
+  }
+  playTriangleNotes(notes);
+}
+
 // --- DOMContentLoaded & Event Listeners ---
 document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("wave-left").onclick = () => handleWaveformDial(-1);
@@ -695,22 +800,40 @@ document.addEventListener("DOMContentLoaded", function() {
     select.addEventListener('change', function() {
       setSlotColorAndStyle(idx, select);
       saveCurrentProgression();
+      playChordPreview(idx); // Play the sound when a chord is selected
     });
     setSlotColorAndStyle(idx, select);
   });
 
-  // 7th buttons
-  document.querySelectorAll('.seventh-btn').forEach((btn, idx) => {
-    btn.addEventListener('click', function() {
-      toggleSeventh(idx);
-    });
-    btn.addEventListener('keydown', function(e) {
-      if (e.key === " " || e.key === "Enter") {
-        e.preventDefault();
-        toggleSeventh(idx);
-      }
-    });
+// 7th buttons
+document.querySelectorAll('.seventh-btn').forEach((btn, idx) => {
+  btn.addEventListener('click', function() {
+    toggleSeventh(idx);
+    playChordPreview(idx); // Play on toggle
   });
+  btn.addEventListener('keydown', function(e) {
+    if (e.key === " " || e.key === "Enter") {
+      e.preventDefault();
+      toggleSeventh(idx);
+      playChordPreview(idx); // Play on toggle with keyboard
+    }
+  });
+});
+
+// 2nd buttons
+document.querySelectorAll('.second-btn').forEach((btn, idx) => {
+  btn.addEventListener('click', function() {
+    toggleSecond(idx);
+    playChordPreview(idx); // Play on toggle
+  });
+  btn.addEventListener('keydown', function(e) {
+    if (e.key === " " || e.key === "Enter") {
+      e.preventDefault();
+      toggleSecond(idx);
+      playChordPreview(idx); // Play on toggle with keyboard
+    }
+  });
+});
 
   // Rhythm boxes
   document.querySelectorAll('.bottom-rhythm-box').forEach(box => {
@@ -856,4 +979,5 @@ document.addEventListener("DOMContentLoaded", function() {
   // Initialize A with current state
   saveCurrentProgression();
   updateSeventhBtnStates();
+  updateSecondBtnStates();
 });
