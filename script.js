@@ -222,11 +222,11 @@ const noteColorClass = {
   'A♭': 'note-A'
 };
 
-const restDashImgUrl = "https://raw.githubusercontent.com/VisualMusicalMinds/Musical-Images/1100d582ac41ba2d0b1794da6dd96026a3869249/Cartoon%20RhythmBox5.svg";
-const dashImgUrl = "https://raw.githubusercontent.com/VisualMusicalMinds/Musical-Images/48e79626ae5b3638784c98a6f73ec0e342cf9894/Cartoon%20RhythmBox1.svg";
-const rhythmBox2 = "https://raw.githubusercontent.com/VisualMusicalMinds/Musical-Images/48e79626ae5b3638784c98a6f73ec0e342cf9894/Cartoon%20RhythmBox2.svg";
-const rhythmBox3 = "https://raw.githubusercontent.com/VisualMusicalMinds/Musical-Images/48e79626ae5b3638784c98a6f73ec0e342cf9894/Cartoon%20RhythmBox3.svg";
-const rhythmBox4 = "https://raw.githubusercontent.com/VisualMusicalMinds/Musical-Images/48e79626ae5b3638784c98a6f73ec0e342cf9894/Cartoon%20RhythmBox4.svg";
+const restDashImgUrl = "https://visualmusicalminds.github.io/images/CartoonRhythmBox5.svg";
+const dashImgUrl = "https://visualmusicalminds.github.io/images/CartoonRhythmBox1.svg";
+const rhythmBox2 = "https://visualmusicalminds.github.io/images/CartoonRhythmBox2.svg";
+const rhythmBox3 = "https://visualmusicalminds.github.io/images/CartoonRhythmBox3.svg";
+const rhythmBox4 = "https://visualmusicalminds.github.io/images/CartoonRhythmBox4.svg";
 
 // --- UI Slot Content and Color ---
 function setSlotColorAndStyle(slotIndex, select, addSeventhArg, addSecondArg) {
