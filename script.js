@@ -5,18 +5,26 @@ const waveforms = ['sine', 'triangle', 'square', 'saw', 'voice'];
 let currentWaveformIndex = 1;
 let currentWaveform = waveforms[currentWaveformIndex];
 
-// A/B toggle variables
+// A/B/C/D toggle variables
 let currentToggle = 'A'; // Default to A
 let progressionA = ['', '', '', ''];
 let progressionB = ['', '', '', ''];
+let progressionC = ['', '', '', '']; // New C progression
+let progressionD = ['', '', '', '']; // New D progression
 let rhythmBoxesA = Array(8).fill(false);
 let rhythmBoxesB = Array(8).fill(false);
-// 7th chord toggles per slot for A and B
+let rhythmBoxesC = Array(8).fill(false); // New C rhythm boxes
+let rhythmBoxesD = Array(8).fill(false); // New D rhythm boxes
+// 7th chord toggles per slot for A, B, C, and D
 let seventhA = [false, false, false, false];
 let seventhB = [false, false, false, false];
-// 2nd chord toggles per slot for A and B
+let seventhC = [false, false, false, false]; // New C sevenths
+let seventhD = [false, false, false, false]; // New D sevenths
+// 2nd chord toggles per slot for A, B, C, and D
 let secondA = [false, false, false, false];
 let secondB = [false, false, false, false];
+let secondC = [false, false, false, false]; // New C seconds
+let secondD = [false, false, false, false]; // New D seconds
 
 function setupCustomVoiceWave() {
   const harmonics = 20;
@@ -63,32 +71,73 @@ function handleWaveformDial(dir) {
   updateWaveformDisplay();
 }
 
-// --- A/B Toggle Functions ---
+// --- A/B/C/D Toggle Functions ---
 function saveCurrentProgression() {
   // Save the current chord selections, rhythm boxes state, 7th toggles, and 2nd toggles to the current toggle
   const chordValues = Array.from(document.querySelectorAll('.chord-select')).map(select => select.value);
   const rhythmBoxStates = Array.from(document.querySelectorAll('.bottom-rhythm-box')).map(box => box.classList.contains('active'));
   const seventhStates = Array.from(document.querySelectorAll('.seventh-btn')).map(btn => btn.classList.contains('active'));
   const secondStates = Array.from(document.querySelectorAll('.second-btn')).map(btn => btn.classList.contains('active'));
+  
   if (currentToggle === 'A') {
     progressionA = [...chordValues];
     rhythmBoxesA = [...rhythmBoxStates];
     seventhA = [...seventhStates];
     secondA = [...secondStates];
-  } else {
+  } else if (currentToggle === 'B') {
     progressionB = [...chordValues];
     rhythmBoxesB = [...rhythmBoxStates];
     seventhB = [...seventhStates];
     secondB = [...secondStates];
+  } else if (currentToggle === 'C') {
+    progressionC = [...chordValues];
+    rhythmBoxesC = [...rhythmBoxStates];
+    seventhC = [...seventhStates];
+    secondC = [...secondStates];
+  } else if (currentToggle === 'D') {
+    progressionD = [...chordValues];
+    rhythmBoxesD = [...rhythmBoxStates];
+    seventhD = [...seventhStates];
+    secondD = [...secondStates];
   }
 }
 
 function loadProgression(toggle) {
   // Load the chord selections, rhythm box states, 7th toggles, and 2nd toggles from the specified toggle
-  const progression = toggle === 'A' ? progressionA : progressionB;
-  const rhythmBoxStates = toggle === 'A' ? rhythmBoxesA : rhythmBoxesB;
-  const seventhStates = toggle === 'A' ? seventhA : seventhB;
-  const secondStates = toggle === 'A' ? secondA : secondB;
+  let progression, rhythmBoxStates, seventhStates, secondStates;
+  
+  // Determine which set of variables to use based on toggle
+  switch(toggle) {
+    case 'A':
+      progression = progressionA;
+      rhythmBoxStates = rhythmBoxesA;
+      seventhStates = seventhA;
+      secondStates = secondA;
+      break;
+    case 'B':
+      progression = progressionB;
+      rhythmBoxStates = rhythmBoxesB;
+      seventhStates = seventhB;
+      secondStates = secondB;
+      break;
+    case 'C':
+      progression = progressionC;
+      rhythmBoxStates = rhythmBoxesC;
+      seventhStates = seventhC;
+      secondStates = secondC;
+      break;
+    case 'D':
+      progression = progressionD;
+      rhythmBoxStates = rhythmBoxesD;
+      seventhStates = seventhD;
+      secondStates = secondD;
+      break;
+    default:
+      progression = progressionA;
+      rhythmBoxStates = rhythmBoxesA;
+      seventhStates = seventhA;
+      secondStates = secondA;
+  }
 
   // Set chord selections
   document.querySelectorAll('.chord-select').forEach((select, idx) => {
@@ -128,11 +177,40 @@ function switchToggle(toggle) {
   currentToggle = toggle;
 
   // Update toggle buttons UI
-  document.getElementById('toggleA').classList.toggle('ab-active', toggle === 'A');
-  document.getElementById('toggleB').classList.toggle('ab-active', toggle === 'B');
+  document.querySelectorAll('.abcd-toggle-btn').forEach(btn => {
+    btn.classList.remove('abcd-active');
+  });
+  document.getElementById('toggle' + toggle).classList.add('abcd-active');
 
   // Load the state from the newly selected toggle
   loadProgression(toggle);
+}
+
+// Helper function to get the current toggle arrays
+function getToggleArrays() {
+  let seventhArr, secondArr;
+  switch(currentToggle) {
+    case 'A':
+      seventhArr = seventhA;
+      secondArr = secondA;
+      break;
+    case 'B':
+      seventhArr = seventhB;
+      secondArr = secondB;
+      break;
+    case 'C':
+      seventhArr = seventhC;
+      secondArr = secondC;
+      break;
+    case 'D':
+      seventhArr = seventhD;
+      secondArr = secondD;
+      break;
+    default:
+      seventhArr = seventhA;
+      secondArr = secondA;
+  }
+  return { seventhArr, secondArr };
 }
 
 // --- Chord Note Data Structures ---
@@ -235,13 +313,13 @@ function setSlotColorAndStyle(slotIndex, select, addSeventhArg, addSecondArg) {
   if (typeof addSeventhArg === 'boolean') {
     addSeventh = addSeventhArg;
   } else {
-    let seventhArr = currentToggle === 'A' ? seventhA : seventhB;
+    const { seventhArr } = getToggleArrays();
     addSeventh = seventhArr[slotIndex];
   }
   if (typeof addSecondArg === 'boolean') {
     addSecond = addSecondArg;
   } else {
-    let secondArr = currentToggle === 'A' ? secondA : secondB;
+    const { secondArr } = getToggleArrays();
     addSecond = secondArr[slotIndex];
   }
   setSlotContent(slotIndex, select.value, addSeventh, addSecond);
@@ -354,17 +432,16 @@ function setSlotContent(slotIndex, chord, addSeventh, addSecond) {
 
 // --- 7th Button Logic ---
 function toggleSeventh(idx) {
-  let seventhArr = currentToggle === 'A' ? seventhA : seventhB;
+  const { seventhArr, secondArr } = getToggleArrays();
   seventhArr[idx] = !seventhArr[idx];
   updateSeventhBtnStates();
   // Re-render the slot content
   const select = document.getElementById('slot'+idx).querySelector('.chord-select');
-  const secondArr = currentToggle === 'A' ? secondA : secondB;
   setSlotColorAndStyle(idx, select, seventhArr[idx], secondArr[idx]);
   saveCurrentProgression();
 }
 function updateSeventhBtnStates() {
-  let seventhArr = currentToggle === 'A' ? seventhA : seventhB;
+  const { seventhArr } = getToggleArrays();
   document.querySelectorAll('.seventh-btn').forEach((btn, idx) => {
     btn.classList.toggle('active', seventhArr[idx]);
   });
@@ -372,17 +449,16 @@ function updateSeventhBtnStates() {
 
 // --- 2nd Button Logic ---
 function toggleSecond(idx) {
-  let secondArr = currentToggle === 'A' ? secondA : secondB;
+  const { seventhArr, secondArr } = getToggleArrays();
   secondArr[idx] = !secondArr[idx];
   updateSecondBtnStates();
   // Re-render the slot content
   const select = document.getElementById('slot'+idx).querySelector('.chord-select');
-  const seventhArr = currentToggle === 'A' ? seventhA : seventhB;
   setSlotColorAndStyle(idx, select, seventhArr[idx], secondArr[idx]);
   saveCurrentProgression();
 }
 function updateSecondBtnStates() {
-  let secondArr = currentToggle === 'A' ? secondA : secondB;
+  const { secondArr } = getToggleArrays();
   document.querySelectorAll('.second-btn').forEach((btn, idx) => {
     btn.classList.toggle('active', secondArr[idx]);
   });
@@ -501,8 +577,9 @@ function playEighthNoteStep() {
       // Play nothing
     } else {
       // Handle 7th and 2nd
-      let addSeventh = (currentToggle === 'A' ? seventhA : seventhB)[currentSlotIdx];
-      let addSecond = (currentToggle === 'A' ? secondA : secondB)[currentSlotIdx];
+      const { seventhArr, secondArr } = getToggleArrays();
+      let addSeventh = seventhArr[currentSlotIdx];
+      let addSecond = secondArr[currentSlotIdx];
       let notes = rhythmChordNotes[currentSelect.value] ? [...rhythmChordNotes[currentSelect.value]] : [];
       if (addSecond && rhythmChordSecondNotes[currentSelect.value]) {
         notes.push(rhythmChordSecondNotes[currentSelect.value]);
@@ -583,18 +660,16 @@ function clearAll() {
   document.querySelectorAll('.bottom-rhythm-box').forEach(box => box.classList.remove('active'));
   updateRhythmPictures();
 
-  // Clear 7th/2nd arrays
-  if(currentToggle === 'A'){
-    seventhA = [false, false, false, false];
-    secondA = [false, false, false, false];
-  }else{
-    seventhB = [false, false, false, false];
-    secondB = [false, false, false, false];
+  // Clear 7th/2nd arrays based on current toggle
+  const { seventhArr, secondArr } = getToggleArrays();
+  for (let i = 0; i < 4; i++) {
+    seventhArr[i] = false;
+    secondArr[i] = false;
   }
   updateSeventhBtnStates();
   updateSecondBtnStates();
 
-  // Update the current progression in memory (A or B)
+  // Update the current progression in memory
   saveCurrentProgression();
 
   setPlaying(false);
@@ -748,8 +823,9 @@ function playChordPreview(idx) {
   const chord = select.value;
   if (!chord || chord === "" || chord === "empty") return;
   // Check if 2nd or 7th is selected for this chord
-  let addSeventh = (currentToggle === 'A' ? seventhA : seventhB)[idx];
-  let addSecond = (currentToggle === 'A' ? secondA : secondB)[idx];
+  const { seventhArr, secondArr } = getToggleArrays();
+  let addSeventh = seventhArr[idx];
+  let addSecond = secondArr[idx];
   let notes = rhythmChordNotes[chord] ? [...rhythmChordNotes[chord]] : [];
   if (addSecond && rhythmChordSecondNotes[chord]) {
     notes.push(rhythmChordSecondNotes[chord]);
@@ -780,9 +856,12 @@ document.addEventListener("DOMContentLoaded", function() {
   });
   updateWaveformDisplay();
 
-  // Initialize A/B toggle button listeners
+  // Initialize A/B/C/D toggle button listeners
   document.getElementById('toggleA').addEventListener('click', () => switchToggle('A'));
   document.getElementById('toggleB').addEventListener('click', () => switchToggle('B'));
+  document.getElementById('toggleC').addEventListener('click', () => switchToggle('C'));
+  document.getElementById('toggleD').addEventListener('click', () => switchToggle('D'));
+  
   document.getElementById('toggleA').addEventListener('keydown', (e) => {
     if (e.key === " " || e.key === "Enter") {
       e.preventDefault();
@@ -793,6 +872,18 @@ document.addEventListener("DOMContentLoaded", function() {
     if (e.key === " " || e.key === "Enter") {
       e.preventDefault();
       switchToggle('B');
+    }
+  });
+  document.getElementById('toggleC').addEventListener('keydown', (e) => {
+    if (e.key === " " || e.key === "Enter") {
+      e.preventDefault();
+      switchToggle('C');
+    }
+  });
+  document.getElementById('toggleD').addEventListener('keydown', (e) => {
+    if (e.key === " " || e.key === "Enter") {
+      e.preventDefault();
+      switchToggle('D');
     }
   });
 
