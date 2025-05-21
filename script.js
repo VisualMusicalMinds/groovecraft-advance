@@ -9,526 +9,242 @@ let currentWaveform = waveforms[currentWaveformIndex];
 let currentToggle = 'A'; // Default to A
 let progressionA = ['', '', '', ''];
 let progressionB = ['', '', '', ''];
-let progressionC = ['', '', '', '']; // New C progression
-let progressionD = ['', '', '', '']; // New D progression
+let progressionC = ['', '', '', '']; 
+let progressionD = ['', '', '', '']; 
 let rhythmBoxesA = Array(8).fill(false);
 let rhythmBoxesB = Array(8).fill(false);
-let rhythmBoxesC = Array(8).fill(false); // New C rhythm boxes
-let rhythmBoxesD = Array(8).fill(false); // New D rhythm boxes
-// 7th chord toggles per slot for A, B, C, and D
+let rhythmBoxesC = Array(8).fill(false); 
+let rhythmBoxesD = Array(8).fill(false); 
 let seventhA = [false, false, false, false];
 let seventhB = [false, false, false, false];
-let seventhC = [false, false, false, false]; // New C sevenths
-let seventhD = [false, false, false, false]; // New D sevenths
-// 2nd chord toggles per slot for A, B, C, and D
+let seventhC = [false, false, false, false]; 
+let seventhD = [false, false, false, false]; 
 let secondA = [false, false, false, false];
 let secondB = [false, false, false, false];
-let secondC = [false, false, false, false]; // New C seconds
-let secondD = [false, false, false, false]; // New D seconds
-// M/m toggle variables - 'none' = unselected, 'major' = M selected, 'minor' = m selected
+let secondC = [false, false, false, false]; 
+let secondD = [false, false, false, false]; 
+// M/m toggle variables - 'none' = natural, 'major' = forced major, 'minor' = forced minor
 let majorA = ['none', 'none', 'none', 'none'];
 let majorB = ['none', 'none', 'none', 'none'];
 let majorC = ['none', 'none', 'none', 'none'];
 let majorD = ['none', 'none', 'none', 'none'];
 
-// Add chord type mapping for thirds
 const chordTypes = {
-  'C': 'major',
-  'Dm': 'minor',
-  'Em': 'minor',
-  'F': 'major',
-  'G': 'major',
-  'Am': 'minor',
-  'D': 'major',
-  'E': 'major',
-  'Bb': 'major'
+  'C': 'major', 'Dm': 'minor', 'Em': 'minor', 'F': 'major', 'G': 'major', 'Am': 'minor', 'D': 'major', 'E': 'major', 'Bb': 'major'
 };
 
-// Define alternative thirds for major/minor conversions
 const chordAlternateThirds = {
-  'C': {
-    'major': 'E',
-    'minor': 'E♭',
-    'majorNote': 'E4',
-    'minorNote': 'Eb4'
-  },
-  'Dm': {
-    'major': 'F♯',
-    'minor': 'F',
-    'majorNote': 'F#4',
-    'minorNote': 'F4'
-  },
-  'Em': {
-    'major': 'G♯',
-    'minor': 'G',
-    'majorNote': 'G#4',
-    'minorNote': 'G4'
-  },
-  'F': {
-    'major': 'A',
-    'minor': 'A♭',
-    'majorNote': 'A4',
-    'minorNote': 'Ab4'
-  },
-  'G': {
-    'major': 'B',
-    'minor': 'B♭',
-    'majorNote': 'B4',
-    'minorNote': 'Bb4'
-  },
-  'Am': {
-    'major': 'C♯',
-    'minor': 'C',
-    'majorNote': 'C#5',
-    'minorNote': 'C5'
-  },
-  'D': {
-    'major': 'F♯',
-    'minor': 'F',
-    'majorNote': 'F#4',
-    'minorNote': 'F4'
-  },
-  'E': {
-    'major': 'G♯',
-    'minor': 'G',
-    'majorNote': 'G#4',
-    'minorNote': 'G4'
-  },
-  'Bb': {
-    'major': 'D',
-    'minor': 'D♭',
-    'majorNote': 'D4',
-    'minorNote': 'Db4'
-  }
+  'C':  { 'major': 'E', 'minor': 'E♭', 'majorNote': 'E4', 'minorNote': 'Eb4' },
+  'Dm': { 'major': 'F♯','minor': 'F',  'majorNote': 'F#4','minorNote': 'F4'  },
+  'Em': { 'major': 'G♯','minor': 'G',  'majorNote': 'G#4','minorNote': 'G4'  },
+  'F':  { 'major': 'A', 'minor': 'A♭', 'majorNote': 'A4', 'minorNote': 'Ab4' },
+  'G':  { 'major': 'B', 'minor': 'B♭', 'majorNote': 'B4', 'minorNote': 'Bb4' },
+  'Am': { 'major': 'C♯','minor': 'C',  'majorNote': 'C#5','minorNote': 'C5'  },
+  'D':  { 'major': 'F♯','minor': 'F',  'majorNote': 'F#4','minorNote': 'F4'  },
+  'E':  { 'major': 'G♯','minor': 'G',  'majorNote': 'G#4','minorNote': 'G4'  },
+  'Bb': { 'major': 'D', 'minor': 'D♭', 'majorNote': 'D4', 'minorNote': 'Db4' }
 };
 
 function setupCustomVoiceWave() {
   const harmonics = 20;
   const real = new Float32Array(harmonics);
   const imag = new Float32Array(harmonics);
-  real[1] = 1;
-  real[2] = 0.15;
-  real[3] = 0.1;
-  real[4] = 0.05;
+  real[1] = 1; real[2] = 0.15; real[3] = 0.1; real[4] = 0.05;
   for (let i = 5; i < harmonics; i++) real[i] = 0;
-  if (ctx) {
-    customVoiceWave = ctx.createPeriodicWave(real, imag);
-  }
+  if (ctx) customVoiceWave = ctx.createPeriodicWave(real, imag);
 }
 
 async function ensureAudio() {
   if (!ctx) {
     ctx = new (window.AudioContext || window.webkitAudioContext)();
-    masterGain = ctx.createGain();
-    masterGain.gain.value = 1;
+    masterGain = ctx.createGain(); masterGain.gain.value = 1;
     compressor = ctx.createDynamicsCompressor();
-    compressor.threshold.value = -24;
-    compressor.knee.value = 30;
-    compressor.ratio.value = 12;
-    compressor.attack.value = 0.003;
-    compressor.release.value = 0.25;
-    compressor.connect(ctx.destination);
-    masterGain.connect(compressor);
+    compressor.threshold.value = -24; compressor.knee.value = 30; compressor.ratio.value = 12;
+    compressor.attack.value = 0.003; compressor.release.value = 0.25;
+    compressor.connect(ctx.destination); masterGain.connect(compressor);
     setupCustomVoiceWave();
   }
   if (!customVoiceWave) setupCustomVoiceWave();
-  if (ctx.state !== "running") {
-    await ctx.resume();
-  }
+  if (ctx.state !== "running") await ctx.resume();
 }
 
-// --- Instrument Dial Logic ---
-function updateWaveformDisplay() {
-  document.getElementById("waveform-name").textContent = currentWaveform;
-}
+function updateWaveformDisplay() { document.getElementById("waveform-name").textContent = currentWaveform; }
 function handleWaveformDial(dir) {
   currentWaveformIndex = (currentWaveformIndex + dir + waveforms.length) % waveforms.length;
   currentWaveform = waveforms[currentWaveformIndex];
   updateWaveformDisplay();
 }
 
-// --- A/B/C/D Toggle Functions ---
 function saveCurrentProgression() {
-  // Save the current chord selections, rhythm boxes state, 7th toggles, and 2nd toggles to the current toggle
   const chordValues = Array.from(document.querySelectorAll('.chord-select')).map(select => select.value);
   const rhythmBoxStates = Array.from(document.querySelectorAll('.bottom-rhythm-box')).map(box => box.classList.contains('active'));
   const seventhStates = Array.from(document.querySelectorAll('.seventh-btn')).map(btn => btn.classList.contains('active'));
   const secondStates = Array.from(document.querySelectorAll('.second-btn')).map(btn => btn.classList.contains('active'));
-  
-  // Get the M/m toggle states - we check if major button is active, minor button is active, or neither
-  const majorStates = [];
-  document.querySelectorAll('.slot-box').forEach(slot => {
-    const majorBtn = slot.querySelector('.mm-toggle-major');
-    const minorBtn = slot.querySelector('.mm-toggle-minor');
-    
-    if (majorBtn && majorBtn.classList.contains('mm-active')) {
-      majorStates.push('major');
-    } else if (minorBtn && minorBtn.classList.contains('mm-active')) {
-      majorStates.push('minor');
-    } else {
-      majorStates.push('none');
-    }
-  });
+  // majorA, majorB, etc. are updated directly by toggleMajorMinor, so no need to read from DOM here for them.
   
   if (currentToggle === 'A') {
-    progressionA = [...chordValues];
-    rhythmBoxesA = [...rhythmBoxStates];
-    seventhA = [...seventhStates];
-    secondA = [...secondStates];
-    majorA = [...majorStates];
+    progressionA = [...chordValues]; rhythmBoxesA = [...rhythmBoxStates]; seventhA = [...seventhStates]; secondA = [...secondStates]; /* majorA is already up-to-date */
   } else if (currentToggle === 'B') {
-    progressionB = [...chordValues];
-    rhythmBoxesB = [...rhythmBoxStates];
-    seventhB = [...seventhStates];
-    secondB = [...secondStates];
-    majorB = [...majorStates];
+    progressionB = [...chordValues]; rhythmBoxesB = [...rhythmBoxStates]; seventhB = [...seventhStates]; secondB = [...secondStates]; /* majorB is already up-to-date */
   } else if (currentToggle === 'C') {
-    progressionC = [...chordValues];
-    rhythmBoxesC = [...rhythmBoxStates];
-    seventhC = [...seventhStates];
-    secondC = [...secondStates];
-    majorC = [...majorStates];
+    progressionC = [...chordValues]; rhythmBoxesC = [...rhythmBoxStates]; seventhC = [...seventhStates]; secondC = [...secondStates]; /* majorC is already up-to-date */
   } else if (currentToggle === 'D') {
-    progressionD = [...chordValues];
-    rhythmBoxesD = [...rhythmBoxStates];
-    seventhD = [...seventhStates];
-    secondD = [...secondStates];
-    majorD = [...majorStates];
+    progressionD = [...chordValues]; rhythmBoxesD = [...rhythmBoxStates]; seventhD = [...seventhStates]; secondD = [...secondStates]; /* majorD is already up-to-date */
   }
 }
 
+function _updateQualityButtonVisualForSlot(idx, state) {
+    const slot = document.getElementById('slot' + idx);
+    if (!slot) return;
+    const qualityBtn = slot.querySelector('.quality-toggle-btn');
+    if (qualityBtn) {
+        if (state === 'minor') {
+            qualityBtn.textContent = 'm';
+        } else {
+            qualityBtn.textContent = 'M'; // For 'none' and 'major'
+        }
+
+        if (state === 'none') {
+            qualityBtn.classList.remove('quality-active');
+        } else {
+            qualityBtn.classList.add('quality-active'); // For 'major' and 'minor'
+        }
+    }
+}
+
 function loadProgression(toggle) {
-  // Load the chord selections, rhythm box states, 7th toggles, and 2nd toggles from the specified toggle
-  let progression, rhythmBoxStates, seventhStates, secondStates, majorStates;
-  
-  // Determine which set of variables to use based on toggle
+  let progression, rhythmBoxStates, seventhStates, secondStates, majorStatesToLoad;
   switch(toggle) {
-    case 'A':
-      progression = progressionA;
-      rhythmBoxStates = rhythmBoxesA;
-      seventhStates = seventhA;
-      secondStates = secondA;
-      majorStates = majorA;
-      break;
-    case 'B':
-      progression = progressionB;
-      rhythmBoxStates = rhythmBoxesB;
-      seventhStates = seventhB;
-      secondStates = secondB;
-      majorStates = majorB;
-      break;
-    case 'C':
-      progression = progressionC;
-      rhythmBoxStates = rhythmBoxesC;
-      seventhStates = seventhC;
-      secondStates = secondC;
-      majorStates = majorC;
-      break;
-    case 'D':
-      progression = progressionD;
-      rhythmBoxStates = rhythmBoxesD;
-      seventhStates = seventhD;
-      secondStates = secondD;
-      majorStates = majorD;
-      break;
-    default:
-      progression = progressionA;
-      rhythmBoxStates = rhythmBoxesA;
-      seventhStates = seventhA;
-      secondStates = secondA;
-      majorStates = majorA;
+    case 'A': progression = progressionA; rhythmBoxStates = rhythmBoxesA; seventhStates = seventhA; secondStates = secondA; majorStatesToLoad = majorA; break;
+    case 'B': progression = progressionB; rhythmBoxStates = rhythmBoxesB; seventhStates = seventhB; secondStates = secondB; majorStatesToLoad = majorB; break;
+    case 'C': progression = progressionC; rhythmBoxStates = rhythmBoxesC; seventhStates = seventhC; secondStates = secondC; majorStatesToLoad = majorC; break;
+    case 'D': progression = progressionD; rhythmBoxStates = rhythmBoxesD; seventhStates = seventhD; secondStates = secondD; majorStatesToLoad = majorD; break;
+    default:  progression = progressionA; rhythmBoxStates = rhythmBoxesA; seventhStates = seventhA; secondStates = secondA; majorStatesToLoad = majorA;
   }
 
-  // Set chord selections
   document.querySelectorAll('.chord-select').forEach((select, idx) => {
     select.value = progression[idx];
     setSlotColorAndStyle(idx, select, seventhStates[idx], secondStates[idx]);
   });
-
-  // Set rhythm box states
-  document.querySelectorAll('.bottom-rhythm-box').forEach((box, idx) => {
-    if (rhythmBoxStates[idx]) {
-      box.classList.add('active');
-    } else {
-      box.classList.remove('active');
-    }
-  });
-
-  // Set 7th button states
-  document.querySelectorAll('.seventh-btn').forEach((btn, idx) => {
-    btn.classList.toggle('active', seventhStates[idx]);
-  });
-
-  // Set 2nd button states
-  document.querySelectorAll('.second-btn').forEach((btn, idx) => {
-    btn.classList.toggle('active', secondStates[idx]);
-  });
+  document.querySelectorAll('.bottom-rhythm-box').forEach((box, idx) => box.classList.toggle('active', rhythmBoxStates[idx]));
+  document.querySelectorAll('.seventh-btn').forEach((btn, idx) => btn.classList.toggle('active', seventhStates[idx]));
+  document.querySelectorAll('.second-btn').forEach((btn, idx) => btn.classList.toggle('active', secondStates[idx]));
   
-  // Set M/m toggle states
-  document.querySelectorAll('.slot-box').forEach((slot, idx) => {
-    const majorBtn = slot.querySelector('.mm-toggle-major');
-    const minorBtn = slot.querySelector('.mm-toggle-minor');
-    if (majorBtn && minorBtn) {
-      // Reset both buttons first
-      majorBtn.classList.remove('mm-active');
-      minorBtn.classList.remove('mm-active');
-      
-      // Set the appropriate button based on state
-      if (majorStates[idx] === 'major') {
-        majorBtn.classList.add('mm-active');
-      } else if (majorStates[idx] === 'minor') {
-        minorBtn.classList.add('mm-active');
-      }
-      // If 'none', both remain inactive
-    }
+  // Set M/m toggle states using the new helper
+  majorStatesToLoad.forEach((state, idx) => {
+    _updateQualityButtonVisualForSlot(idx, state);
   });
 
   updateRhythmPictures();
 }
 
 function switchToggle(toggle) {
-  if (currentToggle === toggle) return; // No change needed
-
-  // Save current state to current toggle
+  if (currentToggle === toggle) return;
   saveCurrentProgression();
-
-  // Update toggle state
   currentToggle = toggle;
-
-  // Update toggle buttons UI
-  document.querySelectorAll('.abcd-toggle-btn').forEach(btn => {
-    btn.classList.remove('abcd-active');
-  });
+  document.querySelectorAll('.abcd-toggle-btn').forEach(btn => btn.classList.remove('abcd-active'));
   document.getElementById('toggle' + toggle).classList.add('abcd-active');
-
-  // Load the state from the newly selected toggle
   loadProgression(toggle);
 }
 
-// Helper function to get the current toggle arrays
 function getToggleArrays() {
   let seventhArr, secondArr, majorArr;
   switch(currentToggle) {
-    case 'A':
-      seventhArr = seventhA;
-      secondArr = secondA;
-      majorArr = majorA;
-      break;
-    case 'B':
-      seventhArr = seventhB;
-      secondArr = secondB;
-      majorArr = majorB;
-      break;
-    case 'C':
-      seventhArr = seventhC;
-      secondArr = secondC;
-      majorArr = majorC;
-      break;
-    case 'D':
-      seventhArr = seventhD;
-      secondArr = secondD;
-      majorArr = majorD;
-      break;
-    default:
-      seventhArr = seventhA;
-      secondArr = secondA;
-      majorArr = majorA;
+    case 'A': seventhArr = seventhA; secondArr = secondA; majorArr = majorA; break;
+    case 'B': seventhArr = seventhB; secondArr = secondB; majorArr = majorB; break;
+    case 'C': seventhArr = seventhC; secondArr = secondC; majorArr = majorC; break;
+    case 'D': seventhArr = seventhD; secondArr = secondD; majorArr = majorD; break;
+    default:  seventhArr = seventhA; secondArr = secondA; majorArr = majorA;
   }
   return { seventhArr, secondArr, majorArr };
 }
 
-// --- M/m Toggle Functions ---
+// --- Chord Quality Toggle Functions ---
 function toggleMajorMinor(idx) {
-  const { majorArr } = getToggleArrays();
-  const slot = document.getElementById('slot'+idx);
-  const majorBtn = slot.querySelector('.mm-toggle-major');
-  const minorBtn = slot.querySelector('.mm-toggle-minor');
+  const { majorArr } = getToggleArrays(); // This gets the array for the current progression (e.g., majorA)
+  const slot = document.getElementById('slot' + idx);
   const select = slot.querySelector('.chord-select');
   const chord = select.value;
   
-  // Skip if no chord is selected
   if (!chord || chord === "" || chord === "empty") {
+    majorArr[idx] = 'none'; // Reset state if no chord
+    _updateQualityButtonVisualForSlot(idx, 'none');
+    // setSlotColorAndStyle(idx, select); // Update visuals if needed
+    // saveCurrentProgression(); // Save this reset
     return;
   }
   
-  // Get the chord's natural type (major or minor)
-  const naturalType = chordTypes[chord];
-  
   // Cycle through states: none -> major -> minor -> none
   if (majorArr[idx] === 'none') {
-    // From none to major
     majorArr[idx] = 'major';
-    majorBtn.classList.add('mm-active');
-    minorBtn.classList.remove('mm-active');
   } else if (majorArr[idx] === 'major') {
-    // From major to minor
     majorArr[idx] = 'minor';
-    majorBtn.classList.remove('mm-active');
-    minorBtn.classList.add('mm-active');
-  } else {
-    // From minor to none
+  } else { // majorArr[idx] === 'minor'
     majorArr[idx] = 'none';
-    majorBtn.classList.remove('mm-active');
-    minorBtn.classList.remove('mm-active');
   }
   
-  // Re-render the slot content and update playback
-  const { seventhArr, secondArr } = getToggleArrays();
+  _updateQualityButtonVisualForSlot(idx, majorArr[idx]); // Update button appearance
+  
+  const { seventhArr, secondArr } = getToggleArrays(); // Re-fetch in case of complex interactions (though not expected here)
   setSlotColorAndStyle(idx, select, seventhArr[idx], secondArr[idx]);
-  saveCurrentProgression();
+  saveCurrentProgression(); // This will save the updated majorArr[idx] into majorA/B/C/D
   playChordPreview(idx);
 }
 
-function updateMajorMinorBtnStates() {
-  const { majorArr } = getToggleArrays();
-  document.querySelectorAll('.slot-box').forEach((slot, idx) => {
-    const majorBtn = slot.querySelector('.mm-toggle-major');
-    const minorBtn = slot.querySelector('.mm-toggle-minor');
-    
-    if (majorBtn && minorBtn) {
-      // Reset both buttons
-      majorBtn.classList.remove('mm-active');
-      minorBtn.classList.remove('mm-active');
-      
-      // Set correct button as active based on state
-      if (majorArr[idx] === 'major') {
-        majorBtn.classList.add('mm-active');
-      } else if (majorArr[idx] === 'minor') {
-        minorBtn.classList.add('mm-active');
-      }
-      // If 'none', both remain inactive
+function _updateAllQualityButtonVisualsCurrentToggle() {
+    const { majorArr } = getToggleArrays(); // Gets for currentToggle
+    for (let i = 0; i < 4; i++) {
+        _updateQualityButtonVisualForSlot(i, majorArr[i]);
     }
-  });
 }
 
-// --- Chord Note Data Structures ---
 
 const chordTones = {
-  'C':   ['C', 'E', 'G'],
-  'Dm':  ['D', 'F', 'A'],
-  'Em':  ['E', 'G', 'B'],
-  'F':   ['F', 'A', 'C'],
-  'G':   ['G', 'B', 'D'],
-  'Am':  ['A', 'C', 'E'],
-  'D':   ['D', 'F♯', 'A'],
-  'E':   ['E', 'G♯', 'B'],
-  'Bb':  ['B♭', 'D', 'F']
+  'C': ['C', 'E', 'G'], 'Dm': ['D', 'F', 'A'], 'Em': ['E', 'G', 'B'], 'F': ['F', 'A', 'C'],
+  'G': ['G', 'B', 'D'], 'Am': ['A', 'C', 'E'], 'D': ['D', 'F♯', 'A'], 'E': ['E', 'G♯', 'B'], 'Bb': ['B♭', 'D', 'F']
 };
-// The additional note for a minor 7th (or dominant 7th for major chords)
 const chordSevenths = {
-  'C':   'B♭',
-  'Dm':  'C',
-  'Em':  'D',
-  'F':   'E♭',
-  'G':   'F',
-  'Am':  'G',
-  'D':   'C',
-  'E':   'D',
-  'Bb':  'A♭'
+  'C': 'B♭', 'Dm': 'C', 'Em': 'D', 'F': 'E♭', 'G': 'F', 'Am': 'G', 'D': 'C', 'E': 'D', 'Bb': 'A♭'
 };
-// The additional note for a 2nd (sus2 or normal 2nd, you can adjust as desired)
 const chordSeconds = {
-  'C':   'D',
-  'Dm':  'E',
-  'Em':  'F♯',
-  'F':   'G',
-  'G':   'A',
-  'Am':  'B',
-  'D':   'E',
-  'E':   'F♯',
-  'Bb':  'C'
+  'C': 'D', 'Dm': 'E', 'Em': 'F♯', 'F': 'G', 'G': 'A', 'Am': 'B', 'D': 'E', 'E': 'F♯', 'Bb': 'C'
 };
-// Used for playback, must use pitch names with octave!
 const rhythmChordNotes = {
-  'C':  ['C3', 'C4', 'E4', 'G4', 'C5'],
-  'Dm': ['D3', 'D4', 'F4', 'A4'],
-  'Em': ['E3', 'E4', 'G4', 'B4'],
-  'F':  ['F3', 'F4', 'A4', 'C5'],
-  'G':  ['G3', 'G4', 'B4', 'D4'],
-  'Am': ['A3', 'A4', 'C5', 'E5'],
-  'D':  ['D3', 'D4', 'F#4', 'A4'],
-  'E':  ['E3', 'E4', 'G#4', 'B4'],
-  'Bb': ['Bb3', 'D4', 'F4', 'Bb4']
+  'C':  ['C3', 'C4', 'E4', 'G4', 'C5'], 'Dm': ['D3', 'D4', 'F4', 'A4'], 'Em': ['E3', 'E4', 'G4', 'B4'],
+  'F':  ['F3', 'F4', 'A4', 'C5'], 'G':  ['G3', 'G4', 'B4', 'D4'], 'Am': ['A3', 'A4', 'C5', 'E5'],
+  'D':  ['D3', 'D4', 'F#4', 'A4'], 'E':  ['E3', 'E4', 'G#4', 'B4'], 'Bb': ['Bb3', 'D4', 'F4', 'Bb4']
 };
 const rhythmChordSeventhNotes = {
-  'C':  'Bb4',
-  'Dm': 'C5',
-  'Em': 'D5',
-  'F':  'Eb5',
-  'G':  'F4',
-  'Am': 'G4',
-  'D':  'C5',
-  'E':  'D5',
-  'Bb': 'Ab4'
+  'C': 'Bb4', 'Dm': 'C5', 'Em': 'D5', 'F': 'Eb5', 'G': 'F4', 'Am': 'G4', 'D': 'C5', 'E': 'D5', 'Bb': 'Ab4'
 };
 const rhythmChordSecondNotes = {
-  'C':  'D4',
-  'Dm': 'E4',
-  'Em': 'F#4',
-  'F':  'G4',
-  'G':  'A4',
-  'Am': 'B4',
-  'D':  'E4',
-  'E':  'F#4',
-  'Bb': 'C5'
+  'C': 'D4', 'Dm': 'E4', 'Em': 'F#4', 'F': 'G4', 'G': 'A4', 'Am': 'B4', 'D': 'E4', 'E': 'F#4', 'Bb': 'C5'
 };
-
 const noteColorClass = {
-  'C': 'note-C',
-  'D': 'note-D',
-  'E': 'note-E',
-  'F': 'note-F',
-  'G': 'note-G',
-  'A': 'note-A',
-  'B': 'note-B',
-  'F♯': 'note-F',
-  'G♯': 'note-G',
-  'B♭': 'note-B',
-  'E♭': 'note-E',
-  'A♭': 'note-A',
-  'C♯': 'note-C',
-  'D♭': 'note-D'
+  'C': 'note-C', 'D': 'note-D', 'E': 'note-E', 'F': 'note-F', 'G': 'note-G', 'A': 'note-A', 'B': 'note-B',
+  'F♯': 'note-F', 'G♯': 'note-G', 'B♭': 'note-B', 'E♭': 'note-E', 'A♭': 'note-A', 'C♯': 'note-C', 'D♭': 'note-D'
 };
-
 const restDashImgUrl = "https://visualmusicalminds.github.io/images/CartoonRhythmBox5.svg";
 const dashImgUrl = "https://visualmusicalminds.github.io/images/CartoonRhythmBox1.svg";
 const rhythmBox2 = "https://visualmusicalminds.github.io/images/CartoonRhythmBox2.svg";
 const rhythmBox3 = "https://visualmusicalminds.github.io/images/CartoonRhythmBox3.svg";
 const rhythmBox4 = "https://visualmusicalminds.github.io/images/CartoonRhythmBox4.svg";
 
-// --- UI Slot Content and Color ---
 function setSlotColorAndStyle(slotIndex, select, addSeventhArg, addSecondArg) {
-  // Determine whether to add the 7th/2nd based on currentToggle and state arrays
   let addSeventh, addSecond;
-  if (typeof addSeventhArg === 'boolean') {
-    addSeventh = addSeventhArg;
-  } else {
-    const { seventhArr } = getToggleArrays();
-    addSeventh = seventhArr[slotIndex];
-  }
-  if (typeof addSecondArg === 'boolean') {
-    addSecond = addSecondArg;
-  } else {
-    const { secondArr } = getToggleArrays();
-    addSecond = secondArr[slotIndex];
-  }
+  if (typeof addSeventhArg === 'boolean') addSeventh = addSeventhArg;
+  else { const { seventhArr } = getToggleArrays(); addSeventh = seventhArr[slotIndex]; }
+  if (typeof addSecondArg === 'boolean') addSecond = addSecondArg;
+  else { const { secondArr } = getToggleArrays(); addSecond = secondArr[slotIndex]; }
+  
   setSlotContent(slotIndex, select.value, addSeventh, addSecond);
-  select.classList.remove(
-    'c-selected-c', 'c-selected-dm', 'c-selected-em', 
-    'c-selected-f', 'c-selected-g', 'c-selected-am',
-    'c-selected-d', 'c-selected-e', 'c-selected-bb'
-  );
+  select.classList.remove('c-selected-c', 'c-selected-dm', 'c-selected-em', 'c-selected-f', 'c-selected-g', 'c-selected-am', 'c-selected-d', 'c-selected-e', 'c-selected-bb');
   switch(select.value) {
-    case 'C':  select.classList.add('c-selected-c'); break;
-    case 'Dm': select.classList.add('c-selected-dm'); break;
-    case 'Em': select.classList.add('c-selected-em'); break;
-    case 'F':  select.classList.add('c-selected-f'); break;
-    case 'G':  select.classList.add('c-selected-g'); break;
-    case 'Am': select.classList.add('c-selected-am'); break;
-    case 'D':  select.classList.add('c-selected-d'); break;
-    case 'E':  select.classList.add('c-selected-e'); break;
-    case 'Bb': select.classList.add('c-selected-bb'); break;
-    default: break;
+    case 'C':  select.classList.add('c-selected-c'); break; case 'Dm': select.classList.add('c-selected-dm'); break;
+    case 'Em': select.classList.add('c-selected-em'); break; case 'F':  select.classList.add('c-selected-f'); break;
+    case 'G':  select.classList.add('c-selected-g'); break; case 'Am': select.classList.add('c-selected-am'); break;
+    case 'D':  select.classList.add('c-selected-d'); break; case 'E':  select.classList.add('c-selected-e'); break;
+    case 'Bb': select.classList.add('c-selected-bb'); break; default: break;
   }
 }
 
@@ -540,200 +256,103 @@ function setSlotContent(slotIndex, chord, addSeventh, addSecond) {
   
   if (chord === "") {
     if (!img) {
-      img = document.createElement('img');
-      img.className = 'dash-img-slot';
-      img.src = restDashImgUrl;
-      img.alt = "Rhythm Box Rest";
+      img = document.createElement('img'); img.className = 'dash-img-slot';
+      img.src = restDashImgUrl; img.alt = "Rhythm Box Rest";
       slot.insertBefore(img, slot.querySelector('.chord-select'));
-    } else {
-      img.src = restDashImgUrl;
-      img.alt = "Rhythm Box Rest";
-      img.style.display = "block";
-    }
+    } else { img.src = restDashImgUrl; img.alt = "Rhythm Box Rest"; img.style.display = "block"; }
     return;
-  } else {
-    if (img) img.style.display = "none";
-  }
+  } else { if (img) img.style.display = "none"; }
   
   slot.className = 'slot-box';
+  if (!chord || chord === "empty" || chord === "") return;
   
-  if (!chord || chord === "empty" || chord === "") {
-    return;
-  }
-  
-  // Get the base chord tones
   let tones = [...chordTones[chord]];
-  
-  // Apply M/m toggle modification
   const { majorArr } = getToggleArrays();
   const toggleState = majorArr[slotIndex];
-  const naturalType = chordTypes[chord];
   
-  // Modify the third if needed based on toggle state
-  if (toggleState !== 'none') {
-    // Only modify if the toggle state differs from natural chord type
-    if ((toggleState === 'major' && naturalType === 'minor') || 
-        (toggleState === 'minor' && naturalType === 'major')) {
-      // Replace the third note (index 1) with alternative third
-      tones[1] = chordAlternateThirds[chord][toggleState];
-    }
+  // Modify the third based on toggleState
+  if (chordAlternateThirds[chord]) {
+      if (toggleState === 'major') tones[1] = chordAlternateThirds[chord]['major'];
+      else if (toggleState === 'minor') tones[1] = chordAlternateThirds[chord]['minor'];
   }
   
-  // Prepare the basic rects from modified tones
   let rects = tones.map(note => {
-    if (note.includes('♯')) {
-      const baseLetter = note.charAt(0);
-      return `<div class="note-rect ${noteColorClass[note] || noteColorClass[baseLetter]}">
-        ${baseLetter}<span class="accidental sharp">♯</span>
-      </div>`;
-    } else if (note.includes('♭')) {
-      const baseLetter = note.charAt(0);
-      return `<div class="note-rect ${noteColorClass[note] || noteColorClass[baseLetter]}">
-        ${baseLetter}<span class="accidental flat">♭</span>
-      </div>`;
-    } else {
-      return `<div class="note-rect ${noteColorClass[note]}">${note}</div>`;
-    }
+    const baseLetter = note.charAt(0);
+    if (note.includes('♯')) return `<div class="note-rect ${noteColorClass[note] || noteColorClass[baseLetter]}">${baseLetter}<span class="accidental sharp">♯</span></div>`;
+    if (note.includes('♭')) return `<div class="note-rect ${noteColorClass[note] || noteColorClass[baseLetter]}">${baseLetter}<span class="accidental flat">♭</span></div>`;
+    return `<div class="note-rect ${noteColorClass[note]}">${note}</div>`;
   });
 
-  // Add the second if enabled and the chord has a defined 2nd
   if (addSecond && chordSeconds[chord]) {
-    let note = chordSeconds[chord];
-    let baseLetter = note.charAt(0);
-    let colorClass = noteColorClass[note] || noteColorClass[baseLetter];
-    let display;
-    if (note.includes('♯')) {
-      display = `<div class="note-rect note-2nd ${colorClass}">
-        ${baseLetter}<span class="accidental sharp">♯</span>
-      </div>`;
-    } else if (note.includes('♭')) {
-      display = `<div class="note-rect note-2nd ${colorClass}">
-        ${baseLetter}<span class="accidental flat">♭</span>
-      </div>`;
-    } else {
-      display = `<div class="note-rect note-2nd ${colorClass}">${note}</div>`;
-    }
-    // Insert the "2" note at the second position (index 1)
+    let note = chordSeconds[chord], baseLetter = note.charAt(0), colorClass = noteColorClass[note] || noteColorClass[baseLetter], display;
+    if (note.includes('♯')) display = `<div class="note-rect note-2nd ${colorClass}">${baseLetter}<span class="accidental sharp">♯</span></div>`;
+    else if (note.includes('♭')) display = `<div class="note-rect note-2nd ${colorClass}">${baseLetter}<span class="accidental flat">♭</span></div>`;
+    else display = `<div class="note-rect note-2nd ${colorClass}">${note}</div>`;
     rects.splice(1, 0, display);
   }
 
-  // Add the seventh if enabled and the chord has a defined 7th
   if (addSeventh && chordSevenths[chord]) {
-    let note = chordSevenths[chord];
-    let baseLetter = note.charAt(0);
-    let colorClass = noteColorClass[note] || noteColorClass[baseLetter];
-    let display;
-    if (note.includes('♯')) {
-      display = `<div class="note-rect note-7th ${colorClass}">
-        ${baseLetter}<span class="accidental sharp">♯</span>
-      </div>`;
-    } else if (note.includes('♭')) {
-      display = `<div class="note-rect note-7th ${colorClass}">
-        ${baseLetter}<span class="accidental flat">♭</span>
-      </div>`;
-    } else {
-      display = `<div class="note-rect note-7th ${colorClass}">${note}</div>`;
-    }
+    let note = chordSevenths[chord], baseLetter = note.charAt(0), colorClass = noteColorClass[note] || noteColorClass[baseLetter], display;
+    if (note.includes('♯')) display = `<div class="note-rect note-7th ${colorClass}">${baseLetter}<span class="accidental sharp">♯</span></div>`;
+    else if (note.includes('♭')) display = `<div class="note-rect note-7th ${colorClass}">${baseLetter}<span class="accidental flat">♭</span></div>`;
+    else display = `<div class="note-rect note-7th ${colorClass}">${note}</div>`;
     rects.push(display);
   }
-  
   noteRects.innerHTML = rects.join('');
 }
 
-// --- 7th Button Logic ---
 function toggleSeventh(idx) {
   const { seventhArr, secondArr } = getToggleArrays();
   seventhArr[idx] = !seventhArr[idx];
   updateSeventhBtnStates();
-  // Re-render the slot content
   const select = document.getElementById('slot'+idx).querySelector('.chord-select');
   setSlotColorAndStyle(idx, select, seventhArr[idx], secondArr[idx]);
   saveCurrentProgression();
 }
 function updateSeventhBtnStates() {
   const { seventhArr } = getToggleArrays();
-  document.querySelectorAll('.seventh-btn').forEach((btn, idx) => {
-    btn.classList.toggle('active', seventhArr[idx]);
-  });
+  document.querySelectorAll('.seventh-btn').forEach((btn, idx) => btn.classList.toggle('active', seventhArr[idx]));
 }
 
-// --- 2nd Button Logic ---
 function toggleSecond(idx) {
   const { seventhArr, secondArr } = getToggleArrays();
   secondArr[idx] = !secondArr[idx];
   updateSecondBtnStates();
-  // Re-render the slot content
   const select = document.getElementById('slot'+idx).querySelector('.chord-select');
   setSlotColorAndStyle(idx, select, seventhArr[idx], secondArr[idx]);
   saveCurrentProgression();
 }
 function updateSecondBtnStates() {
   const { secondArr } = getToggleArrays();
-  document.querySelectorAll('.second-btn').forEach((btn, idx) => {
-    btn.classList.toggle('active', secondArr[idx]);
-  });
+  document.querySelectorAll('.second-btn').forEach((btn, idx) => btn.classList.toggle('active', secondArr[idx]));
 }
 
-// --- Rhythm Pictures ---
 function updateRhythmPictures() {
   for (let pair = 0; pair < 4; ++pair) {
     const box1 = document.querySelector(`.bottom-rhythm-box[data-pair="${pair}"][data-which="0"]`);
     const box2 = document.querySelector(`.bottom-rhythm-box[data-pair="${pair}"][data-which="1"]`);
-    const picDiv = document.getElementById('bottomPic'+pair);
-    const img = picDiv.querySelector('.bottom-picture-img');
+    const img = document.getElementById('bottomPic'+pair).querySelector('.bottom-picture-img');
     let url = dashImgUrl;
-    if (box1.classList.contains('active') && !box2.classList.contains('active')) {
-      url = rhythmBox2;
-    } else if (box1.classList.contains('active') && box2.classList.contains('active')) {
-      url = rhythmBox3;
-    } else if (!box1.classList.contains('active') && box2.classList.contains('active')) {
-      url = rhythmBox4;
-    }
+    if (box1.classList.contains('active') && !box2.classList.contains('active')) url = rhythmBox2;
+    else if (box1.classList.contains('active') && box2.classList.contains('active')) url = rhythmBox3;
+    else if (!box1.classList.contains('active') && box2.classList.contains('active')) url = rhythmBox4;
     img.src = url;
   }
 }
 
-// --- Playback logic ---
+let isPlaying = false, rhythmInterval = null, slotIds = ['slot0', 'slot1', 'slot2', 'slot3'];
+let slotHighlightStep = 0, pictureHighlightStep = 0, rhythmStep = 0;
 
-let isPlaying = false;
-let rhythmInterval = null;
-let slotIds = ['slot0', 'slot1', 'slot2', 'slot3'];
-let slotHighlightStep = 0;
-let pictureHighlightStep = 0;
-let rhythmStep = 0;
-
-function getBpmInputValue() {
-  const bpmInput = document.getElementById('bpmInput');
-  let val = parseInt(bpmInput.value, 10);
-  if (isNaN(val)) val = 90;
-  return val;
-}
-function setBpmInputValue(val) {
-  const bpmInput = document.getElementById('bpmInput');
-  bpmInput.value = val;
-}
-function clampBpm(val) {
-  return Math.max(30, Math.min(300, val));
-}
+function getBpmInputValue() { let val = parseInt(document.getElementById('bpmInput').value, 10); return isNaN(val) ? 90 : val; }
+function setBpmInputValue(val) { document.getElementById('bpmInput').value = val; }
+function clampBpm(val) { return Math.max(30, Math.min(300, val)); }
 
 function setPlaying(playing) {
   isPlaying = playing;
-  const playIcon = document.getElementById('playIcon');
-  const pauseIcon = document.getElementById('pauseIcon');
-  const playPauseBtn = document.getElementById('playPauseBtn');
-  if (isPlaying) {
-    playIcon.style.display = "none";
-    pauseIcon.style.display = "block";
-    playPauseBtn.title = "Pause";
-    playPauseBtn.setAttribute('aria-label', 'Pause');
-    startMainAnimation();
-  } else {
-    playIcon.style.display = "block";
-    pauseIcon.style.display = "none";
-    playPauseBtn.title = "Play";
-    playPauseBtn.setAttribute('aria-label', 'Play');
-    stopMainAnimation();
-  }
+  const playIcon = document.getElementById('playIcon'), pauseIcon = document.getElementById('pauseIcon'), playPauseBtn = document.getElementById('playPauseBtn');
+  playIcon.style.display = isPlaying ? "none" : "block"; pauseIcon.style.display = isPlaying ? "block" : "none";
+  playPauseBtn.title = isPlaying ? "Pause" : "Play"; playPauseBtn.setAttribute('aria-label', isPlaying ? 'Pause' : 'Play');
+  if (isPlaying) startMainAnimation(); else stopMainAnimation();
 }
 
 function startMainAnimation() {
@@ -743,17 +362,10 @@ function startMainAnimation() {
     pictureHighlightStep = startMainAnimation.preservedSteps.pictureHighlightStep;
     rhythmStep = startMainAnimation.preservedSteps.rhythmStep;
     startMainAnimation.preservedSteps.keep = false;
-  } else {
-    slotHighlightStep = 0;
-    pictureHighlightStep = 0;
-    rhythmStep = 0;
-  }
-  updateSlotHighlights();
-  updatePictureHighlights();
-  const bpm = getBpmInputValue();
-  const intervalMs = (60 / bpm) * 1000 / 2;
-  playEighthNoteStep();
-  rhythmInterval = setInterval(playEighthNoteStep, intervalMs);
+  } else { slotHighlightStep = 0; pictureHighlightStep = 0; rhythmStep = 0; }
+  updateSlotHighlights(); updatePictureHighlights();
+  const intervalMs = (60 / getBpmInputValue()) * 1000 / 2;
+  playEighthNoteStep(); rhythmInterval = setInterval(playEighthNoteStep, intervalMs);
 }
 
 function stopMainAnimation() {
@@ -776,574 +388,226 @@ function restartAnimationWithBpm() {
 function playEighthNoteStep() {
   const currentSlotIdx = slotHighlightStep % 4;
   const currentSelect = document.getElementById(`slot${currentSlotIdx}`).querySelector('.chord-select');
-  const whichBox = rhythmStep % 8;
-  const pair = Math.floor(whichBox / 2);
-  const which = whichBox % 2;
-  const box = document.querySelector(`.bottom-rhythm-box[data-pair="${pair}"][data-which="${which}"]`);
+  const box = document.querySelector(`.bottom-rhythm-box[data-pair="${Math.floor((rhythmStep % 8) / 2)}"][data-which="${(rhythmStep % 8) % 2}"]`);
+  
   if (box && box.classList.contains('active')) {
-    if (currentSelect.value === "") {
-      playBassDrum();
-    } else if (currentSelect.value === "empty") {
-      // Play nothing
-    } else {
+    if (currentSelect.value === "") playBassDrum();
+    else if (currentSelect.value !== "empty") {
       const chord = currentSelect.value;
-      // Handle 7th, 2nd, and M/m toggle
       const { seventhArr, secondArr, majorArr } = getToggleArrays();
-      const addSeventh = seventhArr[currentSlotIdx];
-      const addSecond = secondArr[currentSlotIdx];
-      const toggleState = majorArr[currentSlotIdx];
-      const naturalType = chordTypes[chord];
-      
-      // Start with the base chord notes
+      const addSeventh = seventhArr[currentSlotIdx], addSecond = secondArr[currentSlotIdx], toggleState = majorArr[currentSlotIdx];
       let notes = [...rhythmChordNotes[chord]];
       
-      // Modify the third if needed based on toggle state
-      if (toggleState !== 'none') {
-        // Only modify if the toggle state differs from natural chord type
-        if ((toggleState === 'major' && naturalType === 'minor') || 
-            (toggleState === 'minor' && naturalType === 'major')) {
-          // Find and replace the third note with alternative third
-          // In rhythmChordNotes, the third is typically at index 2
-          notes[2] = chordAlternateThirds[chord][toggleState + 'Note']; // Use majorNote or minorNote
-        }
+      if (chordAlternateThirds[chord]) { // Modify third for playback
+          if (toggleState === 'major') notes[2] = chordAlternateThirds[chord]['majorNote'];
+          else if (toggleState === 'minor') notes[2] = chordAlternateThirds[chord]['minorNote'];
       }
-      
-      // Add 2nd and 7th if enabled
-      if (addSecond && rhythmChordSecondNotes[chord]) {
-        notes.push(rhythmChordSecondNotes[chord]);
-      }
-      if (addSeventh && rhythmChordSeventhNotes[chord]) {
-        notes.push(rhythmChordSeventhNotes[chord]);
-      }
-      
+      if (addSecond && rhythmChordSecondNotes[chord]) notes.push(rhythmChordSecondNotes[chord]);
+      if (addSeventh && rhythmChordSeventhNotes[chord]) notes.push(rhythmChordSeventhNotes[chord]);
       playTriangleNotes(notes);
     }
   }
-
-  if (rhythmStep % 2 === 0) {
-    playBrush();
-    updatePictureHighlights();
-    pictureHighlightStep = (pictureHighlightStep + 1) % 4;
-  }
-
-  if (rhythmStep === 0) {
-    updateSlotHighlights();
-  }
-
+  if (rhythmStep % 2 === 0) { playBrush(); updatePictureHighlights(); pictureHighlightStep = (pictureHighlightStep + 1) % 4; }
+  if (rhythmStep === 0) updateSlotHighlights();
   rhythmStep = (rhythmStep + 1) % 8;
-  if (rhythmStep === 0) {
-    slotHighlightStep = (slotHighlightStep + 1) % 4;
-  }
+  if (rhythmStep === 0) slotHighlightStep = (slotHighlightStep + 1) % 4;
 }
 
-function updateSlotHighlights() {
-  for (let i = 0; i < slotIds.length; i++) unhighlightSlot(i);
-  if (isPlaying) {
-    highlightSlot(slotHighlightStep % 4);
-  }
-}
-function highlightSlot(idx) {
-  document.getElementById(slotIds[idx]).classList.add('enlarged');
-}
-function unhighlightSlot(idx) {
-  document.getElementById(slotIds[idx]).classList.remove('enlarged');
-}
-
-function updatePictureHighlights() {
-  for (let i = 0; i < 4; i++) unhighlightPicture(i);
-  if (isPlaying) {
-    highlightPicture(pictureHighlightStep % 4);
-  }
-}
-function highlightPicture(idx) {
-  document.getElementById('bottomPic'+idx).classList.add('picture-highlighted');
-}
-function unhighlightPicture(idx) {
-  document.getElementById('bottomPic'+idx).classList.remove('picture-highlighted');
-}
+function updateSlotHighlights() { for (let i = 0; i < slotIds.length; i++) unhighlightSlot(i); if (isPlaying) highlightSlot(slotHighlightStep % 4); }
+function highlightSlot(idx) { document.getElementById(slotIds[idx]).classList.add('enlarged'); }
+function unhighlightSlot(idx) { document.getElementById(slotIds[idx]).classList.remove('enlarged'); }
+function updatePictureHighlights() { for (let i = 0; i < 4; i++) unhighlightPicture(i); if (isPlaying) highlightPicture(pictureHighlightStep % 4); }
+function highlightPicture(idx) { document.getElementById('bottomPic'+idx).classList.add('picture-highlighted'); }
+function unhighlightPicture(idx) { document.getElementById('bottomPic'+idx).classList.remove('picture-highlighted'); }
 
 function clearAll() {
-  // Clear the chord selections
   for (let i = 0; i < 4; i++) {
     const slot = document.getElementById('slot'+i);
     slot.querySelector('.note-rects').innerHTML = '';
     const select = slot.querySelector('.chord-select');
     select.selectedIndex = 0;
-    setSlotColorAndStyle(i, select, false, false);
+    setSlotColorAndStyle(i, select, false, false); // This will use new setSlotContent
     slot.classList.remove('enlarged');
     let img = slot.querySelector('.dash-img-slot');
-    if (img) {
-      img.src = restDashImgUrl;
-      img.alt = "Rhythm Box Rest";
-      img.style.display = "block";
-    }
-    // Clear 7th button
-    const btn7 = slot.querySelector('.seventh-btn');
-    if (btn7) btn7.classList.remove('active');
-    // Clear 2nd button
-    const btn2 = slot.querySelector('.second-btn');
-    if (btn2) btn2.classList.remove('active');
-    // Clear M/m toggle buttons
-    const majorBtn = slot.querySelector('.mm-toggle-major');
-    const minorBtn = slot.querySelector('.mm-toggle-minor');
-    if (majorBtn) majorBtn.classList.remove('mm-active');
-    if (minorBtn) minorBtn.classList.remove('mm-active');
+    if (img) { img.src = restDashImgUrl; img.alt = "Rhythm Box Rest"; img.style.display = "block"; }
+    slot.querySelector('.seventh-btn')?.classList.remove('active');
+    slot.querySelector('.second-btn')?.classList.remove('active');
   }
-
-  // Clear the rhythm boxes
   document.querySelectorAll('.bottom-rhythm-box').forEach(box => box.classList.remove('active'));
   updateRhythmPictures();
 
-  // Clear state arrays based on current toggle
-  const { seventhArr, secondArr, majorArr } = getToggleArrays();
+  const currentToggleArrays = getToggleArrays();
   for (let i = 0; i < 4; i++) {
-    seventhArr[i] = false;
-    secondArr[i] = false;
-    majorArr[i] = 'none'; // Reset to unselected state
+    currentToggleArrays.seventhArr[i] = false;
+    currentToggleArrays.secondArr[i] = false;
+    currentToggleArrays.majorArr[i] = 'none'; 
+    _updateQualityButtonVisualForSlot(i, 'none'); // Update new button visual
   }
-  updateSeventhBtnStates();
-  updateSecondBtnStates();
-  updateMajorMinorBtnStates();
+  updateSeventhBtnStates(); // For 7th buttons
+  updateSecondBtnStates();  // For 2nd buttons
+  // _updateAllQualityButtonVisualsCurrentToggle(); // Called by the loop above with _updateQualityButtonVisualForSlot
 
-  // Update the current progression in memory
   saveCurrentProgression();
-
   setPlaying(false);
 }
 
-// --------- SOUND PLAYERS ----------
-
 async function playBrush() {
-  if (!isBrushEnabled()) return;
-  await ensureAudio();
-  const duration = 0.09;
-  const bufferSize = ctx.sampleRate * duration;
-  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-  const data = buffer.getChannelData(0);
-  for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
-  const noise = ctx.createBufferSource();
-  noise.buffer = buffer;
-  const filter = ctx.createBiquadFilter();
-  filter.type = "bandpass";
-  filter.frequency.value = 2000;
-  filter.Q.value = 1.8;
-  const gain = ctx.createGain();
-  gain.gain.value = 0.5;
-  gain.gain.setValueAtTime(0.5, ctx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
-  noise.connect(filter).connect(gain).connect(masterGain);
-  noise.start();
-  noise.stop(ctx.currentTime + duration);
-}
-
-function isBrushEnabled() {
-  const brushToggle = document.getElementById('brushToggle');
-  return brushToggle && brushToggle.checked;
+  if (!document.getElementById('brushToggle')?.checked) return;
+  await ensureAudio(); const duration = 0.09, bufferSize = ctx.sampleRate * duration, buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const data = buffer.getChannelData(0); for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+  const noise = ctx.createBufferSource(); noise.buffer = buffer;
+  const filter = ctx.createBiquadFilter(); filter.type = "bandpass"; filter.frequency.value = 2000; filter.Q.value = 1.8;
+  const gain = ctx.createGain(); gain.gain.value = 0.5; gain.gain.setValueAtTime(0.5, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+  noise.connect(filter).connect(gain).connect(masterGain); noise.start(); noise.stop(ctx.currentTime + duration);
 }
 
 async function playBassDrum() {
-  await ensureAudio();
-  const duration = 0.19;
-  const osc = ctx.createOscillator();
-  osc.type = "sine";
-  osc.frequency.setValueAtTime(140, ctx.currentTime);
-  osc.frequency.exponentialRampToValueAtTime(42, ctx.currentTime + duration * 0.85);
-  const gain = ctx.createGain();
-  gain.gain.setValueAtTime(1, ctx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
-  osc.connect(gain).connect(masterGain);
-  osc.start();
-  osc.stop(ctx.currentTime + duration);
+  await ensureAudio(); const duration = 0.19; const osc = ctx.createOscillator(); osc.type = "sine";
+  osc.frequency.setValueAtTime(140, ctx.currentTime); osc.frequency.exponentialRampToValueAtTime(42, ctx.currentTime + duration * 0.85);
+  const gain = ctx.createGain(); gain.gain.setValueAtTime(1, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+  osc.connect(gain).connect(masterGain); osc.start(); osc.stop(ctx.currentTime + duration);
 }
 
-// Play notes using the currently selected instrument
 async function playTriangleNotes(notes) {
-  await ensureAudio();
-  const duration = 0.29;
-  const hold = 0.07;
-  const TRIANGLE_GAIN = 0.38;
-  const VOICE_GAIN = 0.36;
-  const SQUARE_GAIN = 0.30;
-  const SAW_GAIN = 0.28;
-  const SINE_GAIN = 0.36;
-
+  await ensureAudio(); const duration = 0.29, hold = 0.07;
+  const GAINS = { voice: 0.36, triangle: 0.38, square: 0.30, saw: 0.28, sine: 0.36 };
   notes.forEach((note, i) => {
-    const freq = midiToFreq(note);
-    let osc, gain, lfo, lfoGain, filter;
-    gain = ctx.createGain();
-    gain.gain.setValueAtTime(0, ctx.currentTime);
-
+    const freq = midiToFreq(note); let osc, gain, lfo, lfoGain, filter;
+    gain = ctx.createGain(); gain.gain.setValueAtTime(0, ctx.currentTime);
     if (currentWaveform === "voice") {
-      osc = ctx.createOscillator();
-      osc.setPeriodicWave(customVoiceWave);
-      osc.frequency.value = freq;
-      lfo = ctx.createOscillator();
-      lfoGain = ctx.createGain();
-      lfo.frequency.setValueAtTime(1.5, ctx.currentTime);
-      lfo.frequency.linearRampToValueAtTime(5, ctx.currentTime + 1);
-      lfoGain.gain.setValueAtTime(2.0, ctx.currentTime);
-      lfo.connect(lfoGain);
-      lfoGain.connect(osc.frequency);
-      lfo.start();
-      filter = ctx.createBiquadFilter();
-      filter.type = 'lowpass';
-      filter.frequency.setValueAtTime(1200, ctx.currentTime);
-      filter.Q.value = 1;
-      osc.connect(filter);
-      filter.connect(gain);
-      const attackTime = 0.08;
-      const decayTime = 0.18;
-      const sustainLevel = VOICE_GAIN * 0.6;
-      const maxLevel = VOICE_GAIN * 1.0;
-      gain.gain.linearRampToValueAtTime(maxLevel, ctx.currentTime + attackTime);
-      gain.gain.linearRampToValueAtTime(sustainLevel, ctx.currentTime + attackTime + decayTime);
+      osc = ctx.createOscillator(); osc.setPeriodicWave(customVoiceWave); osc.frequency.value = freq;
+      lfo = ctx.createOscillator(); lfoGain = ctx.createGain(); lfo.frequency.setValueAtTime(1.5, ctx.currentTime); lfo.frequency.linearRampToValueAtTime(5, ctx.currentTime + 1);
+      lfoGain.gain.setValueAtTime(2.0, ctx.currentTime); lfo.connect(lfoGain); lfoGain.connect(osc.frequency); lfo.start();
+      filter = ctx.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.setValueAtTime(1200, ctx.currentTime); filter.Q.value = 1;
+      osc.connect(filter); filter.connect(gain);
+      const attackTime = 0.08, decayTime = 0.18, sustainLevel = GAINS.voice * 0.6, maxLevel = GAINS.voice * 1.0;
+      gain.gain.linearRampToValueAtTime(maxLevel, ctx.currentTime + attackTime); gain.gain.linearRampToValueAtTime(sustainLevel, ctx.currentTime + attackTime + decayTime);
       gain.gain.linearRampToValueAtTime(0.001, ctx.currentTime + duration);
-      gain.connect(masterGain);
-      osc.start(ctx.currentTime + 0.01 * i);
-      osc.stop(ctx.currentTime + duration + 0.01 * i + 0.08);
-      lfo.stop(ctx.currentTime + duration + 0.01 * i + 0.08);
+      gain.connect(masterGain); osc.start(ctx.currentTime + 0.01 * i); osc.stop(ctx.currentTime + duration + 0.01 * i + 0.08); lfo.stop(ctx.currentTime + duration + 0.01 * i + 0.08);
     } else {
-      osc = ctx.createOscillator();
-      osc.type = currentWaveform === "saw" ? "sawtooth" : currentWaveform;
-      osc.frequency.value = freq;
-      filter = ctx.createBiquadFilter();
-      filter.type = 'lowpass';
-      filter.frequency.setValueAtTime(1200, ctx.currentTime);
-      filter.Q.value = 1;
-      osc.connect(filter);
-      filter.connect(gain);
-
-      let targetGain =
-        currentWaveform === "triangle" ? TRIANGLE_GAIN
-        : currentWaveform === "square" ? SQUARE_GAIN
-        : currentWaveform === "saw" ? SAW_GAIN
-        : SINE_GAIN;
-
+      osc = ctx.createOscillator(); osc.type = currentWaveform === "saw" ? "sawtooth" : currentWaveform; osc.frequency.value = freq;
+      filter = ctx.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.setValueAtTime(1200, ctx.currentTime); filter.Q.value = 1;
+      osc.connect(filter); filter.connect(gain);
+      let targetGain = GAINS[currentWaveform] || GAINS.sine;
       const attackTime = 0.015;
       gain.gain.linearRampToValueAtTime(targetGain, ctx.currentTime + attackTime);
       gain.gain.setValueAtTime(targetGain, ctx.currentTime + attackTime + hold);
       gain.gain.linearRampToValueAtTime(0.012, ctx.currentTime + duration);
-
-      gain.connect(masterGain);
-      osc.start(ctx.currentTime + 0.01 * i);
-      osc.stop(ctx.currentTime + duration + 0.01 * i);
+      gain.connect(masterGain); osc.start(ctx.currentTime + 0.01 * i); osc.stop(ctx.currentTime + duration + 0.01 * i);
     }
   });
 }
 
 function midiToFreq(n) {
-  // Accepts note strings like C4, F#4, Bb4, etc.
-  const notes = {'C':0,'C#':1,'Db':1,'D':2,'D#':3,'Eb':3,'E':4,'F':5,'F#':6,'Gb':6,'G':7,'G#':8,'Ab':8,'A':9,'A#':10,'Bb':10,'B':11,
-    'F♯':6, 'G♯':8, 'B♭':10, 'E♭':3, 'A♭':8, 'C♯':1, 'D♭':1 };
-   let note, octave;
-  if (n.includes('♭')) {
-    note = n.slice(0, 2);
-    octave = parseInt(n.slice(2));
-  } else if (n.includes('♯')) {
-    note = n.slice(0, 2);
-    octave = parseInt(n.slice(2));
-  } else if (n.length > 2 && (n[1] === '#' || n[1] === 'b')) {
-    note = n.slice(0, 2);
-    octave = parseInt(n.slice(2));
-  } else {
-    note = n.slice(0, n.length-1);
-    octave = parseInt(n[n.length-1]);
-  }
+  const notes = {'C':0,'C#':1,'Db':1,'D':2,'D#':3,'Eb':3,'E':4,'F':5,'F#':6,'Gb':6,'G':7,'G#':8,'Ab':8,'A':9,'A#':10,'Bb':10,'B':11, 'F♯':6, 'G♯':8, 'B♭':10, 'E♭':3, 'A♭':8, 'C♯':1, 'D♭':1 };
+  let note, octave;
+  if (n.includes('♭') || n.includes('♯')) { note = n.slice(0, 2); octave = parseInt(n.slice(2)); }
+  else { note = n.slice(0, n.length-1); octave = parseInt(n[n.length-1]); }
   return 440 * Math.pow(2, (notes[note]+(octave-4)*12-9)/12);
 }
 
-// --- Play chord preview on chord select ---
 function playChordPreview(idx) {
-  if (isPlaying) return; // Only preview if NOT playing!
+  if (isPlaying) return;
   const select = document.getElementById('slot' + idx).querySelector('.chord-select');
   const chord = select.value;
   if (!chord || chord === "" || chord === "empty") return;
   
-  // Check for 2nd, 7th, and M/m toggle states
   const { seventhArr, secondArr, majorArr } = getToggleArrays();
-  const addSeventh = seventhArr[idx];
-  const addSecond = secondArr[idx];
-  const toggleState = majorArr[idx];
-  const naturalType = chordTypes[chord];
-  
-  // Start with the base chord notes
+  const addSeventh = seventhArr[idx], addSecond = secondArr[idx], toggleState = majorArr[idx];
   let notes = [...rhythmChordNotes[chord]];
-  
-  // Modify the third if needed based on toggle state
-  if (toggleState !== 'none') {
-    // Only modify if the toggle state differs from natural chord type
-    if ((toggleState === 'major' && naturalType === 'minor') || 
-        (toggleState === 'minor' && naturalType === 'major')) {
-      // Find and replace the third note with alternative third
-      // In rhythmChordNotes, the third is typically at index 2
-      notes[2] = chordAlternateThirds[chord][toggleState + 'Note']; // Use majorNote or minorNote
-    }
+
+  if (chordAlternateThirds[chord]) { // Modify third for playback
+      if (toggleState === 'major') notes[2] = chordAlternateThirds[chord]['majorNote'];
+      else if (toggleState === 'minor') notes[2] = chordAlternateThirds[chord]['minorNote'];
   }
-  
-  // Add 2nd and 7th if enabled
-  if (addSecond && rhythmChordSecondNotes[chord]) {
-    notes.push(rhythmChordSecondNotes[chord]);
-  }
-  if (addSeventh && rhythmChordSeventhNotes[chord]) {
-    notes.push(rhythmChordSeventhNotes[chord]);
-  }
-  
+  if (addSecond && rhythmChordSecondNotes[chord]) notes.push(rhythmChordSecondNotes[chord]);
+  if (addSeventh && rhythmChordSeventhNotes[chord]) notes.push(rhythmChordSeventhNotes[chord]);
   playTriangleNotes(notes);
 }
 
-// --- DOMContentLoaded & Event Listeners ---
 document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("wave-left").onclick = () => handleWaveformDial(-1);
   document.getElementById("wave-right").onclick = () => handleWaveformDial(1);
-  document.getElementById("wave-left").addEventListener("keydown", (e) => {
-    if (e.key === " " || e.key === "Enter" || e.key === "ArrowLeft") {
-      e.preventDefault();
-      handleWaveformDial(-1);
-      document.getElementById("wave-left").focus();
-    }
-  });
-  document.getElementById("wave-right").addEventListener("keydown", (e) => {
-    if (e.key === " " || e.key === "Enter" || e.key === "ArrowRight") {
-      e.preventDefault();
-      handleWaveformDial(1);
-      document.getElementById("wave-right").focus();
-    }
-  });
+  document.getElementById("wave-left").addEventListener("keydown", (e) => { if (e.key===" "||e.key==="Enter"||e.key==="ArrowLeft") { e.preventDefault(); handleWaveformDial(-1); e.target.focus(); }});
+  document.getElementById("wave-right").addEventListener("keydown", (e) => { if (e.key===" "||e.key==="Enter"||e.key==="ArrowRight") { e.preventDefault(); handleWaveformDial(1); e.target.focus(); }});
   updateWaveformDisplay();
 
-  // Initialize A/B/C/D toggle button listeners
-  document.getElementById('toggleA').addEventListener('click', () => switchToggle('A'));
-  document.getElementById('toggleB').addEventListener('click', () => switchToggle('B'));
-  document.getElementById('toggleC').addEventListener('click', () => switchToggle('C'));
-  document.getElementById('toggleD').addEventListener('click', () => switchToggle('D'));
-  
-  document.getElementById('toggleA').addEventListener('keydown', (e) => {
-    if (e.key === " " || e.key === "Enter") {
-      e.preventDefault();
-      switchToggle('A');
-    }
-  });
-  document.getElementById('toggleB').addEventListener('keydown', (e) => {
-    if (e.key === " " || e.key === "Enter") {
-      e.preventDefault();
-      switchToggle('B');
-    }
-  });
-  document.getElementById('toggleC').addEventListener('keydown', (e) => {
-    if (e.key === " " || e.key === "Enter") {
-      e.preventDefault();
-      switchToggle('C');
-    }
-  });
-  document.getElementById('toggleD').addEventListener('keydown', (e) => {
-    if (e.key === " " || e.key === "Enter") {
-      e.preventDefault();
-      switchToggle('D');
-    }
+  ['A', 'B', 'C', 'D'].forEach(t => {
+    const btn = document.getElementById('toggle' + t);
+    btn.addEventListener('click', () => switchToggle(t));
+    btn.addEventListener('keydown', (e) => { if (e.key===" "||e.key==="Enter") { e.preventDefault(); switchToggle(t); }});
   });
 
-  // Chord select
   document.querySelectorAll('.chord-select').forEach((select, idx) => {
     select.addEventListener('change', function() {
-      setSlotColorAndStyle(idx, select);
-      saveCurrentProgression();
-      playChordPreview(idx); // Play the sound when a chord is selected (but only if not playing)
+      setSlotColorAndStyle(idx, select); saveCurrentProgression(); playChordPreview(idx);
     });
-    setSlotColorAndStyle(idx, select);
+    setSlotColorAndStyle(idx, select); // Initial call
   });
 
-  // 7th buttons
   document.querySelectorAll('.seventh-btn').forEach((btn, idx) => {
-    btn.addEventListener('click', function() {
-      toggleSeventh(idx);
-      playChordPreview(idx); // Play on toggle if not playing
-    });
-    btn.addEventListener('keydown', function(e) {
-      if (e.key === " " || e.key === "Enter") {
-        e.preventDefault();
-        toggleSeventh(idx);
-        playChordPreview(idx); // Play on toggle with keyboard if not playing
-      }
-    });
+    btn.addEventListener('click', function() { toggleSeventh(idx); playChordPreview(idx); });
+    btn.addEventListener('keydown', function(e) { if (e.key===" "||e.key==="Enter") { e.preventDefault(); toggleSeventh(idx); playChordPreview(idx); }});
   });
-
-  // 2nd buttons
   document.querySelectorAll('.second-btn').forEach((btn, idx) => {
-    btn.addEventListener('click', function() {
-      toggleSecond(idx);
-      playChordPreview(idx); // Play on toggle if not playing
-    });
-    btn.addEventListener('keydown', function(e) {
-      if (e.key === " " || e.key === "Enter") {
-        e.preventDefault();
-        toggleSecond(idx);
-        playChordPreview(idx); // Play on toggle with keyboard if not playing
-      }
-    });
+    btn.addEventListener('click', function() { toggleSecond(idx); playChordPreview(idx); });
+    btn.addEventListener('keydown', function(e) { if (e.key===" "||e.key==="Enter") { e.preventDefault(); toggleSecond(idx); playChordPreview(idx); }});
   });
   
-  // M/m toggle buttons
-  document.querySelectorAll('.mm-toggle-major, .mm-toggle-minor').forEach((btn) => {
-    btn.addEventListener('click', function() {
-      const slotId = this.closest('.slot-box').id;
-      const idx = parseInt(slotId.replace('slot', ''));
-      toggleMajorMinor(idx);
-    });
-    
-    btn.addEventListener('keydown', function(e) {
-      if (e.key === " " || e.key === "Enter") {
-        e.preventDefault();
-        const slotId = this.closest('.slot-box').id;
-        const idx = parseInt(slotId.replace('slot', ''));
-        toggleMajorMinor(idx);
-      }
-    });
+  // New M/m toggle listeners
+  document.querySelectorAll('.slot-box').forEach((slot, idx) => {
+    const qualityBtn = slot.querySelector('.quality-toggle-btn');
+    if (qualityBtn) {
+      qualityBtn.addEventListener('click', function() { toggleMajorMinor(idx); });
+      qualityBtn.addEventListener('keydown', function(e) {
+        if (e.key === " " || e.key === "Enter") { e.preventDefault(); toggleMajorMinor(idx); }
+      });
+    }
   });
 
-  // Rhythm boxes
   document.querySelectorAll('.bottom-rhythm-box').forEach(box => {
-    box.addEventListener('click', function(e) {
-      box.classList.toggle('active');
-      updateRhythmPictures();
-      saveCurrentProgression();
-    });
-    box.addEventListener('touchstart', function(e) {
-      e.preventDefault();
-      box.classList.toggle('active');
-      updateRhythmPictures();
-      saveCurrentProgression();
-    }, {passive: false});
+    function toggleActive(e) { e.preventDefault(); box.classList.toggle('active'); updateRhythmPictures(); saveCurrentProgression(); }
+    box.addEventListener('click', toggleActive);
+    box.addEventListener('touchstart', toggleActive, {passive: false});
     box.setAttribute('tabindex', '0');
-    box.addEventListener('keydown', function(e) {
-      if (e.key === " " || e.key === "Enter") {
-        e.preventDefault();
-        box.classList.toggle('active');
-        updateRhythmPictures();
-        saveCurrentProgression();
-      }
-    });
+    box.addEventListener('keydown', (e) => { if (e.key===" "||e.key==="Enter") toggleActive(e); });
   });
 
-  // Play/Pause button
   const playPauseBtn = document.getElementById('playPauseBtn');
-  playPauseBtn.addEventListener('click', function() {
-    setPlaying(!isPlaying);
-  });
-  playPauseBtn.addEventListener('touchstart', function(e) {
-    e.preventDefault();
-    setPlaying(!isPlaying);
-  }, {passive: false});
-  playPauseBtn.addEventListener('keydown', function(e) {
-    if (e.key === " " || e.key === "Enter") {
-      e.preventDefault();
-      setPlaying(!isPlaying);
-    }
-  });
+  function togglePlay(e) { e.preventDefault(); setPlaying(!isPlaying); }
+  playPauseBtn.addEventListener('click', togglePlay);
+  playPauseBtn.addEventListener('touchstart', togglePlay, {passive: false});
+  playPauseBtn.addEventListener('keydown', (e) => { if (e.key===" "||e.key==="Enter") togglePlay(e); });
 
-  // BPM input and stepper
-  const bpmInput = document.getElementById('bpmInput');
-  const bpmUp = document.getElementById('bpmUp');
-  const bpmDown = document.getElementById('bpmDown');
-
-  bpmInput.addEventListener('blur', function() {
-    let v = parseInt(bpmInput.value, 10);
-    if (isNaN(v)) v = 90;
-    v = clampBpm(v);
-    setBpmInputValue(v);
-    restartAnimationWithBpm();
+  const bpmInput = document.getElementById('bpmInput'), bpmUp = document.getElementById('bpmUp'), bpmDown = document.getElementById('bpmDown');
+  bpmInput.addEventListener('blur', () => { setBpmInputValue(clampBpm(getBpmInputValue())); restartAnimationWithBpm(); });
+  bpmInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { setBpmInputValue(clampBpm(getBpmInputValue())); restartAnimationWithBpm(); bpmInput.blur(); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); setBpmInputValue(clampBpm(getBpmInputValue() + 1)); restartAnimationWithBpm(); }
+    else if (e.key === 'ArrowDown') { e.preventDefault(); setBpmInputValue(clampBpm(getBpmInputValue() - 1)); restartAnimationWithBpm(); }
   });
-  bpmInput.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') {
-      let v = parseInt(bpmInput.value, 10);
-      if (isNaN(v)) v = 90;
-      v = clampBpm(v);
-      setBpmInputValue(v);
-      restartAnimationWithBpm();
-      bpmInput.blur();
-    } else if (e.key === 'ArrowUp') {
-      let v = parseInt(bpmInput.value, 10);
-      if (isNaN(v)) v = 90;
-      v = clampBpm(v + 1);
-      setBpmInputValue(v);
-      restartAnimationWithBpm();
-      e.preventDefault();
-    } else if (e.key === 'ArrowDown') {
-      let v = parseInt(bpmInput.value, 10);
-      if (isNaN(v)) v = 90;
-      v = clampBpm(v - 1);
-      setBpmInputValue(v);
-      restartAnimationWithBpm();
-      e.preventDefault();
-    }
-  });
-
-  // BPM hold (for holding arrow)
   let bpmHoldInterval = null, bpmHoldTimeout = null;
-  function stepBpm(dir) {
-    let v = parseInt(bpmInput.value, 10);
-    if (isNaN(v)) v = 90;
-    v = clampBpm(v + dir);
-    setBpmInputValue(v);
-    restartAnimationWithBpm();
-  }
-  function startHold(dir) {
-    stepBpm(dir);
-    bpmHoldTimeout = setTimeout(() => {
-      bpmHoldInterval = setInterval(() => stepBpm(dir), 60);
-    }, 500);
-  }
-  function stopHold() {
-    clearTimeout(bpmHoldTimeout);
-    clearInterval(bpmHoldInterval);
-    bpmHoldTimeout = null;
-    bpmHoldInterval = null;
-  }
-  bpmUp.addEventListener('mousedown', e => { startHold(+1); });
-  bpmUp.addEventListener('touchstart', e => { e.preventDefault(); startHold(+1); }, {passive: false});
-  bpmUp.addEventListener('mouseup', stopHold);
-  bpmUp.addEventListener('mouseleave', stopHold);
-  bpmUp.addEventListener('touchend', stopHold);
-  bpmUp.addEventListener('touchcancel', stopHold);
-  bpmDown.addEventListener('mousedown', e => { startHold(-1); });
-  bpmDown.addEventListener('touchstart', e => { e.preventDefault(); startHold(-1); }, {passive: false});
-  bpmDown.addEventListener('mouseup', stopHold);
-  bpmDown.addEventListener('mouseleave', stopHold);
-  bpmDown.addEventListener('touchend', stopHold);
-  bpmDown.addEventListener('touchcancel', stopHold);
-  bpmUp.addEventListener('click', function() { stepBpm(+1); });
-  bpmDown.addEventListener('click', function() { stepBpm(-1); });
-
-  const brushToggle = document.getElementById('brushToggle');
-  if (brushToggle) {
-    brushToggle.addEventListener('change', function() {
-      // Nothing needs to be done immediately - playBrush will check this value when it's called
-    });
-  }
+  function stepBpm(dir) { setBpmInputValue(clampBpm(getBpmInputValue() + dir)); restartAnimationWithBpm(); }
+  function startHold(dir) { stepBpm(dir); bpmHoldTimeout = setTimeout(() => { bpmHoldInterval = setInterval(() => stepBpm(dir), 60); }, 500); }
+  function stopHold() { clearTimeout(bpmHoldTimeout); clearInterval(bpmHoldInterval); bpmHoldTimeout=null; bpmHoldInterval=null; }
+  [bpmUp, bpmDown].forEach((btn, i) => {
+    const dir = i === 0 ? 1 : -1;
+    btn.addEventListener('mousedown', () => startHold(dir)); btn.addEventListener('touchstart', (e) => { e.preventDefault(); startHold(dir);}, {passive:false});
+    btn.addEventListener('mouseup', stopHold); btn.addEventListener('mouseleave', stopHold);
+    btn.addEventListener('touchend', stopHold); btn.addEventListener('touchcancel', stopHold);
+    btn.addEventListener('click', () => stepBpm(dir));
+  });
 
   document.getElementById('clear').addEventListener('click', clearAll);
-  document.getElementById('clear').addEventListener('touchstart', function(e) {
-    e.preventDefault();
-    clearAll();
-  }, {passive: false});
+  document.getElementById('clear').addEventListener('touchstart', (e)=>{e.preventDefault();clearAll();},{passive:false});
 
   updateRhythmPictures();
+  for (let i = 0; i < slotIds.length; i++) unhighlightSlot(i);
+  for (let i = 0; i < 4; i++) unhighlightPicture(i);
+  setPlaying(false); // Initialize play/pause button
 
-  for (let i = 0; i < slotIds.length; i++) {
-    unhighlightSlot(i);
-  }
-  for (let i = 0; i < 4; i++) {
-    unhighlightPicture(i);
-  }
-
-  isPlaying = false;
-  const playIcon = document.getElementById('playIcon');
-  const pauseIcon = document.getElementById('pauseIcon');
-  playIcon.style.display = "block";
-  pauseIcon.style.display = "none";
-
-  // Initialize states
-  saveCurrentProgression();
+  saveCurrentProgression(); // Save initial 'none' states for all progressions
   updateSeventhBtnStates();
   updateSecondBtnStates();
-  updateMajorMinorBtnStates();
+  _updateAllQualityButtonVisualsCurrentToggle(); // Initialize new quality buttons for the current toggle
 });
