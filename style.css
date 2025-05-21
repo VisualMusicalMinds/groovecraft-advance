@@ -972,4 +972,59 @@ input[type="number"].bpm-input {
     padding: calc(var(--box-size) * 0.035) 0;
     font-size: calc(var(--box-size) * 0.10);
   }
+}/* M/m toggle styling with unselected state */
+.mm-toggle {
+  position: absolute;
+  bottom: calc(var(--box-size) * 0.40);
+  left: calc(var(--box-size) * 0.01);
+  display: flex;
+  flex-direction: column;
+  width: calc(var(--box-size) * 0.25);
+  height: calc(var(--box-size) * 0.5);
+  z-index: 20;
+}
+
+.mm-toggle-btn {
+  flex: 1;
+  background: transparent;
+  border: 0px solid #1976d2;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  transition: background 0.13s, color 0.13s, border 0.13s;
+}
+
+.mm-toggle-major {
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  font-size: calc(var(--box-size) * 0.14);
+  margin-bottom: 1px;
+}
+
+.mm-toggle-minor {
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+  font-size: calc(var(--box-size) * 0.14);
+}
+
+/* Default state - both buttons unselected/white */
+.mm-toggle-btn {
+  background: transparent;
+  color: #fff;
+}
+
+.mm-toggle-btn.mm-active {
+  background: #1976d2;
+  color: #fff;
+  border-color: #135ba1;
+}
+
+.mm-toggle-btn:focus-visible {
+  outline: 2px solid #135ba1;
+  z-index: 2;
 }
