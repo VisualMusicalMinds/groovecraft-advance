@@ -988,9 +988,12 @@ input[type="number"].bpm-input {
 .quality-toggle-btn {
   width: calc(var(--box-size) * 0.28); 
   height: calc(var(--box-size) * 0.28);
-  background-color: rgba(255, 255, 255, 0.7); /* Semi-transparent white background */
-  border: 2px solid #ccc; /* Default light grey border */
-  color: #333; /* Default dark grey text */
+  /* Default (inactive/invisible) state */
+  background-color: transparent; /* No background */
+  border: 2px solid transparent; /* No visible border, but maintain size */
+  color: white;                  /* White text (will blend with white background) */
+  box-shadow: none;              /* No shadow */
+  
   font-weight: bold;
   font-size: calc(var(--box-size) * 0.14);
   cursor: pointer;
@@ -999,19 +1002,28 @@ input[type="number"].bpm-input {
   justify-content: center;
   border-radius: 50%; /* Circular */
   transition: background-color 0.15s, color 0.15s, border-color 0.15s, box-shadow 0.15s;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
   outline: none;
   box-sizing: border-box;
 }
 
 .quality-toggle-btn.quality-active {
+  /* Active state (M or m pressed) */
+  background-color: rgba(255, 255, 255, 0.7); /* Semi-transparent white background */
   border-color: #1976d2; /* Blue border */
-  /* background-color: #e3f1ff; */ /* Optional: Light blue background when active */
-  color: #1976d2; /* Blue text */
+  color: #1976d2;       /* Blue text */
   /* Create the "blue circle" effect with box-shadow */
-  box-shadow: 0 0 0 2px #1976d2, 0 1px 2px rgba(0,0,0,0.1); /* Blue ring + original shadow */
+  box-shadow: 0 0 0 2px #1976d2, 0 1px 2px rgba(0,0,0,0.1); /* Blue ring + slight inner shadow */
 }
 
 .quality-toggle-btn:focus-visible {
-  box-shadow: 0 0 0 2px #135ba1, 0 0 0 4px rgba(25, 118, 210, 0.3), 0 1px 2px rgba(0,0,0,0.1); /* Enhanced focus */
+  /* Keep a distinct focus style, even if default is transparent */
+  /* This will apply whether active or not, if focused */
+  box-shadow: 0 0 0 2px #135ba1, 0 0 0 4px rgba(25, 118, 210, 0.4), 0 1px 2px rgba(0,0,0,0.1); 
 }
+
+/* Ensure focus on active has the right colors if different from default focus */
+.quality-toggle-btn.quality-active:focus-visible {
+    border-color: #135ba1; /* Darker blue border on focus for active */
+    box-shadow: 0 0 0 2px #135ba1, 0 0 0 4px rgba(25, 118, 210, 0.4), 0 1px 2px rgba(0,0,0,0.1);
+}
+
