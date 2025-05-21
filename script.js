@@ -25,6 +25,82 @@ let secondA = [false, false, false, false];
 let secondB = [false, false, false, false];
 let secondC = [false, false, false, false]; // New C seconds
 let secondD = [false, false, false, false]; // New D seconds
+// M/m toggle variables - 'none' = unselected, 'major' = M selected, 'minor' = m selected
+let majorA = ['none', 'none', 'none', 'none'];
+let majorB = ['none', 'none', 'none', 'none'];
+let majorC = ['none', 'none', 'none', 'none'];
+let majorD = ['none', 'none', 'none', 'none'];
+
+// Add chord type mapping for thirds
+const chordTypes = {
+  'C': 'major',
+  'Dm': 'minor',
+  'Em': 'minor',
+  'F': 'major',
+  'G': 'major',
+  'Am': 'minor',
+  'D': 'major',
+  'E': 'major',
+  'Bb': 'major'
+};
+
+// Define alternative thirds for major/minor conversions
+const chordAlternateThirds = {
+  'C': {
+    'major': 'E',
+    'minor': 'E♭',
+    'majorNote': 'E4',
+    'minorNote': 'Eb4'
+  },
+  'Dm': {
+    'major': 'F♯',
+    'minor': 'F',
+    'majorNote': 'F#4',
+    'minorNote': 'F4'
+  },
+  'Em': {
+    'major': 'G♯',
+    'minor': 'G',
+    'majorNote': 'G#4',
+    'minorNote': 'G4'
+  },
+  'F': {
+    'major': 'A',
+    'minor': 'A♭',
+    'majorNote': 'A4',
+    'minorNote': 'Ab4'
+  },
+  'G': {
+    'major': 'B',
+    'minor': 'B♭',
+    'majorNote': 'B4',
+    'minorNote': 'Bb4'
+  },
+  'Am': {
+    'major': 'C♯',
+    'minor': 'C',
+    'majorNote': 'C#5',
+    'minorNote': 'C5'
+  },
+  'D': {
+    'major': 'F♯',
+    'minor': 'F',
+    'majorNote': 'F#4',
+    'minorNote': 'F4'
+  },
+  'E': {
+    'major': 'G♯',
+    'minor': 'G',
+    'majorNote': 'G#4',
+    'minorNote': 'G4'
+  },
+  'Bb': {
+    'major': 'D',
+    'minor': 'D♭',
+    'majorNote': 'D4',
+    'minorNote': 'Db4'
+  }
+};
 
 function setupCustomVoiceWave() {
   const harmonics = 20;
@@ -79,32 +155,51 @@ function saveCurrentProgression() {
   const seventhStates = Array.from(document.querySelectorAll('.seventh-btn')).map(btn => btn.classList.contains('active'));
   const secondStates = Array.from(document.querySelectorAll('.second-btn')).map(btn => btn.classList.contains('active'));
   
+  // Get the M/m toggle states - we check if major button is active, minor button is active, or neither
+  const majorStates = [];
+  document.querySelectorAll('.slot-box').forEach(slot => {
+    const majorBtn = slot.querySelector('.mm-toggle-major');
+    const minorBtn = slot.querySelector('.mm-toggle-minor');
+    
+    if (majorBtn && majorBtn.classList.contains('mm-active')) {
+      majorStates.push('major');
+    } else if (minorBtn && minorBtn.classList.contains('mm-active')) {
+      majorStates.push('minor');
+    } else {
+      majorStates.push('none');
+    }
+  });
+  
   if (currentToggle === 'A') {
     progressionA = [...chordValues];
     rhythmBoxesA = [...rhythmBoxStates];
     seventhA = [...seventhStates];
     secondA = [...secondStates];
+    majorA = [...majorStates];
   } else if (currentToggle === 'B') {
     progressionB = [...chordValues];
     rhythmBoxesB = [...rhythmBoxStates];
     seventhB = [...seventhStates];
     secondB = [...secondStates];
+    majorB = [...majorStates];
   } else if (currentToggle === 'C') {
     progressionC = [...chordValues];
     rhythmBoxesC = [...rhythmBoxStates];
     seventhC = [...seventhStates];
     secondC = [...secondStates];
+    majorC = [...majorStates];
   } else if (currentToggle === 'D') {
     progressionD = [...chordValues];
     rhythmBoxesD = [...rhythmBoxStates];
     seventhD = [...seventhStates];
     secondD = [...secondStates];
+    majorD = [...majorStates];
   }
 }
 
 function loadProgression(toggle) {
   // Load the chord selections, rhythm box states, 7th toggles, and 2nd toggles from the specified toggle
-  let progression, rhythmBoxStates, seventhStates, secondStates;
+  let progression, rhythmBoxStates, seventhStates, secondStates, majorStates;
   
   // Determine which set of variables to use based on toggle
   switch(toggle) {
@@ -113,30 +208,35 @@ function loadProgression(toggle) {
       rhythmBoxStates = rhythmBoxesA;
       seventhStates = seventhA;
       secondStates = secondA;
+      majorStates = majorA;
       break;
     case 'B':
       progression = progressionB;
       rhythmBoxStates = rhythmBoxesB;
       seventhStates = seventhB;
       secondStates = secondB;
+      majorStates = majorB;
       break;
     case 'C':
       progression = progressionC;
       rhythmBoxStates = rhythmBoxesC;
       seventhStates = seventhC;
       secondStates = secondC;
+      majorStates = majorC;
       break;
     case 'D':
       progression = progressionD;
       rhythmBoxStates = rhythmBoxesD;
       seventhStates = seventhD;
       secondStates = secondD;
+      majorStates = majorD;
       break;
     default:
       progression = progressionA;
       rhythmBoxStates = rhythmBoxesA;
       seventhStates = seventhA;
       secondStates = secondA;
+      majorStates = majorA;
   }
 
   // Set chord selections
@@ -163,6 +263,25 @@ function loadProgression(toggle) {
   document.querySelectorAll('.second-btn').forEach((btn, idx) => {
     btn.classList.toggle('active', secondStates[idx]);
   });
+  
+  // Set M/m toggle states
+  document.querySelectorAll('.slot-box').forEach((slot, idx) => {
+    const majorBtn = slot.querySelector('.mm-toggle-major');
+    const minorBtn = slot.querySelector('.mm-toggle-minor');
+    if (majorBtn && minorBtn) {
+      // Reset both buttons first
+      majorBtn.classList.remove('mm-active');
+      minorBtn.classList.remove('mm-active');
+      
+      // Set the appropriate button based on state
+      if (majorStates[idx] === 'major') {
+        majorBtn.classList.add('mm-active');
+      } else if (majorStates[idx] === 'minor') {
+        minorBtn.classList.add('mm-active');
+      }
+      // If 'none', both remain inactive
+    }
+  });
 
   updateRhythmPictures();
 }
@@ -188,29 +307,98 @@ function switchToggle(toggle) {
 
 // Helper function to get the current toggle arrays
 function getToggleArrays() {
-  let seventhArr, secondArr;
+  let seventhArr, secondArr, majorArr;
   switch(currentToggle) {
     case 'A':
       seventhArr = seventhA;
       secondArr = secondA;
+      majorArr = majorA;
       break;
     case 'B':
       seventhArr = seventhB;
       secondArr = secondB;
+      majorArr = majorB;
       break;
     case 'C':
       seventhArr = seventhC;
       secondArr = secondC;
+      majorArr = majorC;
       break;
     case 'D':
       seventhArr = seventhD;
       secondArr = secondD;
+      majorArr = majorD;
       break;
     default:
       seventhArr = seventhA;
       secondArr = secondA;
+      majorArr = majorA;
   }
-  return { seventhArr, secondArr };
+  return { seventhArr, secondArr, majorArr };
+}
+
+// --- M/m Toggle Functions ---
+function toggleMajorMinor(idx) {
+  const { majorArr } = getToggleArrays();
+  const slot = document.getElementById('slot'+idx);
+  const majorBtn = slot.querySelector('.mm-toggle-major');
+  const minorBtn = slot.querySelector('.mm-toggle-minor');
+  const select = slot.querySelector('.chord-select');
+  const chord = select.value;
+  
+  // Skip if no chord is selected
+  if (!chord || chord === "" || chord === "empty") {
+    return;
+  }
+  
+  // Get the chord's natural type (major or minor)
+  const naturalType = chordTypes[chord];
+  
+  // Cycle through states: none -> major -> minor -> none
+  if (majorArr[idx] === 'none') {
+    // From none to major
+    majorArr[idx] = 'major';
+    majorBtn.classList.add('mm-active');
+    minorBtn.classList.remove('mm-active');
+  } else if (majorArr[idx] === 'major') {
+    // From major to minor
+    majorArr[idx] = 'minor';
+    majorBtn.classList.remove('mm-active');
+    minorBtn.classList.add('mm-active');
+  } else {
+    // From minor to none
+    majorArr[idx] = 'none';
+    majorBtn.classList.remove('mm-active');
+    minorBtn.classList.remove('mm-active');
+  }
+  
+  // Re-render the slot content and update playback
+  const { seventhArr, secondArr } = getToggleArrays();
+  setSlotColorAndStyle(idx, select, seventhArr[idx], secondArr[idx]);
+  saveCurrentProgression();
+  playChordPreview(idx);
+}
+
+function updateMajorMinorBtnStates() {
+  const { majorArr } = getToggleArrays();
+  document.querySelectorAll('.slot-box').forEach((slot, idx) => {
+    const majorBtn = slot.querySelector('.mm-toggle-major');
+    const minorBtn = slot.querySelector('.mm-toggle-minor');
+    
+    if (majorBtn && minorBtn) {
+      // Reset both buttons
+      majorBtn.classList.remove('mm-active');
+      minorBtn.classList.remove('mm-active');
+      
+      // Set correct button as active based on state
+      if (majorArr[idx] === 'major') {
+        majorBtn.classList.add('mm-active');
+      } else if (majorArr[idx] === 'minor') {
+        minorBtn.classList.add('mm-active');
+      }
+      // If 'none', both remain inactive
+    }
+  });
 }
 
 // --- Chord Note Data Structures ---
@@ -257,7 +445,7 @@ const rhythmChordNotes = {
   'Em': ['E3', 'E4', 'G4', 'B4'],
   'F':  ['F3', 'F4', 'A4', 'C5'],
   'G':  ['G3', 'G4', 'B4', 'D4'],
-  'Am': ['A3', 'E4', 'A4', 'C5'],
+  'Am': ['A3', 'A4', 'C5', 'E5'],
   'D':  ['D3', 'D4', 'F#4', 'A4'],
   'E':  ['E3', 'E4', 'G#4', 'B4'],
   'Bb': ['Bb3', 'D4', 'F4', 'Bb4']
@@ -297,7 +485,9 @@ const noteColorClass = {
   'G♯': 'note-G',
   'B♭': 'note-B',
   'E♭': 'note-E',
-  'A♭': 'note-A'
+  'A♭': 'note-A',
+  'C♯': 'note-C',
+  'D♭': 'note-D'
 };
 
 const restDashImgUrl = "https://visualmusicalminds.github.io/images/CartoonRhythmBox5.svg";
@@ -347,6 +537,7 @@ function setSlotContent(slotIndex, chord, addSeventh, addSecond) {
   const noteRects = slot.querySelector('.note-rects');
   let img = slot.querySelector('.dash-img-slot');
   noteRects.innerHTML = '';
+  
   if (chord === "") {
     if (!img) {
       img = document.createElement('img');
@@ -363,23 +554,41 @@ function setSlotContent(slotIndex, chord, addSeventh, addSecond) {
   } else {
     if (img) img.style.display = "none";
   }
+  
   slot.className = 'slot-box';
+  
   if (!chord || chord === "empty" || chord === "") {
     return;
   }
-  const tones = chordTones[chord];
-  if (!tones) return;
-
-  // Prepare the basic rects from tones
+  
+  // Get the base chord tones
+  let tones = [...chordTones[chord]];
+  
+  // Apply M/m toggle modification
+  const { majorArr } = getToggleArrays();
+  const toggleState = majorArr[slotIndex];
+  const naturalType = chordTypes[chord];
+  
+  // Modify the third if needed based on toggle state
+  if (toggleState !== 'none') {
+    // Only modify if the toggle state differs from natural chord type
+    if ((toggleState === 'major' && naturalType === 'minor') || 
+        (toggleState === 'minor' && naturalType === 'major')) {
+      // Replace the third note (index 1) with alternative third
+      tones[1] = chordAlternateThirds[chord][toggleState];
+    }
+  }
+  
+  // Prepare the basic rects from modified tones
   let rects = tones.map(note => {
     if (note.includes('♯')) {
       const baseLetter = note.charAt(0);
-      return `<div class="note-rect ${noteColorClass[note]}">
+      return `<div class="note-rect ${noteColorClass[note] || noteColorClass[baseLetter]}">
         ${baseLetter}<span class="accidental sharp">♯</span>
       </div>`;
     } else if (note.includes('♭')) {
       const baseLetter = note.charAt(0);
-      return `<div class="note-rect ${noteColorClass[note]}">
+      return `<div class="note-rect ${noteColorClass[note] || noteColorClass[baseLetter]}">
         ${baseLetter}<span class="accidental flat">♭</span>
       </div>`;
     } else {
@@ -427,6 +636,7 @@ function setSlotContent(slotIndex, chord, addSeventh, addSecond) {
     }
     rects.push(display);
   }
+  
   noteRects.innerHTML = rects.join('');
 }
 
@@ -576,17 +786,36 @@ function playEighthNoteStep() {
     } else if (currentSelect.value === "empty") {
       // Play nothing
     } else {
-      // Handle 7th and 2nd
-      const { seventhArr, secondArr } = getToggleArrays();
-      let addSeventh = seventhArr[currentSlotIdx];
-      let addSecond = secondArr[currentSlotIdx];
-      let notes = rhythmChordNotes[currentSelect.value] ? [...rhythmChordNotes[currentSelect.value]] : [];
-      if (addSecond && rhythmChordSecondNotes[currentSelect.value]) {
-        notes.push(rhythmChordSecondNotes[currentSelect.value]);
+      const chord = currentSelect.value;
+      // Handle 7th, 2nd, and M/m toggle
+      const { seventhArr, secondArr, majorArr } = getToggleArrays();
+      const addSeventh = seventhArr[currentSlotIdx];
+      const addSecond = secondArr[currentSlotIdx];
+      const toggleState = majorArr[currentSlotIdx];
+      const naturalType = chordTypes[chord];
+      
+      // Start with the base chord notes
+      let notes = [...rhythmChordNotes[chord]];
+      
+      // Modify the third if needed based on toggle state
+      if (toggleState !== 'none') {
+        // Only modify if the toggle state differs from natural chord type
+        if ((toggleState === 'major' && naturalType === 'minor') || 
+            (toggleState === 'minor' && naturalType === 'major')) {
+          // Find and replace the third note with alternative third
+          // In rhythmChordNotes, the third is typically at index 2
+          notes[2] = chordAlternateThirds[chord][toggleState + 'Note']; // Use majorNote or minorNote
+        }
       }
-      if (addSeventh && rhythmChordSeventhNotes[currentSelect.value]) {
-        notes.push(rhythmChordSeventhNotes[currentSelect.value]);
+      
+      // Add 2nd and 7th if enabled
+      if (addSecond && rhythmChordSecondNotes[chord]) {
+        notes.push(rhythmChordSecondNotes[chord]);
       }
+      if (addSeventh && rhythmChordSeventhNotes[chord]) {
+        notes.push(rhythmChordSeventhNotes[chord]);
+      }
+      
       playTriangleNotes(notes);
     }
   }
@@ -654,20 +883,27 @@ function clearAll() {
     // Clear 2nd button
     const btn2 = slot.querySelector('.second-btn');
     if (btn2) btn2.classList.remove('active');
+    // Clear M/m toggle buttons
+    const majorBtn = slot.querySelector('.mm-toggle-major');
+    const minorBtn = slot.querySelector('.mm-toggle-minor');
+    if (majorBtn) majorBtn.classList.remove('mm-active');
+    if (minorBtn) minorBtn.classList.remove('mm-active');
   }
 
   // Clear the rhythm boxes
   document.querySelectorAll('.bottom-rhythm-box').forEach(box => box.classList.remove('active'));
   updateRhythmPictures();
 
-  // Clear 7th/2nd arrays based on current toggle
-  const { seventhArr, secondArr } = getToggleArrays();
+  // Clear state arrays based on current toggle
+  const { seventhArr, secondArr, majorArr } = getToggleArrays();
   for (let i = 0; i < 4; i++) {
     seventhArr[i] = false;
     secondArr[i] = false;
+    majorArr[i] = 'none'; // Reset to unselected state
   }
   updateSeventhBtnStates();
   updateSecondBtnStates();
+  updateMajorMinorBtnStates();
 
   // Update the current progression in memory
   saveCurrentProgression();
@@ -798,7 +1034,7 @@ async function playTriangleNotes(notes) {
 function midiToFreq(n) {
   // Accepts note strings like C4, F#4, Bb4, etc.
   const notes = {'C':0,'C#':1,'Db':1,'D':2,'D#':3,'Eb':3,'E':4,'F':5,'F#':6,'Gb':6,'G':7,'G#':8,'Ab':8,'A':9,'A#':10,'Bb':10,'B':11,
-    'F♯':6, 'G♯':8, 'B♭':10, 'E♭':3, 'A♭':8 };
+    'F♯':6, 'G♯':8, 'B♭':10, 'E♭':3, 'A♭':8, 'C♯':1, 'D♭':1 };
    let note, octave;
   if (n.includes('♭')) {
     note = n.slice(0, 2);
@@ -822,17 +1058,36 @@ function playChordPreview(idx) {
   const select = document.getElementById('slot' + idx).querySelector('.chord-select');
   const chord = select.value;
   if (!chord || chord === "" || chord === "empty") return;
-  // Check if 2nd or 7th is selected for this chord
-  const { seventhArr, secondArr } = getToggleArrays();
-  let addSeventh = seventhArr[idx];
-  let addSecond = secondArr[idx];
-  let notes = rhythmChordNotes[chord] ? [...rhythmChordNotes[chord]] : [];
+  
+  // Check for 2nd, 7th, and M/m toggle states
+  const { seventhArr, secondArr, majorArr } = getToggleArrays();
+  const addSeventh = seventhArr[idx];
+  const addSecond = secondArr[idx];
+  const toggleState = majorArr[idx];
+  const naturalType = chordTypes[chord];
+  
+  // Start with the base chord notes
+  let notes = [...rhythmChordNotes[chord]];
+  
+  // Modify the third if needed based on toggle state
+  if (toggleState !== 'none') {
+    // Only modify if the toggle state differs from natural chord type
+    if ((toggleState === 'major' && naturalType === 'minor') || 
+        (toggleState === 'minor' && naturalType === 'major')) {
+      // Find and replace the third note with alternative third
+      // In rhythmChordNotes, the third is typically at index 2
+      notes[2] = chordAlternateThirds[chord][toggleState + 'Note']; // Use majorNote or minorNote
+    }
+  }
+  
+  // Add 2nd and 7th if enabled
   if (addSecond && rhythmChordSecondNotes[chord]) {
     notes.push(rhythmChordSecondNotes[chord]);
   }
   if (addSeventh && rhythmChordSeventhNotes[chord]) {
     notes.push(rhythmChordSeventhNotes[chord]);
   }
+  
   playTriangleNotes(notes);
 }
 
@@ -923,6 +1178,24 @@ document.addEventListener("DOMContentLoaded", function() {
         e.preventDefault();
         toggleSecond(idx);
         playChordPreview(idx); // Play on toggle with keyboard if not playing
+      }
+    });
+  });
+  
+  // M/m toggle buttons
+  document.querySelectorAll('.mm-toggle-major, .mm-toggle-minor').forEach((btn) => {
+    btn.addEventListener('click', function() {
+      const slotId = this.closest('.slot-box').id;
+      const idx = parseInt(slotId.replace('slot', ''));
+      toggleMajorMinor(idx);
+    });
+    
+    btn.addEventListener('keydown', function(e) {
+      if (e.key === " " || e.key === "Enter") {
+        e.preventDefault();
+        const slotId = this.closest('.slot-box').id;
+        const idx = parseInt(slotId.replace('slot', ''));
+        toggleMajorMinor(idx);
       }
     });
   });
@@ -1068,8 +1341,9 @@ document.addEventListener("DOMContentLoaded", function() {
   playIcon.style.display = "block";
   pauseIcon.style.display = "none";
 
-  // Initialize A with current state
+  // Initialize states
   saveCurrentProgression();
   updateSeventhBtnStates();
   updateSecondBtnStates();
+  updateMajorMinorBtnStates();
 });
