@@ -975,56 +975,43 @@ input[type="number"].bpm-input {
 }/* M/m toggle styling with unselected state */
 .mm-toggle {
   position: absolute;
-  bottom: calc(var(--box-size) * 0.40);
-  left: calc(var(--box-size) * 0.01);
+  bottom: calc(var(--box-size) * 0.40); /* Original bottom edge of the M/m block */
+  left: calc(var(--box-size) * 0.01);   /* Original left edge */
+  width: calc(var(--box-size) * 0.25);  /* Original width of one button */
+  height: calc(var(--box-size) * 0.5);  /* Original height of the M/m block */
   display: flex;
-  flex-direction: column;
-  width: calc(var(--box-size) * 0.25);
-  height: calc(var(--box-size) * 0.5);
+  align-items: center; /* Vertically center the button in this block */
+  justify-content: center; /* Horizontally center */
   z-index: 20;
 }
 
-.mm-toggle-btn {
-  flex: 1;
-  background: transparent;
-  border: 0px solid #1976d2;
-  color: #fff;
+.quality-toggle-btn {
+  width: calc(var(--box-size) * 0.28); 
+  height: calc(var(--box-size) * 0.28);
+  background-color: rgba(255, 255, 255, 0.7); /* Semi-transparent white background */
+  border: 2px solid #ccc; /* Default light grey border */
+  color: #333; /* Default dark grey text */
   font-weight: bold;
+  font-size: calc(var(--box-size) * 0.14);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0;
-  margin: 0;
-  transition: background 0.13s, color 0.13s, border 0.13s;
+  border-radius: 50%; /* Circular */
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s, box-shadow 0.15s;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  outline: none;
+  box-sizing: border-box;
 }
 
-.mm-toggle-major {
-  border-top-left-radius: 6px;
-  border-top-right-radius: 6px;
-  font-size: calc(var(--box-size) * 0.14);
-  margin-bottom: 1px;
+.quality-toggle-btn.quality-active {
+  border-color: #1976d2; /* Blue border */
+  /* background-color: #e3f1ff; */ /* Optional: Light blue background when active */
+  color: #1976d2; /* Blue text */
+  /* Create the "blue circle" effect with box-shadow */
+  box-shadow: 0 0 0 2px #1976d2, 0 1px 2px rgba(0,0,0,0.1); /* Blue ring + original shadow */
 }
 
-.mm-toggle-minor {
-  border-bottom-left-radius: 6px;
-  border-bottom-right-radius: 6px;
-  font-size: calc(var(--box-size) * 0.14);
-}
-
-/* Default state - both buttons unselected/white */
-.mm-toggle-btn {
-  background: transparent;
-  color: #fff;
-}
-
-.mm-toggle-btn.mm-active {
-  background: #1976d2;
-  color: #fff;
-  border-color: #135ba1;
-}
-
-.mm-toggle-btn:focus-visible {
-  outline: 2px solid #135ba1;
-  z-index: 2;
+.quality-toggle-btn:focus-visible {
+  box-shadow: 0 0 0 2px #135ba1, 0 0 0 4px rgba(25, 118, 210, 0.3), 0 1px 2px rgba(0,0,0,0.1); /* Enhanced focus */
 }
