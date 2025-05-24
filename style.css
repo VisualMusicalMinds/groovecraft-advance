@@ -354,7 +354,7 @@ input[type="number"].bpm-input:focus {
 .note-rect {
   flex: 1 1 auto;
   display: flex;
-  align-items: center;
+  align-items: flex-start; /* Changed from center to flex-start to align at top */
   justify-content: center;
   font-size: calc(var(--box-size) * 0.2);
   font-weight: bold;
@@ -364,6 +364,7 @@ input[type="number"].bpm-input:focus {
   user-select: none;
   min-width: 0;
   min-height: calc(var(--box-size) * 0.35);
+  padding-top: calc(var(--box-size) * 0.05); /* Added padding at the top for some spacing */
 }
 .note-C { background: #F44336; }
 .note-D { background: #FF9800; }
