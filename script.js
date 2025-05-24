@@ -388,25 +388,56 @@ function restartAnimationWithBpm() {
 function playEighthNoteStep() {
   const currentSlotIdx = slotHighlightStep % 4;
   const currentSelect = document.getElementById(`slot${currentSlotIdx}`).querySelector('.chord-select');
-  const box = document.querySelector(`.bottom-rhythm-box[data-pair="${Math.floor((rhythmStep % 8) / 2)}"][data-which="${(rhythmStep % 8) % 2}"]`);
+  const currentPair = Math.floor((rhythmStep % 8) / 2);
+  const currentWhich = (rhythmStep % 8) % 2;
+  const box = document.querySelector(`.bottom-rhythm-box[data-pair="${currentPair}"][data-which="${currentWhich}"]`);
   
-  if (box && box.classList.contains('active')) {
-    if (currentSelect.value === "") playBassDrum();
-    else if (currentSelect.value !== "empty") {
+  // Check if this is a quarter note pattern (first box active, second box inactive)
+  const isQuarterNote = currentWhich === 0 && box && box.classList.contains('active');
+  if (isQuarterNote) {
+    // Look ahead to see if the next box (the "and" of the beat) is inactive
+    const nextBox = document.querySelector(`.bottom-rhythm-box[data-pair="${currentPair}"][data-which="1"]`);
+    const isNextBoxInactive = nextBox && !nextBox.classList.contains('active');
+    
+    if (currentSelect.value === "") {
+      playBassDrum(isNextBoxInactive ? 0.38 : 0.19); // Double duration for quarter notes
+    } else if (currentSelect.value !== "empty") {
       const chord = currentSelect.value;
       const { seventhArr, secondArr, majorArr } = getToggleArrays();
       const addSeventh = seventhArr[currentSlotIdx], addSecond = secondArr[currentSlotIdx], toggleState = majorArr[currentSlotIdx];
       let notes = [...rhythmChordNotes[chord]];
       
       if (chordAlternateThirds[chord]) { // Modify third for playback
-          if (toggleState === 'major') notes[2] = chordAlternateThirds[chord]['majorNote'];
-          else if (toggleState === 'minor') notes[2] = chordAlternateThirds[chord]['minorNote'];
+        if (toggleState === 'major') notes[2] = chordAlternateThirds[chord]['majorNote'];
+        else if (toggleState === 'minor') notes[2] = chordAlternateThirds[chord]['minorNote'];
       }
       if (addSecond && rhythmChordSecondNotes[chord]) notes.push(rhythmChordSecondNotes[chord]);
       if (addSeventh && rhythmChordSeventhNotes[chord]) notes.push(rhythmChordSeventhNotes[chord]);
-      playTriangleNotes(notes);
+      
+      // Pass flag to extend note duration for quarter notes
+      playTriangleNotes(notes, isNextBoxInactive);
+    }
+  } else if (box && box.classList.contains('active')) {
+    // Regular eighth note behavior (no change)
+    if (currentSelect.value === "") {
+      playBassDrum();
+    } else if (currentSelect.value !== "empty") {
+      const chord = currentSelect.value;
+      const { seventhArr, secondArr, majorArr } = getToggleArrays();
+      const addSeventh = seventhArr[currentSlotIdx], addSecond = secondArr[currentSlotIdx], toggleState = majorArr[currentSlotIdx];
+      let notes = [...rhythmChordNotes[chord]];
+      
+      if (chordAlternateThirds[chord]) { // Modify third for playback
+        if (toggleState === 'major') notes[2] = chordAlternateThirds[chord]['majorNote'];
+        else if (toggleState === 'minor') notes[2] = chordAlternateThirds[chord]['minorNote'];
+      }
+      if (addSecond && rhythmChordSecondNotes[chord]) notes.push(rhythmChordSecondNotes[chord]);
+      if (addSeventh && rhythmChordSeventhNotes[chord]) notes.push(rhythmChordSeventhNotes[chord]);
+      
+      playTriangleNotes(notes, false);
     }
   }
+  
   if (rhythmStep % 2 === 0) { playBrush(); updatePictureHighlights(); pictureHighlightStep = (pictureHighlightStep + 1) % 4; }
   if (rhythmStep === 0) updateSlotHighlights();
   rhythmStep = (rhythmStep + 1) % 8;
@@ -461,23 +492,24 @@ async function playBrush() {
   noise.connect(filter).connect(gain).connect(masterGain); noise.start(); noise.stop(ctx.currentTime + duration);
 }
 
-async function playBassDrum() {
-  await ensureAudio(); const duration = 0.19; const osc = ctx.createOscillator(); osc.type = "sine";
-  osc.frequency.setValueAtTime(140, ctx.currentTime); osc.frequency.exponentialRampToValueAtTime(42, ctx.currentTime + duration * 0.85);
-  const gain = ctx.createGain(); gain.gain.setValueAtTime(1, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
-  osc.connect(gain).connect(masterGain); osc.start(); osc.stop(ctx.currentTime + duration);
+// Update the bass drum function to accept a custom duration
+async function playBassDrum(customDuration) {
+  await ensureAudio(); 
+  const duration = customDuration || 0.19; // Use custom duration if provided, otherwise default
+  const osc = ctx.createOscillator(); 
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(140, ctx.currentTime); 
+  osc.frequency.exponentialRampToValueAtTime(42, ctx.currentTime + duration * 0.85);
+  const gain = ctx.createGain(); 
+  gain.gain.setValueAtTime(1, ctx.currentTime); 
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+  osc.connect(gain).connect(masterGain); 
+  osc.start(); 
+  osc.stop(ctx.currentTime + duration);
 }
 
-// --- Sound Synthesis Variables ---
-let ctx = null, masterGain = null, compressor = null;
-let customVoiceWave = null;
-const waveforms = ['sine', 'triangle', 'square', 'saw', 'voice'];
-let currentWaveformIndex = 1;
-let currentWaveform = waveforms[currentWaveformIndex];
-
-// Other variables and functions unchanged...
-
-async function playTriangleNotes(notes) {
+// Modify the playTriangleNotes function to accept a parameter for quarter note extension
+async function playTriangleNotes(notes, extendDuration = false) {
   await ensureAudio(); 
   
   // Different sound characteristics for each waveform type
@@ -547,6 +579,9 @@ async function playTriangleNotes(notes) {
   // Get the current sound profile
   const profile = soundProfiles[currentWaveform];
   
+  // Extend duration for quarter notes if requested
+  let durationMultiplier = extendDuration ? 2 : 1;
+  
   notes.forEach((note, i) => {
     const freq = midiToFreq(note);
     let osc, gain, lfo, lfoGain, filter;
@@ -584,12 +619,12 @@ async function playTriangleNotes(notes) {
       
       gain.gain.linearRampToValueAtTime(maxLevel, ctx.currentTime + attackTime);
       gain.gain.linearRampToValueAtTime(sustainLevel, ctx.currentTime + attackTime + decayTime);
-      gain.gain.linearRampToValueAtTime(0.001, ctx.currentTime + profile.duration);
+      gain.gain.linearRampToValueAtTime(0.001, ctx.currentTime + profile.duration * durationMultiplier);
       
       gain.connect(masterGain);
       osc.start(ctx.currentTime + 0.01 * i);
-      osc.stop(ctx.currentTime + profile.duration + 0.01 * i + 0.08);
-      lfo.stop(ctx.currentTime + profile.duration + 0.01 * i + 0.08);
+      osc.stop(ctx.currentTime + profile.duration * durationMultiplier + 0.01 * i + 0.08);
+      lfo.stop(ctx.currentTime + profile.duration * durationMultiplier + 0.01 * i + 0.08);
     } else if (currentWaveform === "saw") {
       // Saw: Bright with initial pitch bend for character
       osc = ctx.createOscillator();
@@ -611,7 +646,7 @@ async function playTriangleNotes(notes) {
       filter = ctx.createBiquadFilter();
       filter.type = 'lowpass';
       filter.frequency.setValueAtTime(profile.filterFreq, ctx.currentTime);
-      filter.frequency.linearRampToValueAtTime(profile.filterFreq * 0.5, ctx.currentTime + profile.duration);
+      filter.frequency.linearRampToValueAtTime(profile.filterFreq * 0.5, ctx.currentTime + profile.duration * durationMultiplier);
       filter.Q.value = profile.filterQ;
       
       osc.connect(filter);
@@ -621,11 +656,11 @@ async function playTriangleNotes(notes) {
       // Saw envelope: medium attack, medium release
       gain.gain.linearRampToValueAtTime(profile.gain, ctx.currentTime + profile.attack + 0.01 * i);
       gain.gain.setValueAtTime(profile.gain, ctx.currentTime + profile.attack + profile.hold + 0.01 * i);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + profile.duration + 0.01 * i);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + profile.duration * durationMultiplier + 0.01 * i);
       
       gain.connect(masterGain);
       osc.start(ctx.currentTime + 0.01 * i);
-      osc.stop(ctx.currentTime + profile.duration + 0.01 * i);
+      osc.stop(ctx.currentTime + profile.duration * durationMultiplier + 0.01 * i);
     } else if (currentWaveform === "square") {
       // Square: Sharp, percussive pluck with quick decay
       osc = ctx.createOscillator();
@@ -649,12 +684,19 @@ async function playTriangleNotes(notes) {
       
       // Square envelope: very quick attack, quick decay
       gain.gain.linearRampToValueAtTime(profile.gain * 1.2, ctx.currentTime + profile.attack + 0.01 * i);
-      gain.gain.exponentialRampToValueAtTime(profile.gain * 0.5, ctx.currentTime + profile.attack + profile.hold + 0.05 + 0.01 * i);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + profile.duration + 0.01 * i);
+      
+      if (extendDuration) {
+        // For quarter notes, have a longer sustain before decay
+        gain.gain.exponentialRampToValueAtTime(profile.gain * 0.6, ctx.currentTime + profile.attack + profile.hold + 0.15 + 0.01 * i);
+      } else {
+        gain.gain.exponentialRampToValueAtTime(profile.gain * 0.5, ctx.currentTime + profile.attack + profile.hold + 0.05 + 0.01 * i);
+      }
+      
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + profile.duration * durationMultiplier + 0.01 * i);
       
       gain.connect(masterGain);
       osc.start(ctx.currentTime + 0.01 * i);
-      osc.stop(ctx.currentTime + profile.duration + 0.01 * i);
+      osc.stop(ctx.currentTime + profile.duration * durationMultiplier + 0.01 * i);
     } else if (currentWaveform === "sine") {
       // Sine: Smooth, pure tone with gentle fade
       osc = ctx.createOscillator();
@@ -681,16 +723,16 @@ async function playTriangleNotes(notes) {
       
       // Sine envelope: gentle attack and release
       gain.gain.linearRampToValueAtTime(profile.gain, ctx.currentTime + profile.attack + 0.01 * i);
-      gain.gain.setValueAtTime(profile.gain, ctx.currentTime + profile.attack + profile.hold + 0.01 * i);
-      gain.gain.linearRampToValueAtTime(0.001, ctx.currentTime + profile.duration + 0.01 * i);
+      gain.gain.setValueAtTime(profile.gain, ctx.currentTime + profile.attack + profile.hold * durationMultiplier + 0.01 * i);
+      gain.gain.linearRampToValueAtTime(0.001, ctx.currentTime + profile.duration * durationMultiplier + 0.01 * i);
       
       gain.connect(masterGain);
       osc.start(ctx.currentTime + 0.01 * i);
-      osc.stop(ctx.currentTime + profile.duration + 0.01 * i);
+      osc.stop(ctx.currentTime + profile.duration * durationMultiplier + 0.01 * i);
       harmonicOsc.start(ctx.currentTime + 0.01 * i);
-      harmonicOsc.stop(ctx.currentTime + profile.duration + 0.01 * i);
+      harmonicOsc.stop(ctx.currentTime + profile.duration * durationMultiplier + 0.01 * i);
     } else {
-      // Triangle (keep as is)
+      // Triangle (keep as is, but adjust for quarter notes)
       osc = ctx.createOscillator();
       osc.type = "triangle";
       osc.frequency.value = freq;
@@ -705,18 +747,18 @@ async function playTriangleNotes(notes) {
       
       // Triangle envelope: quick attack, short hold, medium release
       gain.gain.linearRampToValueAtTime(profile.gain, ctx.currentTime + profile.attack + 0.01 * i);
-      gain.gain.setValueAtTime(profile.gain, ctx.currentTime + profile.attack + profile.hold + 0.01 * i);
-      gain.gain.linearRampToValueAtTime(0.012, ctx.currentTime + profile.duration + 0.01 * i);
+      gain.gain.setValueAtTime(profile.gain, ctx.currentTime + profile.attack + profile.hold * durationMultiplier + 0.01 * i);
+      gain.gain.linearRampToValueAtTime(0.012, ctx.currentTime + profile.duration * durationMultiplier + 0.01 * i);
       
       gain.connect(masterGain);
       osc.start(ctx.currentTime + 0.01 * i);
-      osc.stop(ctx.currentTime + profile.duration + 0.01 * i);
+      osc.stop(ctx.currentTime + profile.duration * durationMultiplier + 0.01 * i);
     }
   });
 }
 
 function midiToFreq(n) {
-  const notes = {'C':0,'C#':1,'Db':1,'D':2,'D#':3,'Eb':3,'E':4,'F':5,'F#':6,'Gb':6,'G':7,'G#':8,'Ab':8,'A':9,'A#':10,'Bb':10,'B':11, 'F♯':6, 'G♯':8, 'B♭':10, 'E♭':3, 'A♭':8, 'C♯':1, 'D♭':1 };
+  const notes = {'C':0,'C#':1,'Db':1,'D':2,'D#':3,'Eb':3,'E':4,'F':5,'F#':6,'Gb':6,'G':7,'G#':8,'Ab':8,'A':9,'A#':10,'Bb':10,'B':11, 'F♯':6, 'G♯':8, 'B♭':10, 'E♭':3, 'A♭':8, 'C♯':1, 'D♭':1};
   let note, octave;
   if (n.includes('♭') || n.includes('♯')) { note = n.slice(0, 2); octave = parseInt(n.slice(2)); }
   else { note = n.slice(0, n.length-1); octave = parseInt(n[n.length-1]); }
