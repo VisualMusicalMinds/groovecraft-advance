@@ -468,32 +468,249 @@ async function playBassDrum() {
   osc.connect(gain).connect(masterGain); osc.start(); osc.stop(ctx.currentTime + duration);
 }
 
+// --- Sound Synthesis Variables ---
+let ctx = null, masterGain = null, compressor = null;
+let customVoiceWave = null;
+const waveforms = ['sine', 'triangle', 'square', 'saw', 'voice'];
+let currentWaveformIndex = 1;
+let currentWaveform = waveforms[currentWaveformIndex];
+
+// Other variables and functions unchanged...
+
 async function playTriangleNotes(notes) {
-  await ensureAudio(); const duration = 0.29, hold = 0.07;
-  const GAINS = { voice: 0.36, triangle: 0.38, square: 0.30, saw: 0.28, sine: 0.36 };
+  await ensureAudio(); 
+  
+  // Different sound characteristics for each waveform type
+  const soundProfiles = {
+    // Smooth, rounded, pure tone with gentle fade
+    sine: {
+      duration: 0.4,
+      attack: 0.04,
+      hold: 0.2,
+      release: 0.16,
+      filterFreq: 3000,
+      filterQ: 0.5,
+      gain: 0.36,
+      vibrato: false
+    },
+    // Staccato and bouncy (keeping as requested)
+    triangle: {
+      duration: 0.29,
+      attack: 0.015,
+      hold: 0.07,
+      release: 0.2,
+      filterFreq: 1200,
+      filterQ: 1,
+      gain: 0.38,
+      vibrato: false
+    },
+    // Sharp, percussive with quick decay - pluck-like sound
+    square: {
+      duration: 0.25,
+      attack: 0.005,
+      hold: 0.02,
+      release: 0.225,
+      filterFreq: 900,
+      filterQ: 2,
+      gain: 0.30,
+      vibrato: false
+    },
+    // Bright with slight pitch bend at start (synth-like)
+    saw: {
+      duration: 0.33,
+      attack: 0.02,
+      hold: 0.05,
+      release: 0.26,
+      filterFreq: 1600,
+      filterQ: 1.5,
+      gain: 0.28,
+      pitchBend: true,
+      bendAmount: 30,
+      bendTime: 0.08,
+      vibrato: false
+    },
+    // Smooth and legato with vibrato (as requested)
+    voice: {
+      duration: 0.5,
+      attack: 0.08,
+      hold: 0.3,
+      release: 0.12,
+      filterFreq: 1000,
+      filterQ: 1,
+      gain: 0.36,
+      vibrato: true,
+      vibratoFreq: 5,
+      vibratoAmount: 4
+    }
+  };
+  
+  // Get the current sound profile
+  const profile = soundProfiles[currentWaveform];
+  
   notes.forEach((note, i) => {
-    const freq = midiToFreq(note); let osc, gain, lfo, lfoGain, filter;
-    gain = ctx.createGain(); gain.gain.setValueAtTime(0, ctx.currentTime);
+    const freq = midiToFreq(note);
+    let osc, gain, lfo, lfoGain, filter;
+    gain = ctx.createGain();
+    gain.gain.setValueAtTime(0, ctx.currentTime);
+    
     if (currentWaveform === "voice") {
-      osc = ctx.createOscillator(); osc.setPeriodicWave(customVoiceWave); osc.frequency.value = freq;
-      lfo = ctx.createOscillator(); lfoGain = ctx.createGain(); lfo.frequency.setValueAtTime(1.5, ctx.currentTime); lfo.frequency.linearRampToValueAtTime(5, ctx.currentTime + 1);
-      lfoGain.gain.setValueAtTime(2.0, ctx.currentTime); lfo.connect(lfoGain); lfoGain.connect(osc.frequency); lfo.start();
-      filter = ctx.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.setValueAtTime(1200, ctx.currentTime); filter.Q.value = 1;
-      osc.connect(filter); filter.connect(gain);
-      const attackTime = 0.08, decayTime = 0.18, sustainLevel = GAINS.voice * 0.6, maxLevel = GAINS.voice * 1.0;
-      gain.gain.linearRampToValueAtTime(maxLevel, ctx.currentTime + attackTime); gain.gain.linearRampToValueAtTime(sustainLevel, ctx.currentTime + attackTime + decayTime);
-      gain.gain.linearRampToValueAtTime(0.001, ctx.currentTime + duration);
-      gain.connect(masterGain); osc.start(ctx.currentTime + 0.01 * i); osc.stop(ctx.currentTime + duration + 0.01 * i + 0.08); lfo.stop(ctx.currentTime + duration + 0.01 * i + 0.08);
+      // Voice: Smooth legato with pronounced vibrato
+      osc = ctx.createOscillator();
+      osc.setPeriodicWave(customVoiceWave);
+      osc.frequency.value = freq;
+      
+      // Create vibrato effect for voice
+      lfo = ctx.createOscillator();
+      lfoGain = ctx.createGain();
+      lfo.frequency.setValueAtTime(profile.vibratoFreq, ctx.currentTime);
+      lfoGain.gain.setValueAtTime(profile.vibratoAmount, ctx.currentTime);
+      lfo.connect(lfoGain);
+      lfoGain.connect(osc.frequency);
+      lfo.start();
+      
+      // Filter setup
+      filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(profile.filterFreq, ctx.currentTime);
+      filter.Q.value = profile.filterQ;
+      osc.connect(filter);
+      filter.connect(gain);
+      
+      // Voice envelope: slow attack, long sustain
+      const attackTime = profile.attack;
+      const decayTime = 0.18;
+      const sustainLevel = profile.gain * 0.7;
+      const maxLevel = profile.gain * 1.0;
+      
+      gain.gain.linearRampToValueAtTime(maxLevel, ctx.currentTime + attackTime);
+      gain.gain.linearRampToValueAtTime(sustainLevel, ctx.currentTime + attackTime + decayTime);
+      gain.gain.linearRampToValueAtTime(0.001, ctx.currentTime + profile.duration);
+      
+      gain.connect(masterGain);
+      osc.start(ctx.currentTime + 0.01 * i);
+      osc.stop(ctx.currentTime + profile.duration + 0.01 * i + 0.08);
+      lfo.stop(ctx.currentTime + profile.duration + 0.01 * i + 0.08);
+    } else if (currentWaveform === "saw") {
+      // Saw: Bright with initial pitch bend for character
+      osc = ctx.createOscillator();
+      osc.type = "sawtooth";
+      osc.frequency.value = freq;
+      
+      // Create pitch bend effect for saw
+      if (profile.pitchBend) {
+        osc.frequency.setValueAtTime(freq + profile.bendAmount, ctx.currentTime + 0.01 * i);
+        osc.frequency.exponentialRampToValueAtTime(freq, ctx.currentTime + 0.01 * i + profile.bendTime);
+      }
+      
+      // Add a subtle phaser-like effect for saw wave
+      const allpass = ctx.createBiquadFilter();
+      allpass.type = 'allpass';
+      allpass.frequency.value = 800;
+      allpass.Q.value = 5;
+      
+      filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(profile.filterFreq, ctx.currentTime);
+      filter.frequency.linearRampToValueAtTime(profile.filterFreq * 0.5, ctx.currentTime + profile.duration);
+      filter.Q.value = profile.filterQ;
+      
+      osc.connect(filter);
+      filter.connect(allpass);
+      allpass.connect(gain);
+      
+      // Saw envelope: medium attack, medium release
+      gain.gain.linearRampToValueAtTime(profile.gain, ctx.currentTime + profile.attack + 0.01 * i);
+      gain.gain.setValueAtTime(profile.gain, ctx.currentTime + profile.attack + profile.hold + 0.01 * i);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + profile.duration + 0.01 * i);
+      
+      gain.connect(masterGain);
+      osc.start(ctx.currentTime + 0.01 * i);
+      osc.stop(ctx.currentTime + profile.duration + 0.01 * i);
+    } else if (currentWaveform === "square") {
+      // Square: Sharp, percussive pluck with quick decay
+      osc = ctx.createOscillator();
+      osc.type = "square";
+      osc.frequency.value = freq;
+      
+      // Create a punchy effect with dual filters
+      const highpass = ctx.createBiquadFilter();
+      highpass.type = 'highpass';
+      highpass.frequency.value = 80;
+      
+      filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(profile.filterFreq * 2, ctx.currentTime);
+      filter.frequency.exponentialRampToValueAtTime(profile.filterFreq, ctx.currentTime + profile.attack + profile.hold);
+      filter.Q.value = profile.filterQ;
+      
+      osc.connect(highpass);
+      highpass.connect(filter);
+      filter.connect(gain);
+      
+      // Square envelope: very quick attack, quick decay
+      gain.gain.linearRampToValueAtTime(profile.gain * 1.2, ctx.currentTime + profile.attack + 0.01 * i);
+      gain.gain.exponentialRampToValueAtTime(profile.gain * 0.5, ctx.currentTime + profile.attack + profile.hold + 0.05 + 0.01 * i);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + profile.duration + 0.01 * i);
+      
+      gain.connect(masterGain);
+      osc.start(ctx.currentTime + 0.01 * i);
+      osc.stop(ctx.currentTime + profile.duration + 0.01 * i);
+    } else if (currentWaveform === "sine") {
+      // Sine: Smooth, pure tone with gentle fade
+      osc = ctx.createOscillator();
+      osc.type = "sine";
+      osc.frequency.value = freq;
+      
+      // Add gentle harmonics to make it richer
+      const harmonicOsc = ctx.createOscillator();
+      harmonicOsc.type = "sine";
+      harmonicOsc.frequency.value = freq * 2; // First harmonic
+      
+      const harmonicGain = ctx.createGain();
+      harmonicGain.gain.value = 0.15; // Subtle amount
+      
+      filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(profile.filterFreq, ctx.currentTime);
+      filter.Q.value = profile.filterQ;
+      
+      osc.connect(filter);
+      harmonicOsc.connect(harmonicGain);
+      harmonicGain.connect(filter);
+      filter.connect(gain);
+      
+      // Sine envelope: gentle attack and release
+      gain.gain.linearRampToValueAtTime(profile.gain, ctx.currentTime + profile.attack + 0.01 * i);
+      gain.gain.setValueAtTime(profile.gain, ctx.currentTime + profile.attack + profile.hold + 0.01 * i);
+      gain.gain.linearRampToValueAtTime(0.001, ctx.currentTime + profile.duration + 0.01 * i);
+      
+      gain.connect(masterGain);
+      osc.start(ctx.currentTime + 0.01 * i);
+      osc.stop(ctx.currentTime + profile.duration + 0.01 * i);
+      harmonicOsc.start(ctx.currentTime + 0.01 * i);
+      harmonicOsc.stop(ctx.currentTime + profile.duration + 0.01 * i);
     } else {
-      osc = ctx.createOscillator(); osc.type = currentWaveform === "saw" ? "sawtooth" : currentWaveform; osc.frequency.value = freq;
-      filter = ctx.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.setValueAtTime(1200, ctx.currentTime); filter.Q.value = 1;
-      osc.connect(filter); filter.connect(gain);
-      let targetGain = GAINS[currentWaveform] || GAINS.sine;
-      const attackTime = 0.015;
-      gain.gain.linearRampToValueAtTime(targetGain, ctx.currentTime + attackTime);
-      gain.gain.setValueAtTime(targetGain, ctx.currentTime + attackTime + hold);
-      gain.gain.linearRampToValueAtTime(0.012, ctx.currentTime + duration);
-      gain.connect(masterGain); osc.start(ctx.currentTime + 0.01 * i); osc.stop(ctx.currentTime + duration + 0.01 * i);
+      // Triangle (keep as is)
+      osc = ctx.createOscillator();
+      osc.type = "triangle";
+      osc.frequency.value = freq;
+      
+      filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(profile.filterFreq, ctx.currentTime);
+      filter.Q.value = profile.filterQ;
+      
+      osc.connect(filter);
+      filter.connect(gain);
+      
+      // Triangle envelope: quick attack, short hold, medium release
+      gain.gain.linearRampToValueAtTime(profile.gain, ctx.currentTime + profile.attack + 0.01 * i);
+      gain.gain.setValueAtTime(profile.gain, ctx.currentTime + profile.attack + profile.hold + 0.01 * i);
+      gain.gain.linearRampToValueAtTime(0.012, ctx.currentTime + profile.duration + 0.01 * i);
+      
+      gain.connect(masterGain);
+      osc.start(ctx.currentTime + 0.01 * i);
+      osc.stop(ctx.currentTime + profile.duration + 0.01 * i);
     }
   });
 }
