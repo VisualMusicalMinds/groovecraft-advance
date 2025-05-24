@@ -717,7 +717,7 @@ input[type="number"].bpm-input:focus {
   font-size: 0.6em;
   vertical-align: super;
   position: relative;
-  top: 0.1em;
+  top: 0.5em;
   left: -0.1em;
   line-height: 0;
 }.play-btn-vertical {
