@@ -11,6 +11,12 @@
   --color-a: #1760af;
   --color-b: #9C27B0;
   --picture-highlight: #ffeb3b;
+
+  /* Variables for floating buttons */
+  --button-float-size: calc(var(--box-size) * 0.22);
+  --button-float-font-size: calc(var(--box-size) * 0.13);
+  --button-float-spacing: calc(var(--box-size) * 0.02);
+  --button-float-bottom-start: calc(var(--box-size) * 0.38);
 }
 
 body {
@@ -302,8 +308,8 @@ input[type="number"].bpm-input:focus {
 /* --- REFINED A/B TOGGLE --- */
 .ab-toggle-container {
   display: flex;
-  width: calc(var(--box-size) * 0.8); /* Changed from fixed 120px to relative size */
-  max-width: 120px; /* Maximum width to prevent it from getting too large */
+  width: calc(var(--box-size) * 0.8); 
+  max-width: 120px; 
   margin: 10px auto 8px auto;
   background: #e3f1ff;
   border-radius: 999px;
@@ -316,8 +322,8 @@ input[type="number"].bpm-input:focus {
   flex: 1 1 0;
   background: transparent;
   border: none;
-  padding: calc(var(--box-size) * 0.06) 0; /* Scaled padding */
-  font-size: calc(var(--box-size) * 0.13); /* Scaled font size */
+  padding: calc(var(--box-size) * 0.06) 0; 
+  font-size: calc(var(--box-size) * 0.13); 
   font-family: inherit;
   font-weight: 600;
   color: #1976d2;
@@ -345,7 +351,7 @@ input[type="number"].bpm-input:focus {
   display: flex;
   flex: 1 1 auto;
   width: 100%;
-  align-items: center;
+  align-items: center; /* Keep this as center for the container itself */
   justify-content: center;
   min-height: calc(var(--box-size) * 0.45);
   margin-top: calc(var(--box-size) * 0.06);
@@ -354,7 +360,7 @@ input[type="number"].bpm-input:focus {
 .note-rect {
   flex: 1 1 auto;
   display: flex;
-  align-items: flex-start; /* Changed from center to flex-start to align at top */
+  align-items: flex-start; /* This aligns content (text+accidental) to the top of the .note-rect */
   justify-content: center;
   font-size: calc(var(--box-size) * 0.2);
   font-weight: bold;
@@ -364,7 +370,8 @@ input[type="number"].bpm-input:focus {
   user-select: none;
   min-width: 0;
   min-height: calc(var(--box-size) * 0.35);
-  padding-top: calc(var(--box-size) * 0.05); /* Added padding at the top for some spacing */
+  padding-top: calc(var(--box-size) * 0.05); /* Add padding to the top of the note rect */
+  box-sizing: border-box; /* Include padding in height calculation */
 }
 .note-C { background: #F44336; }
 .note-D { background: #FF9800; }
@@ -374,78 +381,58 @@ input[type="number"].bpm-input:focus {
 .note-A { background: #1760af; }
 .note-B { background: #9C27B0; }
 
-/* 7th chord note styling */
-.note-7th {
-  background:;
-  color:;
-  font-size:;
+.note-7th,
+.note-2nd,
+.note-4th {
   opacity: 0.90;
   border-radius: 0px;
   margin-left: 0px;
   margin-right: 0px;
 }
 
-/* 2nd chord note styling (optional: customize if you want) */
-.note-2nd {
-  opacity: 0.90;
-  border-radius: 0px;
-  margin-left: 0px;
-  margin-right: 0px;
+/* Base style for floating chord modifier buttons */
+.seventh-btn, .second-btn, .fourth-btn {
+  position: absolute;
+  right: calc(var(--box-size) * 0.01);
+  width: var(--button-float-size);
+  height: var(--button-float-size);
+  background: transparent;
+  border: 0px solid #1976d2; 
+  border-radius: 90%; 
+  color: #fff; 
+  font-size: var(--button-float-font-size);
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 0px 0px rgba(25,118,210,0.13);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  transition: background 0.13s, color 0.13s, border 0.13s;
+  box-sizing: border-box;
 }
 
-/* Floating "7" button for 7th chord toggle */
+.seventh-btn.active, .seventh-btn:active, .seventh-btn:focus-visible,
+.second-btn.active, .second-btn:active, .second-btn:focus-visible,
+.fourth-btn.active, .fourth-btn:active, .fourth-btn:focus-visible {
+  background: #1976d2;
+  color: #fff; 
+  border-color: #135ba1; 
+}
+
+/* Positioning for floating buttons (bottom to top: 7th, 4th, 2nd) */
 .seventh-btn {
-  position: absolute;
-  bottom: calc(var(--box-size) * 0.40); /* ~16px for default size */
-  right: calc(var(--box-size) * 0.01);
-  width: calc(var(--box-size) * 0.25);
-  height: calc(var(--box-size) * 0.25);
-  background: transparent;
-  border: 0px solid #1976d2;
-  border-radius: 90%;
-  color: #fff;
-  font-size: calc(var(--box-size) * 0.14);
-  font-weight: bold;
-  cursor: pointer;
-  box-shadow: 0 0px 0px rgba(25,118,210,0.13);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 20;
-  transition: background 0.13s, color 0.13s, border 0.13s;
-}
-.seventh-btn.active, .seventh-btn:active, .seventh-btn:focus-visible {
-  background: #1976d2;
-  color: #fff;
-  border-color: #135ba1;
+  bottom: var(--button-float-bottom-start);
 }
 
-/* Floating "2" button for 2nd chord toggle (matches .seventh-btn, but higher) */
+.fourth-btn {
+  bottom: calc(var(--button-float-bottom-start) + var(--button-float-size) + var(--button-float-spacing));
+}
+
 .second-btn {
-  position: absolute;
-  bottom: calc(var(--box-size) * 0.64); /* ~38px for default size */
-  right: calc(var(--box-size) * 0.01);
-  width: calc(var(--box-size) * 0.25);
-  height: calc(var(--box-size) * 0.25);
-  background: transparent;
-  border: 0px solid #1976d2;
-  border-radius: 90%;
-  color: #fff;
-  font-size: calc(var(--box-size) * 0.13);
-  font-weight: bold;
-  cursor: pointer;
-  box-shadow: 0 0px 0px rgba(25,118,210,0.13);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 20;
-  transition: background 0.13s, color 0.13s, border 0.13s;
+  bottom: calc(var(--button-float-bottom-start) + (var(--button-float-size) + var(--button-float-spacing)) * 2);
 }
-.second-btn.active, .second-btn:active, .second-btn:focus-visible {
-  background: #1976d2;
-  color: #fff;
-  border-color: #135ba1;
-}
+
 
 .dash-img-slot {
   width: calc(var(--box-size) * 0.75);
@@ -712,15 +699,18 @@ input[type="number"].bpm-input:focus {
     font-size: calc(var(--box-size) * 0.12);
   }
 }
-/* Accidental styling */
+
+/* Accidental styling - from your provided code */
 .accidental {
   font-size: 0.6em;
   vertical-align: super;
   position: relative;
-  top: 0.5em;
+  top: 0.5em; /* Adjusted to match your version */
   left: -0.1em;
   line-height: 0;
-}.play-btn-vertical {
+}
+
+.play-btn-vertical {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -742,7 +732,6 @@ input[type="number"].bpm-input:focus {
   margin-bottom: 0;
 }
 
-/* Make brush toggle smaller to align with BPM input */
 .bpm-row-with-toggle .brush-toggle {
   margin: 0 0 0 -12px;
   display: flex;
@@ -828,7 +817,6 @@ input[type="number"].bpm-input:focus {
   box-sizing: border-box;
 }
 
-/* Updated styling for the BPM controls in the new location */
 .bpm-input-block {
   width: calc(var(--box-size) * 0.9);
   margin-top: 10px;
@@ -862,7 +850,6 @@ input[type="number"].bpm-input {
   margin-bottom: 0;
 }
 
-/* Adjust the play button to fit better with the new layout */
 .circle-play-btn {
   margin-bottom: 0;
 }
@@ -886,7 +873,7 @@ input[type="number"].bpm-input {
   .bpm-stepper {
     height: 24px;
   }
-}/* A/B/C/D Toggle Styling */
+}
 .abcd-toggle-container {
   display: flex;
   flex-direction: column;
@@ -944,7 +931,6 @@ input[type="number"].bpm-input {
   z-index: 2;
 }
 
-/* Responsive adjustments */
 @media (max-width: 600px) {
   .abcd-toggle-container {
     width: calc(var(--box-size) * 0.9);
@@ -973,58 +959,50 @@ input[type="number"].bpm-input {
     padding: calc(var(--box-size) * 0.035) 0;
     font-size: calc(var(--box-size) * 0.10);
   }
-}/* M/m toggle styling with unselected state */
+}
 .mm-toggle {
   position: absolute;
-  bottom: calc(var(--box-size) * 0.40); /* Original bottom edge of the M/m block */
-  left: calc(var(--box-size) * 0.01);   /* Original left edge */
-  width: calc(var(--box-size) * 0.25);  /* Original width of one button */
-  height: calc(var(--box-size) * 0.5);  /* Original height of the M/m block */
+  bottom: calc(var(--box-size) * 0.40); 
+  left: calc(var(--box-size) * 0.01);   
+  width: calc(var(--box-size) * 0.25);  
+  height: calc(var(--box-size) * 0.5);  
   display: flex;
-  align-items: center; /* Vertically center the button in this block */
-  justify-content: center; /* Horizontally center */
+  align-items: center; 
+  justify-content: center; 
   z-index: 20;
 }
 
 .quality-toggle-btn {
   width: calc(var(--box-size) * 0.28); 
   height: calc(var(--box-size) * 0.28);
-  /* Default (inactive/invisible) state */
-  background-color: transparent; /* No background */
-  border: 2px solid transparent; /* No visible border, but maintain size */
-  color: white;                  /* White text (will blend with white background) */
-  box-shadow: none;              /* No shadow */
-  
+  background-color: transparent; 
+  border: 2px solid transparent; 
+  color: white;                  
+  box-shadow: none;              
   font-weight: bold;
   font-size: calc(var(--box-size) * 0.14);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%; /* Circular */
+  border-radius: 50%; 
   transition: background-color 0.15s, color 0.15s, border-color 0.15s, box-shadow 0.15s;
   outline: none;
   box-sizing: border-box;
 }
 
 .quality-toggle-btn.quality-active {
-  /* Active state (M or m pressed) */
-  background-color: rgba(255, 255, 255, 0.7); /* Semi-transparent white background */
-  border-color: #1976d2; /* Blue border */
-  color: #1976d2;       /* Blue text */
-  /* Create the "blue circle" effect with box-shadow */
-  box-shadow: 0 0 0 2px #1976d2, 0 1px 2px rgba(0,0,0,0.1); /* Blue ring + slight inner shadow */
+  background-color: rgba(255, 255, 255, 0.7); 
+  border-color: #1976d2; 
+  color: #1976d2;       
+  box-shadow: 0 0 0 2px #1976d2, 0 1px 2px rgba(0,0,0,0.1); 
 }
 
 .quality-toggle-btn:focus-visible {
-  /* Keep a distinct focus style, even if default is transparent */
-  /* This will apply whether active or not, if focused */
   box-shadow: 0 0 0 2px #135ba1, 0 0 0 4px rgba(25, 118, 210, 0.4), 0 1px 2px rgba(0,0,0,0.1); 
 }
 
-/* Ensure focus on active has the right colors if different from default focus */
 .quality-toggle-btn.quality-active:focus-visible {
-    border-color: #135ba1; /* Darker blue border on focus for active */
+    border-color: #135ba1; 
     box-shadow: 0 0 0 2px #135ba1, 0 0 0 4px rgba(25, 118, 210, 0.4), 0 1px 2px rgba(0,0,0,0.1);
 }
-
