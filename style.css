@@ -14,9 +14,15 @@
 
   /* Variables for floating buttons */
   --button-float-size: calc(var(--box-size) * 0.22);
-  --button-float-font-size: calc(var(--box-size) * 0.13);
-  --button-float-spacing: calc(var(--box-size) * 0.02);
-  --button-float-bottom-start: calc(var(--box-size) * 0.38);
+  --button-float-font-size: calc(var(--box-size) * 0.12); 
+  --button-float-spacing: calc(var(--box-size) * 0.03); /* Slightly increased spacing */
+
+  /* Right stack (2, 4, 7) positioning */
+  --right-stack-edge-offset: calc(var(--box-size) * 0.02);
+  --button-float-bottom-start-right: calc(var(--box-size) * 0.38); /* Bottom of 7th button */
+
+  /* Common vertical position for the M/m and Sus buttons (aligned with 4th button) */
+  --button-horizontal-row-bottom: calc(var(--button-float-bottom-start-right) + var(--button-float-size) + var(--button-float-spacing));
 }
 
 body {
@@ -223,7 +229,6 @@ body {
   justify-content: center;
 }
 
-/* --- REFINED BPM INPUT --- */
 .bpm-input-block { 
   width: calc(var(--box-size) * 0.7);
   margin: 0;
@@ -287,7 +292,6 @@ input[type="number"].bpm-input:focus {
 }
 .bpm-arrow:active, .bpm-arrow:focus-visible { color: #135ba1; background: #e3eafd; }
 
-/* Brush toggle styling */
 .brush-toggle {
   display: flex;
   align-items: center;
@@ -305,7 +309,6 @@ input[type="number"].bpm-input:focus {
   accent-color: #1976d2;
 }
 
-/* --- REFINED A/B TOGGLE --- */
 .ab-toggle-container {
   display: flex;
   width: calc(var(--box-size) * 0.8); 
@@ -351,7 +354,7 @@ input[type="number"].bpm-input:focus {
   display: flex;
   flex: 1 1 auto;
   width: 100%;
-  align-items: center; /* Keep this as center for the container itself */
+  align-items: center; 
   justify-content: center;
   min-height: calc(var(--box-size) * 0.45);
   margin-top: calc(var(--box-size) * 0.06);
@@ -360,7 +363,7 @@ input[type="number"].bpm-input:focus {
 .note-rect {
   flex: 1 1 auto;
   display: flex;
-  align-items: flex-start; /* This aligns content (text+accidental) to the top of the .note-rect */
+  align-items: flex-start; 
   justify-content: center;
   font-size: calc(var(--box-size) * 0.2);
   font-weight: bold;
@@ -370,8 +373,8 @@ input[type="number"].bpm-input:focus {
   user-select: none;
   min-width: 0;
   min-height: calc(var(--box-size) * 0.35);
-  padding-top: calc(var(--box-size) * 0.05); /* Add padding to the top of the note rect */
-  box-sizing: border-box; /* Include padding in height calculation */
+  padding-top: calc(var(--box-size) * 0.05); 
+  box-sizing: border-box; 
 }
 .note-C { background: #F44336; }
 .note-D { background: #FF9800; }
@@ -390,47 +393,82 @@ input[type="number"].bpm-input:focus {
   margin-right: 0px;
 }
 
-/* Base style for floating chord modifier buttons */
-.seventh-btn, .second-btn, .fourth-btn {
+/* Base style for ALL floating chord modifier buttons */
+.mm-toggle, .sus-btn, .seventh-btn, .second-btn, .fourth-btn {
   position: absolute;
-  right: calc(var(--box-size) * 0.01);
   width: var(--button-float-size);
   height: var(--button-float-size);
   background: transparent;
-  border: 0px solid #1976d2; 
-  border-radius: 90%; 
+  border: 1px solid transparent; 
+  border-radius: 50%; 
   color: #fff; 
-  font-size: var(--button-float-font-size);
   font-weight: bold;
   cursor: pointer;
-  box-shadow: 0 0px 0px rgba(25,118,210,0.13);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 20;
-  transition: background 0.13s, color 0.13s, border 0.13s;
+  transition: background 0.13s, color 0.13s, border-color 0.13s, box-shadow 0.13s;
   box-sizing: border-box;
 }
 
-.seventh-btn.active, .seventh-btn:active, .seventh-btn:focus-visible,
-.second-btn.active, .second-btn:active, .second-btn:focus-visible,
-.fourth-btn.active, .fourth-btn:active, .fourth-btn:focus-visible {
+/* Specific font size for M/m, 2, 4, 7 */
+.quality-toggle-btn, .second-btn, .fourth-btn, .seventh-btn {
+   font-size: calc(var(--box-size) * 0.14); /* Keep these slightly larger */
+}
+.sus-btn {
+  font-size: var(--button-float-font-size); /* General size for sus */
+  font-family: 'Brush Script MT', 'Brush Script Std', 'Lucida Calligraphy', cursive;
+  padding-bottom: 2px; 
+}
+
+
+/* Active/Focus states for ALL floating buttons */
+.mm-toggle .quality-toggle-btn.quality-active, /* Target button inside .mm-toggle */
+.sus-btn.active, .seventh-btn.active, .second-btn.active, .fourth-btn.active,
+.mm-toggle .quality-toggle-btn:active,
+.sus-btn:active, .seventh-btn:active, .second-btn:active, .fourth-btn:active,
+.mm-toggle .quality-toggle-btn:focus-visible,
+.sus-btn:focus-visible, .seventh-btn:focus-visible, .second-btn:focus-visible, .fourth-btn:focus-visible {
   background: #1976d2;
   color: #fff; 
   border-color: #135ba1; 
+  box-shadow: 0 1px 4px rgba(25,118,210,0.3);
+}
+/* Quality toggle button is nested, so its direct styles are simpler */
+.quality-toggle-btn { 
+  width: 100%; height: 100%; border-radius: 50%; display:flex; align-items:center; justify-content:center;
+  background: transparent; border: none; color: #fff; /* Inherits active state from .mm-toggle if that's how we apply it */
+}
+.quality-toggle-btn.quality-active { /* This specific class on the button itself for M/m text */
+   /* Handled by the group selector above for background/border, but text color might need specifics if not white */
 }
 
-/* Positioning for floating buttons (bottom to top: 7th, 4th, 2nd) */
+
+/* Positioning for right-side stack (bottom to top: 7th, 4th, 2nd) */
 .seventh-btn {
-  bottom: var(--button-float-bottom-start);
+  bottom: var(--button-float-bottom-start-right);
+  right: var(--right-stack-edge-offset);
 }
-
 .fourth-btn {
-  bottom: calc(var(--button-float-bottom-start) + var(--button-float-size) + var(--button-float-spacing));
+  bottom: calc(var(--button-float-bottom-start-right) + var(--button-float-size) + var(--button-float-spacing));
+  right: var(--right-stack-edge-offset);
+}
+.second-btn {
+  bottom: calc(var(--button-float-bottom-start-right) + (var(--button-float-size) + var(--button-float-spacing)) * 2);
+  right: var(--right-stack-edge-offset);
 }
 
-.second-btn {
-  bottom: calc(var(--button-float-bottom-start) + (var(--button-float-size) + var(--button-float-spacing)) * 2);
+/* Positioning for M/m and Sus buttons (left of the 2/4/7 stack) */
+.sus-btn {
+  bottom: var(--button-horizontal-row-bottom);
+  right: calc(var(--right-stack-edge-offset) + var(--button-float-size) + var(--button-float-spacing));
+}
+.mm-toggle { /* This is the container for the M/m button */
+  bottom: var(--button-horizontal-row-bottom);
+  right: calc(var(--right-stack-edge-offset) + (var(--button-float-size) + var(--button-float-spacing)) * 2);
+  /* .quality-toggle-btn is inside this and should fill it or be centered */
 }
 
 
@@ -700,12 +738,11 @@ input[type="number"].bpm-input:focus {
   }
 }
 
-/* Accidental styling - from your provided code */
 .accidental {
   font-size: 0.6em;
   vertical-align: super;
   position: relative;
-  top: 0.5em; /* Adjusted to match your version */
+  top: 0.5em; 
   left: -0.1em;
   line-height: 0;
 }
@@ -959,50 +996,4 @@ input[type="number"].bpm-input {
     padding: calc(var(--box-size) * 0.035) 0;
     font-size: calc(var(--box-size) * 0.10);
   }
-}
-.mm-toggle {
-  position: absolute;
-  bottom: calc(var(--box-size) * 0.40); 
-  left: calc(var(--box-size) * 0.01);   
-  width: calc(var(--box-size) * 0.25);  
-  height: calc(var(--box-size) * 0.5);  
-  display: flex;
-  align-items: center; 
-  justify-content: center; 
-  z-index: 20;
-}
-
-.quality-toggle-btn {
-  width: calc(var(--box-size) * 0.28); 
-  height: calc(var(--box-size) * 0.28);
-  background-color: transparent; 
-  border: 2px solid transparent; 
-  color: white;                  
-  box-shadow: none;              
-  font-weight: bold;
-  font-size: calc(var(--box-size) * 0.14);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%; 
-  transition: background-color 0.15s, color 0.15s, border-color 0.15s, box-shadow 0.15s;
-  outline: none;
-  box-sizing: border-box;
-}
-
-.quality-toggle-btn.quality-active {
-  background-color: rgba(255, 255, 255, 0.7); 
-  border-color: #1976d2; 
-  color: #1976d2;       
-  box-shadow: 0 0 0 2px #1976d2, 0 1px 2px rgba(0,0,0,0.1); 
-}
-
-.quality-toggle-btn:focus-visible {
-  box-shadow: 0 0 0 2px #135ba1, 0 0 0 4px rgba(25, 118, 210, 0.4), 0 1px 2px rgba(0,0,0,0.1); 
-}
-
-.quality-toggle-btn.quality-active:focus-visible {
-    border-color: #135ba1; 
-    box-shadow: 0 0 0 2px #135ba1, 0 0 0 4px rgba(25, 118, 210, 0.4), 0 1px 2px rgba(0,0,0,0.1);
 }
