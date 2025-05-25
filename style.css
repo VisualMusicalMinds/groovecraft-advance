@@ -812,3 +812,83 @@ input[type="number"].bpm-input { width: 50px; font-size: 1em; padding: 4px 0; he
 @media (max-width: 600px) { .abcd-toggle-container { width: calc(var(--box-size) * 0.9); } }
 @media (max-width: 480px) { .abcd-toggle-container { width: calc(var(--box-size) * 0.95); max-width: 100px; } .abcd-toggle-btn { padding: calc(var(--box-size) * 0.04) 0; font-size: calc(var(--box-size) * 0.11); } }
 @media (max-width: 400px) { .abcd-toggle-container { width: calc(var(--box-size) * 0.98); max-width: 90px; } .abcd-toggle-btn { padding: calc(var(--box-size) * 0.035) 0; font-size: calc(var(--box-size) * 0.10); } }
+/* Key Selector Dial Styles */
+.key-selector-dial {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  background: #fafdff; /* Similar to waveform dial */
+  border-radius: 0.6em;
+  margin-top: 10px; /* Space below ABCD toggles */
+  margin-bottom: 9px; 
+  padding: 0.12em 0.46em;
+  font-family: 'EB Garamond', Garamond, 'Times New Roman', Times, serif;
+  font-weight: 700;
+  font-size: clamp(0.75rem, 1.3vw, 1.06em); /* Same font size as waveform dial */
+  box-shadow: 0 0.5px 2px #0001;
+  outline: none;
+  user-select: none;
+  gap: 0.10em;
+  min-width: 0;
+  min-height: 0;
+  width: 100%; /* Take full width of its container in the first column */
+  max-width: 300px; /* Or match waveform dial's max-width */
+  box-sizing: border-box;
+}
+
+.key-arrow {
+  font-size: 1.1em; /* Same as waveform arrow */
+  color: #1976d2;
+  cursor: pointer;
+  padding: 0.08em 0.25em;
+  user-select: none;
+  transition: color 0.15s, background 0.12s;
+  border-radius: 0.33em;
+  display: flex;
+  align-items: center;
+  height: 1.4em; /* Match waveform arrow height */
+}
+.key-arrow:active, .key-arrow:focus-visible {
+  color: #135ba1;
+  background: #e3eafd;
+}
+
+.key-name-display {
+  min-width: 58px; /* Match waveform name width */
+  max-width: 120px;
+  text-align: center;
+  color: #333; /* Slightly different color for key? Or keep same as waveform name */
+  font-family: 'EB Garamond', Garamond, 'Times New Roman', Times, serif;
+  font-weight: 700;
+  font-size: 1.1em; /* Slightly larger for emphasis, or keep 1em */
+  letter-spacing: 0.02em; /* Slightly more spacing for clarity */
+  padding: 0.08em 0.4em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex-shrink: 1;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Responsive adjustments for key selector if needed, similar to waveform dial */
+@media (max-width: 600px) {
+  .key-selector-dial {
+    font-size: clamp(0.68rem, 1.1vw, 0.96em);
+    max-width: 200px; /* Match waveform dial */
+  }
+}
+
+@media (max-width: 400px) {
+  .key-selector-dial {
+    font-size: clamp(0.60rem, 0.96vw, 0.88em);
+    max-width: 140px; /* Match waveform dial */
+    padding: 0.09em 0.19em;
+  }
+  .key-name-display {
+    min-width: 40px; /* Adjust if needed for smaller key names like 'Db' */
+  }
+}
