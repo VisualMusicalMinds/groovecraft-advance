@@ -221,32 +221,38 @@ function handleWaveformDial(dir) {
 }
 
 function saveCurrentProgression() {
-  const chordValues = Array.from(document.querySelectorAll('.chord-select')).map(select => select.value);
+  // Chord values (progressionA/B/C/D) are the source of truth and are updated directly.
+  // This function now only saves DOM-based states like rhythm boxes and modifiers.
   const rhythmBoxStates = Array.from(document.querySelectorAll('.bottom-rhythm-box')).map(box => box.classList.contains('active'));
   const seventhStates = Array.from(document.querySelectorAll('.seventh-btn')).map(btn => btn.classList.contains('active'));
   const secondStates = Array.from(document.querySelectorAll('.second-btn')).map(btn => btn.classList.contains('active'));
   const fourthStates = Array.from(document.querySelectorAll('.fourth-btn')).map(btn => btn.classList.contains('active')); 
   const susStates = Array.from(document.querySelectorAll('.sus-btn')).map(btn => btn.classList.contains('active')); 
   const majSeventhStates = Array.from(document.querySelectorAll('.maj-seventh-btn')).map(btn => btn.classList.contains('active'));
-  const majorStates = Array.from(document.querySelectorAll('.slot-box')).map((slot, idx) => majorA[idx]); // Assuming majorA holds current states for quality
+  
+  let currentMajorStates = [];
+  const currentToggleArrays = getToggleArrays(); 
+  for(let i=0; i<4; i++) {
+      currentMajorStates.push(currentToggleArrays.majorArr[i]);
+  }
 
   let targetStates;
   switch (currentToggle) {
-    case 'A': targetStates = { p: progressionA, r: rhythmBoxesA, s7: seventhA, s2: secondA, s4: fourthA, sus: susA, maj7: majSeventhA, m: majorA }; break;
-    case 'B': targetStates = { p: progressionB, r: rhythmBoxesB, s7: seventhB, s2: secondB, s4: fourthB, sus: susB, maj7: majSeventhB, m: majorB }; break;
-    case 'C': targetStates = { p: progressionC, r: rhythmBoxesC, s7: seventhC, s2: secondC, s4: fourthC, sus: susC, maj7: majSeventhC, m: majorC }; break;
-    case 'D': targetStates = { p: progressionD, r: rhythmBoxesD, s7: seventhD, s2: secondD, s4: fourthD, sus: susD, maj7: majSeventhD, m: majorD }; break;
+    case 'A': targetStates = { r: rhythmBoxesA, s7: seventhA, s2: secondA, s4: fourthA, sus: susA, maj7: majSeventhA, m: majorA }; break;
+    case 'B': targetStates = { r: rhythmBoxesB, s7: seventhB, s2: secondB, s4: fourthB, sus: susB, maj7: majSeventhB, m: majorB }; break;
+    case 'C': targetStates = { r: rhythmBoxesC, s7: seventhC, s2: secondC, s4: fourthC, sus: susC, maj7: majSeventhC, m: majorC }; break;
+    case 'D': targetStates = { r: rhythmBoxesD, s7: seventhD, s2: secondD, s4: fourthD, sus: susD, maj7: majSeventhD, m: majorD }; break;
     default: return; 
   }
 
-  targetStates.p.splice(0, targetStates.p.length, ...chordValues);
+  // Note: targetStates.p (progression chords) is NOT updated here.
   targetStates.r.splice(0, targetStates.r.length, ...rhythmBoxStates);
   targetStates.s7.splice(0, targetStates.s7.length, ...seventhStates);
   targetStates.s2.splice(0, targetStates.s2.length, ...secondStates);
   targetStates.s4.splice(0, targetStates.s4.length, ...fourthStates);
   targetStates.sus.splice(0, targetStates.sus.length, ...susStates);
   targetStates.maj7.splice(0, targetStates.maj7.length, ...majSeventhStates);
-  targetStates.m.splice(0, targetStates.m.length, ...majorStates); // Save M/m states
+  targetStates.m.splice(0, targetStates.m.length, ...currentMajorStates);
 }
 
 
@@ -257,33 +263,38 @@ function _updateQualityButtonVisualForSlot(idx, state) {
     if (qualityBtn) {
         if (state === 'minor') qualityBtn.textContent = 'm';
         else qualityBtn.textContent = 'M'; 
-        qualityBtn.classList.toggle('quality-active', state !== 'none'); // Active if 'major' or 'minor'
+        qualityBtn.classList.toggle('quality-active', state === 'major' || state === 'minor');
     }
 }
 
 function loadProgression(toggle) {
   let p, r, s7, s2, s4, sus, maj7, m; 
+  let sourceArrays;
   switch(toggle) {
-    case 'A': ({ p, r, s7, s2, s4, sus, maj7, m } = { p: progressionA, r: rhythmBoxesA, s7: seventhA, s2: secondA, s4: fourthA, sus: susA, maj7: majSeventhA, m: majorA }); break;
-    case 'B': ({ p, r, s7, s2, s4, sus, maj7, m } = { p: progressionB, r: rhythmBoxesB, s7: seventhB, s2: secondB, s4: fourthB, sus: susB, maj7: majSeventhB, m: majorB }); break;
-    case 'C': ({ p, r, s7, s2, s4, sus, maj7, m } = { p: progressionC, r: rhythmBoxesC, s7: seventhC, s2: secondC, s4: fourthC, sus: susC, maj7: majSeventhC, m: majorC }); break;
-    case 'D': ({ p, r, s7, s2, s4, sus, maj7, m } = { p: progressionD, r: rhythmBoxesD, s7: seventhD, s2: secondD, s4: fourthD, sus: susD, maj7: majSeventhD, m: majorD }); break;
-    default:  ({ p, r, s7, s2, s4, sus, maj7, m } = { p: progressionA, r: rhythmBoxesA, s7: seventhA, s2: secondA, s4: fourthA, sus: susA, maj7: majSeventhA, m: majorA });
+    case 'A': sourceArrays = { pArr: progressionA, rArr: rhythmBoxesA, s7Arr: seventhA, s2Arr: secondA, s4Arr: fourthA, susArr: susA, maj7Arr: majSeventhA, mArr: majorA }; break;
+    case 'B': sourceArrays = { pArr: progressionB, rArr: rhythmBoxesB, s7Arr: seventhB, s2Arr: secondB, s4Arr: fourthB, susArr: susB, maj7Arr: majSeventhB, mArr: majorB }; break;
+    case 'C': sourceArrays = { pArr: progressionC, rArr: rhythmBoxesC, s7Arr: seventhC, s2Arr: secondC, s4Arr: fourthC, susArr: susC, maj7Arr: majSeventhC, mArr: majorC }; break;
+    case 'D': sourceArrays = { pArr: progressionD, rArr: rhythmBoxesD, s7Arr: seventhD, s2Arr: secondD, s4Arr: fourthD, susArr: susD, maj7Arr: majSeventhD, mArr: majorD }; break;
+    default:  sourceArrays = { pArr: progressionA, rArr: rhythmBoxesA, s7Arr: seventhA, s2Arr: secondA, s4Arr: fourthA, susArr: susA, maj7Arr: majSeventhA, mArr: majorA };
   }
+  ({ pArr: p, rArr: r, s7Arr: s7, s2Arr: s2, s4Arr: s4, susArr: sus, maj7Arr: maj7, mArr: m } = sourceArrays);
+
   updateChordDropdowns(); 
+
   document.querySelectorAll('.chord-select').forEach((select, idx) => {
-    select.value = p[idx] || ""; // Default to "" if undefined
-    setSlotColorAndStyle(idx, select, s7[idx], s2[idx], s4[idx], sus[idx], maj7[idx]); 
+    const storedChord = p[idx] || "";
+    select.value = storedChord; 
+    setSlotColorAndStyle(idx, select, storedChord, s7[idx], s2[idx], s4[idx], sus[idx], maj7[idx]); 
   });
   document.querySelectorAll('.bottom-rhythm-box').forEach((box, idx) => box.classList.toggle('active', r[idx]));
   updateSeventhBtnStates(); updateSecondBtnStates(); updateFourthBtnStates(); updateSusBtnStates(); updateMajSeventhBtnStates();
-  m.forEach((state, idx) => _updateQualityButtonVisualForSlot(idx, state || 'none')); // Default to 'none'
+  m.forEach((state, idx) => _updateQualityButtonVisualForSlot(idx, state || 'none')); 
   updateRhythmPictures();
 }
 
 function switchToggle(toggle) {
   if (currentToggle === toggle) return;
-  saveCurrentProgression(); 
+  // saveCurrentProgression(); // Not strictly needed here if loadProgression re-reads from the new toggle's master arrays
   currentToggle = toggle;
   document.querySelectorAll('.abcd-toggle-btn').forEach(btn => btn.classList.remove('abcd-active'));
   document.getElementById('toggle' + toggle).classList.add('abcd-active');
@@ -292,11 +303,11 @@ function switchToggle(toggle) {
 
 function getToggleArrays() {
   switch(currentToggle) {
-    case 'A': return { seventhArr: seventhA, secondArr: secondA, majorArr: majorA, fourthArr: fourthA, susArr: susA, majSeventhArr: majSeventhA };
-    case 'B': return { seventhArr: seventhB, secondArr: secondB, majorArr: majorB, fourthArr: fourthB, susArr: susB, majSeventhArr: majSeventhB };
-    case 'C': return { seventhArr: seventhC, secondArr: secondC, majorArr: majorC, fourthArr: fourthC, susArr: susC, majSeventhArr: majSeventhC };
-    case 'D': return { seventhArr: seventhD, secondArr: secondD, majorArr: majorD, fourthArr: fourthD, susArr: susD, majSeventhArr: majSeventhD };
-    default:  return { seventhArr: seventhA, secondArr: secondA, majorArr: majorA, fourthArr: fourthA, susArr: susA, majSeventhArr: majSeventhA }; 
+    case 'A': return { p: progressionA, seventhArr: seventhA, secondArr: secondA, majorArr: majorA, fourthArr: fourthA, susArr: susA, majSeventhArr: majSeventhA };
+    case 'B': return { p: progressionB, seventhArr: seventhB, secondArr: secondB, majorArr: majorB, fourthArr: fourthB, susArr: susB, majSeventhArr: majSeventhB };
+    case 'C': return { p: progressionC, seventhArr: seventhC, secondArr: secondC, majorArr: majorC, fourthArr: fourthC, susArr: susC, majSeventhArr: majSeventhC };
+    case 'D': return { p: progressionD, seventhArr: seventhD, secondArr: secondD, majorArr: majorD, fourthArr: fourthD, susArr: susD, majSeventhArr: majSeventhD };
+    default:  return { p: progressionA, seventhArr: seventhA, secondArr: secondA, majorArr: majorA, fourthArr: fourthA, susArr: susA, majSeventhArr: majSeventhA }; 
   }
 }
 
@@ -304,7 +315,7 @@ function toggleMajorMinor(idx) {
   const arrays = getToggleArrays(); 
   const slot = document.getElementById('slot' + idx);
   const select = slot.querySelector('.chord-select');
-  const chord = select.value;
+  const chord = arrays.p[idx]; 
   
   if (!chord || chord === "" || chord === "empty") {
     arrays.majorArr[idx] = 'none'; 
@@ -312,18 +323,17 @@ function toggleMajorMinor(idx) {
     return;
   }
   
-  // Determine initial quality from chordTypes if 'none'
   if (arrays.majorArr[idx] === 'none' && chordTypes[chord]) {
-      arrays.majorArr[idx] = chordTypes[chord]; // Set to major or minor based on definition
+      arrays.majorArr[idx] = chordTypes[chord]; 
   }
 
   if (arrays.majorArr[idx] === 'major') arrays.majorArr[idx] = 'minor';
-  else if (arrays.majorArr[idx] === 'minor') arrays.majorArr[idx] = 'major'; // Toggle back to major
-  else arrays.majorArr[idx] = 'major'; // Default to major if somehow still 'none' and chord exists
+  else if (arrays.majorArr[idx] === 'minor') arrays.majorArr[idx] = 'major'; 
+  else arrays.majorArr[idx] = 'major'; 
 
   _updateQualityButtonVisualForSlot(idx, arrays.majorArr[idx]); 
-  setSlotColorAndStyle(idx, select, arrays.seventhArr[idx], arrays.secondArr[idx], arrays.fourthArr[idx], arrays.susArr[idx], arrays.majSeventhArr[idx]); 
-  saveCurrentProgression(); 
+  setSlotColorAndStyle(idx, select, chord, arrays.seventhArr[idx], arrays.secondArr[idx], arrays.fourthArr[idx], arrays.susArr[idx], arrays.majSeventhArr[idx]); 
+  saveCurrentProgression(); // Saves modifiers and majorArr state
   playChordPreview(idx);
 }
 
@@ -334,20 +344,21 @@ function _updateAllQualityButtonVisualsCurrentToggle() {
     }
 }
 
-function setSlotColorAndStyle(slotIndex, select, addSeventhArg, addSecondArg, addFourthArg, addSusArg, addMajSeventhArg) { 
-  const arrays = getToggleArrays();
+function setSlotColorAndStyle(slotIndex, selectElement, chordToDisplay, addSeventhArg, addSecondArg, addFourthArg, addSusArg, addMajSeventhArg) { 
+  const arrays = getToggleArrays(); // Get arrays for the current toggle
   const addSeventh = (typeof addSeventhArg === 'boolean') ? addSeventhArg : arrays.seventhArr[slotIndex];
   const addSecond = (typeof addSecondArg === 'boolean') ? addSecondArg : arrays.secondArr[slotIndex];
   const addFourth = (typeof addFourthArg === 'boolean') ? addFourthArg : arrays.fourthArr[slotIndex];
   const addSus = (typeof addSusArg === 'boolean') ? addSusArg : arrays.susArr[slotIndex];
   const addMajSeventh = (typeof addMajSeventhArg === 'boolean') ? addMajSeventhArg : arrays.majSeventhArr[slotIndex];
-  setSlotContent(slotIndex, select.value, addSeventh, addSecond, addFourth, addSus, addMajSeventh); 
-  select.className = 'chord-select'; 
-  if (select.value && select.value !== "empty" && select.value !== "") {
-    const chordValueForClass = select.value;
-    let chordClass = `c-selected-${chordValueForClass.toLowerCase()}`;
+  
+  setSlotContent(slotIndex, chordToDisplay, addSeventh, addSecond, addFourth, addSus, addMajSeventh); 
+  
+  selectElement.className = 'chord-select'; 
+  if (chordToDisplay && chordToDisplay !== "empty" && chordToDisplay !== "") {
+    let chordClass = `c-selected-${chordToDisplay.toLowerCase()}`;
     chordClass = chordClass.replace('♭', 'flat').replace('♯', 'sharp').replace('#', 'sharp'); 
-    select.classList.add(chordClass);
+    selectElement.classList.add(chordClass);
   }
 }
 
@@ -370,11 +381,10 @@ function setSlotContent(slotIndex, chord, addSeventh, addSecond, addFourth, addS
     if (addSecond && chordSeconds[chord]) finalNotesForDisplay.push({ note: chordSeconds[chord], type: '2nd' }); else if (addSecond) console.warn(`2nd not defined for sus chord ${chord}`);
     if (addFourth && chordFourths[chord]) finalNotesForDisplay.push({ note: chordFourths[chord], type: '4th' }); else if (addFourth) console.warn(`4th not defined for sus chord ${chord}`);
   } else {
-    let thirdNote = baseTones[1]; // Default third from chordTones
-    // Only override with chordAlternateThirds if qualityState is 'major' or 'minor'
+    let thirdNote = baseTones[1]; 
     if (chordAlternateThirds[chord] && (qualityState === 'major' || qualityState === 'minor')) {
         thirdNote = chordAlternateThirds[chord][qualityState]; 
-    } else if (qualityState === 'none' && chordTypes[chord]) { // If 'none', use default quality from chordTypes
+    } else if (qualityState === 'none' && chordTypes[chord]) { 
         const defaultQuality = chordTypes[chord];
         if (chordAlternateThirds[chord] && (defaultQuality === 'major' || defaultQuality === 'minor')) {
             thirdNote = chordAlternateThirds[chord][defaultQuality];
@@ -385,7 +395,7 @@ function setSlotContent(slotIndex, chord, addSeventh, addSecond, addFourth, addS
     if (addSecond && chordSeconds[chord]) { const rootIndex = finalNotesForDisplay.findIndex(n => n.type === 'root'); finalNotesForDisplay.splice(rootIndex + 1, 0, { note: chordSeconds[chord], type: '2nd' }); } else if (addSecond) console.warn(`2nd not defined for chord ${chord}`);
     if (addFourth && chordFourths[chord]) { const thirdIndex = finalNotesForDisplay.findIndex(n => n.type === '3rd'); finalNotesForDisplay.splice(thirdIndex !== -1 ? thirdIndex + 1 : finalNotesForDisplay.length -1 , 0, { note: chordFourths[chord], type: '4th' }); } else if (addFourth) console.warn(`4th not defined for chord ${chord}`);
   }
-  if (baseTones[2]) finalNotesForDisplay.push({ note: baseTones[2], type: '5th' }); // Check if 5th exists
+  if (baseTones[2]) finalNotesForDisplay.push({ note: baseTones[2], type: '5th' }); 
   if (addSeventh) { 
     const seventhNote = addMajSeventh && chordMajorSevenths[chord] ? chordMajorSevenths[chord] : chordSevenths[chord];
     if (seventhNote) finalNotesForDisplay.push({ note: seventhNote, type: '7th' }); else console.warn(`7th/Maj7th not defined for chord ${chord}`);
@@ -417,8 +427,10 @@ function _createToggleFunction(type, updateBtnStatesFn, dependencies = null) {
     else if (type === 'fourth' && !targetArray[idx] && wasActive) { if (arrays.susArr[idx] && !arrays.secondArr[idx]) { arrays.susArr[idx] = false; updateSusBtnStates(); } }
     updateBtnStatesFn(); 
     const select = document.getElementById('slot' + idx).querySelector('.chord-select');
-    setSlotColorAndStyle(idx, select, arrays.seventhArr[idx], arrays.secondArr[idx], arrays.fourthArr[idx], arrays.susArr[idx], arrays.majSeventhArr[idx]);
-    saveCurrentProgression(); playChordPreview(idx);
+    const chordToDisplay = arrays.p[idx]; 
+    setSlotColorAndStyle(idx, select, chordToDisplay, arrays.seventhArr[idx], arrays.secondArr[idx], arrays.fourthArr[idx], arrays.susArr[idx], arrays.majSeventhArr[idx]);
+    saveCurrentProgression(); 
+    playChordPreview(idx);
   };
 }
 const toggleSeventh = _createToggleFunction('seventh', updateSeventhBtnStates, { type: 'majSeventh' });
@@ -500,16 +512,18 @@ function restartAnimationWithBpm() {
 
 function playEighthNoteStep() {
   const currentSlotIdx = slotHighlightStep % 4;
-  const currentSelect = document.getElementById(`slot${currentSlotIdx}`).querySelector('.chord-select');
+  const currentProgArr = getCurrentProgressionArray();
+  const chordName = currentProgArr[currentSlotIdx]; 
+
   const currentPair = Math.floor((rhythmStep % 8) / 2);
   const currentWhich = (rhythmStep % 8) % 2;
   const box = document.querySelector(`.bottom-rhythm-box[data-pair="${currentPair}"][data-which="${currentWhich}"]`);
   let isNextBoxInactive = false;
   if (currentWhich === 0 && box && box.classList.contains('active')) { const nextBox = document.querySelector(`.bottom-rhythm-box[data-pair="${currentPair}"][data-which="1"]`); isNextBoxInactive = nextBox && !nextBox.classList.contains('active'); }
+  
   if (box && box.classList.contains('active')) {
-    if (!currentSelect || currentSelect.value === "" || currentSelect.value === "empty") { playBassDrum(isNextBoxInactive ? 0.38 : 0.19); } 
+    if (!chordName || chordName === "" || chordName === "empty") { playBassDrum(isNextBoxInactive ? 0.38 : 0.19); } 
     else {
-      const chordName = currentSelect.value;
       if (!rhythmChordNotes[chordName]) { console.warn("Playback notes not defined for chord:", chordName); playBassDrum(isNextBoxInactive ? 0.38 : 0.19); return; }
       const { seventhArr, secondArr, majorArr, fourthArr, susArr, majSeventhArr } = getToggleArrays(); 
       const addSeventh = seventhArr[currentSlotIdx], addSecond = secondArr[currentSlotIdx], qualityState = majorArr[currentSlotIdx], addFourth = fourthArr[currentSlotIdx], addSus = susArr[currentSlotIdx], addMajSeventh = majSeventhArr[currentSlotIdx];
@@ -527,7 +541,7 @@ function playEighthNoteStep() {
         let thirdNoteToPlay = baseRhythmNotes[2];
         if (chordAlternateThirds[chordName] && qualityState !== 'none') { 
             thirdNoteToPlay = chordAlternateThirds[chordName][qualityState === 'major' ? 'majorNote' : 'minorNote']; 
-        } else if (qualityState === 'none' && chordTypes[chordName] && chordAlternateThirds[chordName]) { // Use default quality if 'none'
+        } else if (qualityState === 'none' && chordTypes[chordName] && chordAlternateThirds[chordName]) {
             const defaultQuality = chordTypes[chordName];
             if (defaultQuality === 'major' || defaultQuality === 'minor') {
                  thirdNoteToPlay = chordAlternateThirds[chordName][defaultQuality === 'major' ? 'majorNote' : 'minorNote'];
@@ -558,8 +572,7 @@ function clearAll() {
   for (let i = 0; i < 4; i++) {
     const slot = document.getElementById('slot'+i); if (!slot) continue;
     const noteRects = slot.querySelector('.note-rects'); if(noteRects) noteRects.innerHTML = '';
-    const select = slot.querySelector('.chord-select');
-    setSlotColorAndStyle(i, select, false, false, false, false, false); slot.classList.remove('enlarged');
+    slot.classList.remove('enlarged');
     let img = slot.querySelector('.dash-img-slot'); if (img) { img.src = restDashImgUrl; img.alt = "Rhythm Box Rest"; img.style.display = "block"; }
     slot.querySelector('.seventh-btn')?.classList.remove('active'); slot.querySelector('.second-btn')?.classList.remove('active');
     slot.querySelector('.fourth-btn')?.classList.remove('active'); slot.querySelector('.sus-btn')?.classList.remove('active'); 
@@ -567,14 +580,26 @@ function clearAll() {
   }
   document.querySelectorAll('.bottom-rhythm-box').forEach(box => box.classList.remove('active'));
   updateRhythmPictures();
+  
   [progressionA, progressionB, progressionC, progressionD].forEach(p => p.fill('')); 
-  [seventhA, secondA, fourthA, susA, majSeventhA, seventhB, secondB, fourthB, susB, majSeventhB, seventhC, secondC, fourthC, susC, majSeventhC, seventhD, secondD, fourthD, susD, majSeventhD].forEach(arr => arr.fill(false));
+  [seventhA, secondA, fourthA, susA, majSeventhA, 
+   seventhB, secondB, fourthB, susB, majSeventhB, 
+   seventhC, secondC, fourthC, susC, majSeventhC, 
+   seventhD, secondD, fourthD, susD, majSeventhD].forEach(arr => arr.fill(false));
   [majorA, majorB, majorC, majorD].forEach(arr => arr.fill('none'));
+
   updateChordDropdowns(); 
-  document.querySelectorAll('.chord-select').forEach(select => select.selectedIndex = 0);
+  
+  document.querySelectorAll('.chord-select').forEach((select, idx) => {
+      select.value = ""; 
+      const arrays = getToggleArrays(); 
+      setSlotColorAndStyle(idx, select, "", arrays.seventhArr[idx], arrays.secondArr[idx], arrays.fourthArr[idx], arrays.susArr[idx], arrays.majSeventhArr[idx]);
+  });
+
   updateSeventhBtnStates(); updateSecondBtnStates(); updateFourthBtnStates(); updateSusBtnStates(); updateMajSeventhBtnStates();
-  _updateAllQualityButtonVisualsCurrentToggle();
-  saveCurrentProgression(); setPlaying(false);
+  _updateAllQualityButtonVisualsCurrentToggle(); 
+  saveCurrentProgression(); 
+  setPlaying(false);
 }
 
 async function playBrush() {
@@ -607,6 +632,7 @@ const soundProfiles = {
 async function playTriangleNotes(notes, extendDuration = false) {
   await ensureAudio(); 
   const profile = soundProfiles[currentWaveform];
+  if (!profile) { console.error("Sound profile not found for waveform:", currentWaveform); return; }
   let durationMultiplier = extendDuration ? 2 : 1;
   
   notes.forEach((note, i) => {
@@ -618,20 +644,82 @@ async function playTriangleNotes(notes, extendDuration = false) {
     gainNode = ctx.createGain();
     gainNode.gain.setValueAtTime(0, ctx.currentTime);
     
-    if (currentWaveform === "voice") { /* ... as before ... */ } 
-    else if (currentWaveform === "saw") { /* ... as before ... */ } 
-    else if (currentWaveform === "square") { /* ... as before ... */ } 
-    else if (currentWaveform === "sine") { /* ... as before ... */ } 
+    const staggeredStartTime = ctx.currentTime + 0.01 * i;
+    const noteEndTime = staggeredStartTime + profile.duration * durationMultiplier;
+    const voiceStopTime = noteEndTime + 0.08; 
+
+    if (currentWaveform === "voice" && customVoiceWave) {
+      osc = ctx.createOscillator(); osc.setPeriodicWave(customVoiceWave); osc.frequency.value = freq;
+      lfo = ctx.createOscillator(); lfoGain = ctx.createGain();
+      lfo.frequency.setValueAtTime(profile.vibratoFreq, staggeredStartTime); lfoGain.gain.setValueAtTime(profile.vibratoAmount, staggeredStartTime);
+      lfo.connect(lfoGain); lfoGain.connect(osc.frequency); lfo.start(staggeredStartTime);
+      filter = ctx.createBiquadFilter(); filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(profile.filterFreq, staggeredStartTime); filter.Q.value = profile.filterQ;
+      osc.connect(filter); filter.connect(gainNode);
+      const attackTime = profile.attack, decayTime = 0.18, sustainLevel = profile.gain * 0.7, maxLevel = profile.gain * 1.0;
+      gainNode.gain.linearRampToValueAtTime(maxLevel, staggeredStartTime + attackTime);
+      gainNode.gain.linearRampToValueAtTime(sustainLevel, staggeredStartTime + attackTime + decayTime);
+      gainNode.gain.linearRampToValueAtTime(0.001, noteEndTime);
+      gainNode.connect(masterGain); osc.start(staggeredStartTime);
+      osc.stop(voiceStopTime); lfo.stop(voiceStopTime);
+    } 
+    else if (currentWaveform === "saw") {
+      osc = ctx.createOscillator(); osc.type = "sawtooth"; osc.frequency.value = freq;
+      if (profile.pitchBend) {
+        osc.frequency.setValueAtTime(freq + profile.bendAmount, staggeredStartTime);
+        osc.frequency.exponentialRampToValueAtTime(freq, staggeredStartTime + profile.bendTime);
+      }
+      const allpass = ctx.createBiquadFilter(); allpass.type = 'allpass';
+      allpass.frequency.value = 800; allpass.Q.value = 5;
+      filter = ctx.createBiquadFilter(); filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(profile.filterFreq, staggeredStartTime);
+      filter.frequency.linearRampToValueAtTime(profile.filterFreq * 0.5, noteEndTime);
+      filter.Q.value = profile.filterQ;
+      osc.connect(filter); filter.connect(allpass); allpass.connect(gainNode);
+      gainNode.gain.linearRampToValueAtTime(profile.gain, staggeredStartTime + profile.attack);
+      gainNode.gain.setValueAtTime(profile.gain, staggeredStartTime + profile.attack + profile.hold);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, noteEndTime);
+      gainNode.connect(masterGain); osc.start(staggeredStartTime); osc.stop(noteEndTime);
+    } 
+    else if (currentWaveform === "square") {
+      osc = ctx.createOscillator(); osc.type = "square"; osc.frequency.value = freq;
+      const highpass = ctx.createBiquadFilter(); highpass.type = 'highpass'; highpass.frequency.value = 80;
+      filter = ctx.createBiquadFilter(); filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(profile.filterFreq * 2, staggeredStartTime);
+      filter.frequency.exponentialRampToValueAtTime(profile.filterFreq, staggeredStartTime + profile.attack + profile.hold);
+      filter.Q.value = profile.filterQ;
+      osc.connect(highpass); highpass.connect(filter); filter.connect(gainNode);
+      gainNode.gain.linearRampToValueAtTime(profile.gain * 1.2, staggeredStartTime + profile.attack);
+      let decayPoint = profile.gain * 0.5;
+      if (extendDuration) decayPoint = profile.gain * 0.6;
+      gainNode.gain.exponentialRampToValueAtTime(decayPoint, staggeredStartTime + profile.attack + profile.hold + (extendDuration ? 0.15 : 0.05) );
+      gainNode.gain.exponentialRampToValueAtTime(0.001, noteEndTime);
+      gainNode.connect(masterGain); osc.start(staggeredStartTime); osc.stop(noteEndTime);
+    } 
+    else if (currentWaveform === "sine") {
+      osc = ctx.createOscillator(); osc.type = "sine"; osc.frequency.value = freq;
+      const harmonicOsc = ctx.createOscillator(); harmonicOsc.type = "sine"; harmonicOsc.frequency.value = freq * 2; 
+      const harmonicGain = ctx.createGain(); harmonicGain.gain.value = 0.15; 
+      filter = ctx.createBiquadFilter(); filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(profile.filterFreq, staggeredStartTime); filter.Q.value = profile.filterQ;
+      osc.connect(filter); harmonicOsc.connect(harmonicGain); harmonicGain.connect(filter); filter.connect(gainNode);
+      gainNode.gain.linearRampToValueAtTime(profile.gain, staggeredStartTime + profile.attack);
+      gainNode.gain.setValueAtTime(profile.gain, staggeredStartTime + profile.attack + profile.hold * durationMultiplier);
+      gainNode.gain.linearRampToValueAtTime(0.001, noteEndTime);
+      gainNode.connect(masterGain); osc.start(staggeredStartTime); osc.stop(noteEndTime);
+      harmonicOsc.start(staggeredStartTime); harmonicOsc.stop(noteEndTime);
+    } 
     else { // Triangle (default/fallback)
       osc = ctx.createOscillator(); osc.type = "triangle"; osc.frequency.value = freq;
       filter = ctx.createBiquadFilter(); filter.type = 'lowpass';
-      filter.frequency.setValueAtTime(profile.filterFreq, ctx.currentTime); filter.Q.value = profile.filterQ;
+      const triangleProfile = soundProfiles.triangle; 
+      filter.frequency.setValueAtTime(triangleProfile.filterFreq, staggeredStartTime); filter.Q.value = triangleProfile.filterQ;
       osc.connect(filter); filter.connect(gainNode);
-      gainNode.gain.linearRampToValueAtTime(profile.gain, ctx.currentTime + profile.attack + 0.01 * i);
-      gainNode.gain.setValueAtTime(profile.gain, ctx.currentTime + profile.attack + profile.hold * durationMultiplier + 0.01 * i);
-      gainNode.gain.linearRampToValueAtTime(0.012, ctx.currentTime + profile.duration * durationMultiplier + 0.01 * i);
-      gainNode.connect(masterGain); osc.start(ctx.currentTime + 0.01 * i);
-      osc.stop(ctx.currentTime + profile.duration * durationMultiplier + 0.01 * i);
+      gainNode.gain.linearRampToValueAtTime(triangleProfile.gain, staggeredStartTime + triangleProfile.attack);
+      gainNode.gain.setValueAtTime(triangleProfile.gain, staggeredStartTime + triangleProfile.attack + triangleProfile.hold * durationMultiplier);
+      gainNode.gain.linearRampToValueAtTime(0.012, staggeredStartTime + triangleProfile.duration * durationMultiplier); 
+      gainNode.connect(masterGain); osc.start(staggeredStartTime);
+      osc.stop(staggeredStartTime + triangleProfile.duration * durationMultiplier);
     }
   });
 }
@@ -639,15 +727,15 @@ async function playTriangleNotes(notes, extendDuration = false) {
 function midiToFreq(n) {
   if (!n) return null;
   const notes = {'C':0,'C#':1,'Db':1,'D':2,'D#':3,'Eb':3,'E':4,'F':5,'F#':6,'Gb':6,'G':7,'G#':8,'Ab':8,'A':9,'A#':10,'Bb':10,'B':11, 
-                 'Cb':11, 'Fb':4, 'E#':5, 'B#':0, 'Bbb':9, 'Ebb':2, 'Abb':7, 'Dbb':0, 'Gbb':5, // Enharmonics
-                 'F##':7, 'C##':2, 'G##':9, 'D##':4, 'A##':0, 'E##':6 }; // Double sharps
+                 'Cb':11, 'Fb':4, 'E#':5, 'B#':0, 'Bbb':9, 'Ebb':2, 'Abb':7, 'Dbb':0, 'Gbb':5,
+                 'F##':7, 'C##':2, 'G##':9, 'D##':4, 'A##':0, 'E##':6 }; 
   let noteName = n.slice(0, -1);
   let octaveStr = n.slice(-1);
 
   if (n.length > 1 && (n[1] === 'b' || n[1] === '♭' || n[1] === '#' || n[1] === '♯')) {
     noteName = n.slice(0,2);
     octaveStr = n.slice(2);
-    if (n.length > 2 && (n[2] === 'b' || n[2] === '♭' || n[2] === '#' || n[2] === '♯')) { // Double flat/sharp
+    if (n.length > 2 && (n[2] === 'b' || n[2] === '♭' || n[2] === '#' || n[2] === '♯')) { 
         noteName = n.slice(0,3);
         octaveStr = n.slice(3);
     }
@@ -659,8 +747,9 @@ function midiToFreq(n) {
 
 function playChordPreview(idx) {
   if (isPlaying) return;
-  const select = document.getElementById('slot' + idx).querySelector('.chord-select');
-  const chordName = select.value;
+  const currentProgArr = getCurrentProgressionArray();
+  const chordName = currentProgArr[idx]; 
+  
   if (!chordName || chordName === "" || chordName === "empty") return;
   if (!rhythmChordNotes[chordName]) { console.warn("Preview notes not defined for chord:", chordName); return; }
   const { seventhArr, secondArr, majorArr, fourthArr, susArr, majSeventhArr } = getToggleArrays(); 
@@ -701,28 +790,39 @@ function updateChordDropdowns() {
   const chordsForCurrentKey = keyChordMap[currentMusicalKey];
   if (!chordsForCurrentKey) { console.error("Chords not defined for key:", currentMusicalKey); return; }
   document.querySelectorAll('.chord-select').forEach(selectElement => {
-    const previouslySelectedValue = selectElement.value; 
     selectElement.innerHTML = ''; 
     const defaultOption = document.createElement('option'); defaultOption.value = ""; defaultOption.textContent = "-"; selectElement.appendChild(defaultOption);
     const emptyOption = document.createElement('option'); emptyOption.value = "empty"; emptyOption.textContent = ""; selectElement.appendChild(emptyOption);
     chordsForCurrentKey.forEach(chordData => { const option = document.createElement('option'); option.value = chordData.value; option.textContent = chordData.display; selectElement.appendChild(option); });
-    let foundPrevious = false;
-    for(let i=0; i < selectElement.options.length; i++) { if (selectElement.options[i].value === previouslySelectedValue) { selectElement.value = previouslySelectedValue; foundPrevious = true; break; } }
-    if (!foundPrevious && previouslySelectedValue !== "" && previouslySelectedValue !== "empty") { /* Old chord not in new key's functional list. Dropdown defaults to "-", slot's actual chord remains unchanged. */ } 
-    else if (!foundPrevious) { selectElement.value = ""; }
   });
 }
+
+function getCurrentProgressionArray() {
+  switch(currentToggle) {
+    case 'A': return progressionA;
+    case 'B': return progressionB;
+    case 'C': return progressionC;
+    case 'D': return progressionD;
+    default: console.error("Unknown toggle:", currentToggle); return progressionA; 
+  }
+}
+
 
 function handleKeyDial(direction) {
   currentKeyIndex = (currentKeyIndex + direction + musicalKeys.length) % musicalKeys.length;
   currentMusicalKey = musicalKeys[currentKeyIndex];
   updateKeyDisplay();
   updateChordDropdowns(); 
-  document.querySelectorAll('.chord-select').forEach((select, idx) => {
-    const arrays = getToggleArrays();
-    setSlotColorAndStyle(idx, select, arrays.seventhArr[idx], arrays.secondArr[idx], arrays.fourthArr[idx], arrays.susArr[idx], arrays.majSeventhArr[idx]);
+
+  const currentProgArr = getCurrentProgressionArray();
+  const arrays = getToggleArrays(); 
+
+  document.querySelectorAll('.chord-select').forEach((selectElement, idx) => {
+    const storedChord = currentProgArr[idx] || ""; 
+    selectElement.value = storedChord; 
+    setSlotColorAndStyle(idx, selectElement, storedChord, arrays.seventhArr[idx], arrays.secondArr[idx], arrays.fourthArr[idx], arrays.susArr[idx], arrays.majSeventhArr[idx]);
   });
-  console.log("Selected Key:", currentMusicalKey); 
+  // saveCurrentProgression(); // Not needed here, as only dropdown options changed, not the stored progression.
 }
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -740,7 +840,16 @@ document.addEventListener("DOMContentLoaded", function() {
   if (keyRightBtn) { keyRightBtn.onclick = () => handleKeyDial(1); keyRightBtn.addEventListener("keydown", (e) => { if (e.key===" "||e.key==="Enter"||e.key==="ArrowRight") { e.preventDefault(); handleKeyDial(1); e.target.focus(); }}); }
   updateKeyDisplay(); 
 
-  document.querySelectorAll('.chord-select').forEach((select, idx) => { select.addEventListener('change', function() { const arrays = getToggleArrays(); setSlotColorAndStyle(idx, select, arrays.seventhArr[idx], arrays.secondArr[idx], arrays.fourthArr[idx], arrays.susArr[idx], arrays.majSeventhArr[idx]); saveCurrentProgression(); playChordPreview(idx); }); });
+  document.querySelectorAll('.chord-select').forEach((select, idx) => { 
+    select.addEventListener('change', function() { 
+      const arrays = getToggleArrays(); 
+      const selectedChordFromDropdown = this.value;
+      arrays.p[idx] = selectedChordFromDropdown; 
+      setSlotColorAndStyle(idx, this, selectedChordFromDropdown, arrays.seventhArr[idx], arrays.secondArr[idx], arrays.fourthArr[idx], arrays.susArr[idx], arrays.majSeventhArr[idx]); 
+      playChordPreview(idx); 
+      saveCurrentProgression(); 
+    }); 
+  });
   document.querySelectorAll('.seventh-btn').forEach((btn, idx) => { btn.addEventListener('click', function() { toggleSeventh(idx); }); btn.addEventListener('keydown', function(e) { if (e.key===" "||e.key==="Enter") { e.preventDefault(); toggleSeventh(idx); }}); });
   document.querySelectorAll('.second-btn').forEach((btn, idx) => { btn.addEventListener('click', function() { toggleSecond(idx); }); btn.addEventListener('keydown', function(e) { if (e.key===" "||e.key==="Enter") { e.preventDefault(); toggleSecond(idx); }}); });
   document.querySelectorAll('.fourth-btn').forEach((btn, idx) => { btn.addEventListener('click', function() { toggleFourth(idx); }); btn.addEventListener('keydown', function(e) { if (e.key===" "||e.key==="Enter") { e.preventDefault(); toggleFourth(idx); }}); });
@@ -756,6 +865,6 @@ document.addEventListener("DOMContentLoaded", function() {
   for (let i = 0; i < slotIds.length; i++) unhighlightSlot(i);
   for (let i = 0; i < 4; i++) unhighlightPicture(i);
   setPlaying(false); 
-  saveCurrentProgression(); 
-  loadProgression(currentToggle); 
+  // saveCurrentProgression(); // Initial save is not strictly necessary as arrays are empty/default
+  loadProgression(currentToggle); // This will populate based on initial empty/default states
 });
