@@ -14,15 +14,18 @@
 
   /* Variables for floating buttons */
   --button-float-size: calc(var(--box-size) * 0.22);
-  --button-float-font-size: calc(var(--box-size) * 0.12); 
-  --button-float-spacing: calc(var(--box-size) * 0.03); /* Slightly increased spacing */
+  --button-float-font-size-small: calc(var(--box-size) * 0.11); /* For "sus", "maj" */
+  --button-float-font-size-large: calc(var(--box-size) * 0.14); /* For M/m, 2, 4, 7 */
+  --button-float-spacing: calc(var(--box-size) * 0.03); 
 
-  /* Right stack (2, 4, 7) positioning */
-  --right-stack-edge-offset: calc(var(--box-size) * 0.02);
-  --button-float-bottom-start-right: calc(var(--box-size) * 0.38); /* Bottom of 7th button */
+  /* Vertical positions from bottom of slot-box */
+  --bottom-row-pos: calc(var(--box-size) * 0.38);
+  --middle-row-pos: calc(var(--bottom-row-pos) + var(--button-float-size) + var(--button-float-spacing));
+  --top-row-pos: calc(var(--middle-row-pos) + var(--button-float-size) + var(--button-float-spacing));
 
-  /* Common vertical position for the M/m and Sus buttons (aligned with 4th button) */
-  --button-horizontal-row-bottom: calc(var(--button-float-bottom-start-right) + var(--button-float-size) + var(--button-float-spacing));
+  /* Horizontal offsets from edges */
+  --right-stack-edge: calc(var(--box-size) * 0.02);
+  --left-stack-edge: calc(var(--box-size) * 0.02);
 }
 
 body {
@@ -384,17 +387,15 @@ input[type="number"].bpm-input:focus {
 .note-A { background: #1760af; }
 .note-B { background: #9C27B0; }
 
-.note-7th,
-.note-2nd,
-.note-4th {
+.note-7th, .note-2nd, .note-4th {
   opacity: 0.90;
   border-radius: 0px;
   margin-left: 0px;
   margin-right: 0px;
 }
 
-/* Base style for ALL floating chord modifier buttons */
-.mm-toggle, .sus-btn, .seventh-btn, .second-btn, .fourth-btn {
+/* Base style for ALL floating chord modifier buttons (M/m, sus, maj, 2, 4, 7) */
+.mm-toggle, .sus-btn, .maj-seventh-btn, .seventh-btn, .second-btn, .fourth-btn {
   position: absolute;
   width: var(--button-float-size);
   height: var(--button-float-size);
@@ -413,63 +414,50 @@ input[type="number"].bpm-input:focus {
   box-sizing: border-box;
 }
 
-/* Specific font size for M/m, 2, 4, 7 */
+/* Font sizes for different button types */
 .quality-toggle-btn, .second-btn, .fourth-btn, .seventh-btn {
-   font-size: calc(var(--box-size) * 0.14); /* Keep these slightly larger */
+   font-size: var(--button-float-font-size-large);
 }
-.sus-btn {
-  font-size: var(--button-float-font-size); /* General size for sus */
+.sus-btn, .maj-seventh-btn {
+  font-size: var(--button-float-font-size-small);
+}
+.sus-btn { /* Specific for sus cursive */
   font-family: 'Brush Script MT', 'Brush Script Std', 'Lucida Calligraphy', cursive;
   padding-bottom: 2px; 
+}
+.maj-seventh-btn {
+  padding-top: 1px; /* Adjust baseline for "maj" text if needed */
 }
 
 
 /* Active/Focus states for ALL floating buttons */
-.mm-toggle .quality-toggle-btn.quality-active, /* Target button inside .mm-toggle */
-.sus-btn.active, .seventh-btn.active, .second-btn.active, .fourth-btn.active,
-.mm-toggle .quality-toggle-btn:active,
-.sus-btn:active, .seventh-btn:active, .second-btn:active, .fourth-btn:active,
+.mm-toggle .quality-toggle-btn.quality-active, 
+.sus-btn.active, .maj-seventh-btn.active, .seventh-btn.active, .second-btn.active, .fourth-btn.active,
+.mm-toggle .quality-toggle-btn:active, /* Covers M/m button inside its div */
+.sus-btn:active, .maj-seventh-btn:active, .seventh-btn:active, .second-btn:active, .fourth-btn:active,
 .mm-toggle .quality-toggle-btn:focus-visible,
-.sus-btn:focus-visible, .seventh-btn:focus-visible, .second-btn:focus-visible, .fourth-btn:focus-visible {
+.sus-btn:focus-visible, .maj-seventh-btn:focus-visible, .seventh-btn:focus-visible, .second-btn:focus-visible, .fourth-btn:focus-visible {
   background: #1976d2;
   color: #fff; 
   border-color: #135ba1; 
   box-shadow: 0 1px 4px rgba(25,118,210,0.3);
 }
-/* Quality toggle button is nested, so its direct styles are simpler */
+/* .quality-toggle-btn is nested, needs to fill its .mm-toggle parent */
 .quality-toggle-btn { 
   width: 100%; height: 100%; border-radius: 50%; display:flex; align-items:center; justify-content:center;
-  background: transparent; border: none; color: #fff; /* Inherits active state from .mm-toggle if that's how we apply it */
-}
-.quality-toggle-btn.quality-active { /* This specific class on the button itself for M/m text */
-   /* Handled by the group selector above for background/border, but text color might need specifics if not white */
+  background: transparent; border: none; color: #fff; /* Active state will be applied by the group selector via .mm-toggle */
 }
 
 
-/* Positioning for right-side stack (bottom to top: 7th, 4th, 2nd) */
-.seventh-btn {
-  bottom: var(--button-float-bottom-start-right);
-  right: var(--right-stack-edge-offset);
-}
-.fourth-btn {
-  bottom: calc(var(--button-float-bottom-start-right) + var(--button-float-size) + var(--button-float-spacing));
-  right: var(--right-stack-edge-offset);
-}
-.second-btn {
-  bottom: calc(var(--button-float-bottom-start-right) + (var(--button-float-size) + var(--button-float-spacing)) * 2);
-  right: var(--right-stack-edge-offset);
-}
+/* Right-side stack */
+.seventh-btn { bottom: var(--bottom-row-pos); right: var(--right-stack-edge); }
+.fourth-btn  { bottom: var(--middle-row-pos); right: var(--right-stack-edge); }
+.second-btn  { bottom: var(--top-row-pos);    right: var(--right-stack-edge); }
 
-/* Positioning for M/m and Sus buttons (left of the 2/4/7 stack) */
-.sus-btn {
-  bottom: var(--button-horizontal-row-bottom);
-  right: calc(var(--right-stack-edge-offset) + var(--button-float-size) + var(--button-float-spacing));
-}
-.mm-toggle { /* This is the container for the M/m button */
-  bottom: var(--button-horizontal-row-bottom);
-  right: calc(var(--right-stack-edge-offset) + (var(--button-float-size) + var(--button-float-spacing)) * 2);
-  /* .quality-toggle-btn is inside this and should fill it or be centered */
-}
+/* Left-side stack */
+.maj-seventh-btn { bottom: var(--bottom-row-pos); left: var(--left-stack-edge); }
+.sus-btn         { bottom: var(--middle-row-pos); left: var(--left-stack-edge); }
+.mm-toggle       { bottom: var(--top-row-pos);    left: var(--left-stack-edge); }
 
 
 .dash-img-slot {
