@@ -22,15 +22,22 @@
               <div class="waveform-arrow" id="wave-right" tabindex="0">&#9654;</div>
             </div>
            <div class="abcd-toggle-container">
-  <div class="abcd-toggle-row">
-    <button id="toggleA" class="abcd-toggle-btn abcd-active" title="Progression A" aria-label="Progression A" tabindex="0">A</button>
-    <button id="toggleB" class="abcd-toggle-btn" title="Progression B" aria-label="Progression B" tabindex="0">B</button>
-  </div>
-  <div class="abcd-toggle-row">
-    <button id="toggleC" class="abcd-toggle-btn" title="Progression C" aria-label="Progression C" tabindex="0">C</button>
-    <button id="toggleD" class="abcd-toggle-btn" title="Progression D" aria-label="Progression D" tabindex="0">D</button>
-  </div>
-</div>
+              <div class="abcd-toggle-row">
+                <button id="toggleA" class="abcd-toggle-btn abcd-active" title="Progression A" aria-label="Progression A" tabindex="0">A</button>
+                <button id="toggleB" class="abcd-toggle-btn" title="Progression B" aria-label="Progression B" tabindex="0">B</button>
+              </div>
+              <div class="abcd-toggle-row">
+                <button id="toggleC" class="abcd-toggle-btn" title="Progression C" aria-label="Progression C" tabindex="0">C</button>
+                <button id="toggleD" class="abcd-toggle-btn" title="Progression D" aria-label="Progression D" tabindex="0">D</button>
+              </div>
+            </div>
+            <!-- New Key Selector Dial -->
+            <div class="key-selector-dial" id="key-selector-dial">
+              <div class="key-arrow" id="key-left" tabindex="0" aria-label="Previous Key">&#9664;</div>
+              <div id="current-key-name" class="key-name-display">C</div>
+              <div class="key-arrow" id="key-right" tabindex="0" aria-label="Next Key">&#9654;</div>
+            </div>
+            <!-- End New Key Selector Dial -->
           </div>
         </div>
       </div>
@@ -38,7 +45,7 @@
         <div class="slot-box" id="slot0">
           <div class="note-rects"></div>
           <img class="dash-img-slot" src="https://visualmusicalminds.github.io/images/CartoonRhythmBox5.svg" alt="Rhythm Box Rest" />
-          <div class="mm-toggle"> <!-- Container for M/m button -->
+          <div class="mm-toggle"> 
             <button class="quality-toggle-btn" type="button" tabindex="0" title="Toggle Chord Quality (Natural/Major/Minor)" aria-label="Toggle Chord Quality">M</button>
           </div>
           <button class="sus-btn" type="button" tabindex="0" title="Toggle Suspended Chord" aria-label="Toggle Suspended Chord">sus</button>
@@ -52,9 +59,7 @@
             <option value="F">F / IV</option>
             <option value="G">G / V</option>
             <option value="Am">Am / vi</option>
-            <option value="D">D / VV</option>
-            <option value="E">E / Vvi</option>
-            <option value="Bb">Bb / 44</option>
+            <option value="Bb">Bb / bVII</option>
           </select>
           <button class="second-btn" type="button" tabindex="0" title="Add 2nd" aria-label="Toggle 2nd chord">&#50;</button>
           <button class="fourth-btn" type="button" tabindex="0" title="Add 4th" aria-label="Toggle 4th chord">4</button>
@@ -79,9 +84,7 @@
             <option value="F">F / IV</option>
             <option value="G">G / V</option>
             <option value="Am">Am / vi</option>
-            <option value="D">D / VV</option>
-            <option value="E">E / Vvi</option>
-            <option value="Bb">Bb / 44</option>
+            <option value="Bb">Bb / bVII</option>
           </select>
           <button class="second-btn" type="button" tabindex="0" title="Add 2nd" aria-label="Toggle 2nd chord">&#50;</button>
           <button class="fourth-btn" type="button" tabindex="0" title="Add 4th" aria-label="Toggle 4th chord">4</button>
@@ -106,9 +109,7 @@
             <option value="F">F / IV</option>
             <option value="G">G / V</option>
             <option value="Am">Am / vi</option>
-            <option value="D">D / VV</option>
-            <option value="E">E / Vvi</option>
-            <option value="Bb">Bb / 44</option>
+            <option value="Bb">Bb / bVII</option>
           </select>
           <button class="second-btn" type="button" tabindex="0" title="Add 2nd" aria-label="Toggle 2nd chord">&#50;</button>
           <button class="fourth-btn" type="button" tabindex="0" title="Add 4th" aria-label="Toggle 4th chord">4</button>
@@ -133,9 +134,7 @@
             <option value="F">F / IV</option>
             <option value="G">G / V</option>
             <option value="Am">Am / vi</option>
-            <option value="D">D / VV</option>
-            <option value="E">E / Vvi</option>
-            <option value="Bb">Bb / 44</option>
+            <option value="Bb">Bb / bVII</option>
           </select>
           <button class="second-btn" type="button" tabindex="0" title="Add 2nd" aria-label="Toggle 2nd chord">&#50;</button>
           <button class="fourth-btn" type="button" tabindex="0" title="Add 4th" aria-label="Toggle 4th chord">4</button>
