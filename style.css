@@ -892,3 +892,55 @@ input[type="number"].bpm-input { width: 50px; font-size: 1em; padding: 4px 0; he
     min-width: 40px; /* Adjust if needed for smaller key names like 'Db' */
   }
 }
+
+/* Default styling for all chord select dropdowns (fallback) */
+select.chord-select {
+  border: 1px solid #ccc;
+  padding: 5px;
+  background-color: #f0f0f0; /* Light gray default */
+  color: #333;               /* Default text color for selected option in box */
+}
+
+/* --- C-Rooted Chords (e.g., C, Cm, C#, C#m, Cb, Cbm) --- */
+select.chord-select[class*="c-selected-c"] {
+  background-color: #ff392e !important; /* Red */
+  color: white !important;
+}
+
+/* --- D-Rooted Chords (e.g., D, Dm, D#, D#m, Db, Dbm) --- */
+select.chord-select[class*="c-selected-d"] {
+  background-color: #ff9e14 !important; /* Orange */
+  color: black !important;
+}
+
+/* --- E-Rooted Chords (e.g., E, Em, E#, E#m, Eb, Ebm) --- */
+select.chord-select[class*="c-selected-e"] {
+  background-color: #f1dd05 !important; /* Yellow */
+  color: black !important;
+}
+
+/* --- F-Rooted Chords (e.g., F, Fm, F#, F#m, Fb, Fbm) --- */
+select.chord-select[class*="c-selected-f"] {
+  background-color: #2aab2a !important; /* Green */
+  color: black !important;
+}
+
+/* --- G-Rooted Chords (e.g., G, Gm, G#, G#m, Gb, Gbm) --- */
+select.chord-select[class*="c-selected-g"] {
+  background-color: #0ac5bc
+    !important; /* Blue */
+  color: black !important;
+}
+
+/* --- A-Rooted Chords (e.g., A, Am, A#, A#m, Ab, Abm) --- */
+select.chord-select[class*="c-selected-a"] {
+  background-color: #2759ff
+    !important; /* Indigo/Purple */
+  color: black !important;
+}
+
+/* --- B-Rooted Chords (e.g., B, Bm, B#, B#m, Bb, Bbm) --- */
+select.chord-select[class*="c-selected-b"] {
+  background-color: #be1bf5 !important; /* Violet/Pink */
+  color: black !important;
+}
