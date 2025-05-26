@@ -11,6 +11,8 @@
   --color-a: #1760af;
   --color-b: #9C27B0;
   --picture-highlight: #ffeb3b;
+  --link-active-bg: #4CAF50; /* Green for active link */
+  --link-active-glow: 0 0 8px rgba(76, 175, 80, 0.7); /* Optional glow */
 
   /* --- Floating Button Sizing & Spacing --- */
   --small-button-size: calc(var(--box-size) * 0.22); 
@@ -26,8 +28,7 @@
   --font-size-mm: calc(var(--large-mm-button-size) * 0.5); 
 
   /* --- Vertical Row Positions (from bottom of slot-box) --- */
-  /* Increased base offset to move all stacks up a little */
-  --row1-bottom-pos: calc(var(--box-size) * 0.42); /* Was 0.32. Affects 7th, maj, and now M/m */
+  --row1-bottom-pos: calc(var(--box-size) * 0.42); 
   --row2-bottom-pos: calc(var(--row1-bottom-pos) + var(--small-button-size) + var(--button-float-spacing)); 
   --row3-bottom-pos: calc(var(--row2-bottom-pos) + var(--small-button-size) + var(--button-float-spacing)); 
 
@@ -37,7 +38,7 @@
   --large-mm-button-offset-from-edge: calc(var(--box-size) * 0.03);
 
   /* --- Placeholder Image Padding --- */
-  --placeholder-img-top-padding: calc(var(--box-size) * 0.03); /* Small padding for the image from the top */
+  --placeholder-img-top-padding: calc(var(--box-size) * 0.03); 
 }
 
 body {
@@ -117,7 +118,7 @@ body {
 .slot-box {
   border: none;
   box-shadow: none;
-  padding-top: calc(var(--box-size) * 0.06); /* Existing top padding of slot-box */
+  padding-top: calc(var(--box-size) * 0.06); 
   padding-bottom: calc(var(--box-size) * 0.06);
   transition: transform 0.20s cubic-bezier(.7,1.8,.6,1.1);
   height: 100%;
@@ -324,47 +325,6 @@ input[type="number"].bpm-input:focus {
   accent-color: #1976d2;
 }
 
-.ab-toggle-container {
-  display: flex;
-  width: calc(var(--box-size) * 0.8); 
-  max-width: 120px; 
-  margin: 10px auto 8px auto;
-  background: #e3f1ff;
-  border-radius: 999px;
-  box-shadow: 0 1px 2px #0001;
-  overflow: hidden;
-  border: 1.5px solid #b5d6f8;
-}
-
-.ab-toggle-btn {
-  flex: 1 1 0;
-  background: transparent;
-  border: none;
-  padding: calc(var(--box-size) * 0.06) 0; 
-  font-size: calc(var(--box-size) * 0.13); 
-  font-family: inherit;
-  font-weight: 600;
-  color: #1976d2;
-  cursor: pointer;
-  border-radius: 999px;
-  transition: background 0.16s, color 0.16s;
-  outline: none;
-  margin: 0;
-}
-.ab-toggle-btn:not(:last-child) {
-  border-right: 1px solid #b5d6f8;
-}
-.ab-toggle-btn.ab-active {
-  background: #1976d2;
-  color: #fff;
-  box-shadow: 0 1px 4px #1976d226;
-  z-index: 1;
-}
-.ab-toggle-btn:focus-visible {
-  outline: 2px solid #135ba1;
-  z-index: 2;
-}
-
 .note-rects { 
   display: flex;
   flex: 1 1 auto;
@@ -407,8 +367,6 @@ input[type="number"].bpm-input:focus {
 }
 
 /* --- Floating Chord Modifier Buttons --- */
-
-/* Base for small floating buttons (2,4,7,sus,maj) */
 .sus-btn, .maj-seventh-btn, .seventh-btn, .second-btn, .fourth-btn {
   position: absolute;
   width: var(--small-button-size);
@@ -427,8 +385,6 @@ input[type="number"].bpm-input:focus {
   transition: background 0.13s, color 0.13s, border-color 0.13s, box-shadow 0.13s;
   box-sizing: border-box;
 }
-
-/* Font sizes for small buttons */
 .second-btn, .fourth-btn, .seventh-btn { font-size: var(--font-size-247); }
 .sus-btn { 
   font-size: var(--font-size-sus); 
@@ -440,8 +396,6 @@ input[type="number"].bpm-input:focus {
   font-family: 'Brush Script MT', 'Brush Script Std', 'Lucida Calligraphy', cursive;
   padding-top: 1px; 
 }
-
-/* Active/Focus states for small buttons */
 .sus-btn.active, .maj-seventh-btn.active, .seventh-btn.active, .second-btn.active, .fourth-btn.active,
 .sus-btn:active, .maj-seventh-btn:active, .seventh-btn:active, .second-btn:active, .fourth-btn:active,
 .sus-btn:focus-visible, .maj-seventh-btn:focus-visible, .seventh-btn:focus-visible, .second-btn:focus-visible, .fourth-btn:focus-visible {
@@ -450,13 +404,9 @@ input[type="number"].bpm-input:focus {
   border-color: #135ba1; 
   box-shadow: 0 1px 4px rgba(25,118,210,0.3);
 }
-
-/* Rightmost Stack (2, 4, 7) */
 .seventh-btn { bottom: var(--row1-bottom-pos); right: var(--right-stack-offset-from-edge); }
 .fourth-btn  { bottom: var(--row2-bottom-pos); right: var(--right-stack-offset-from-edge); }
 .second-btn  { bottom: var(--row3-bottom-pos); right: var(--right-stack-offset-from-edge); }
-
-/* Center-Left Stack (sus, maj) - next to the rightmost stack */
 .maj-seventh-btn { 
   bottom: var(--row1-bottom-pos); 
   right: var(--center-left-stack-offset-from-right-edge);
@@ -473,14 +423,13 @@ input[type="number"].bpm-input:focus {
   position: absolute;
   width: var(--large-mm-button-size);
   height: var(--large-mm-button-size);
-  bottom: var(--row1-bottom-pos); /* Align bottom with 7th and maj buttons */
+  bottom: var(--row1-bottom-pos); 
   left: var(--large-mm-button-offset-from-edge);
   z-index: 19; 
   display: flex; 
   align-items: center;
   justify-content: center;
 }
-
 .quality-toggle-btn { 
   width: 100%; 
   height: 100%; 
@@ -496,7 +445,6 @@ input[type="number"].bpm-input:focus {
   transition: background 0.13s, color 0.13s, border-color 0.13s, box-shadow 0.13s;
   box-sizing: border-box;
 }
-
 .quality-toggle-btn.quality-active,
 .quality-toggle-btn:active,
 .quality-toggle-btn:focus-visible {
@@ -511,8 +459,7 @@ input[type="number"].bpm-input:focus {
   width: calc(var(--box-size) * 0.75);
   height: calc(var(--box-size) * 0.75);
   display: block;
-  /* margin: calc(var(--box-size) * 0.06) auto 0 auto; Original */
-  margin: var(--placeholder-img-top-padding) auto 0 auto; /* Moves to top, respects slot-box padding-top */
+  margin: var(--placeholder-img-top-padding) auto 0 auto; 
   object-fit: contain;
 }
 
@@ -521,7 +468,7 @@ input[type="number"].bpm-input:focus {
   width: calc(var(--box-size) * 0.81);
   min-width: 64px;
   max-width: 103px;
-  margin-top: auto; /* Pushes to bottom if other elements are above it */
+  margin-top: auto; 
   margin-bottom: calc(var(--box-size) * 0.03);
   padding: calc(var(--box-size) * 0.03) calc(var(--box-size) * 0.03);
   border: 1.7px solid #bbb;
@@ -539,24 +486,11 @@ input[type="number"].bpm-input:focus {
   border-radius: 0;
   transition: background 0.2s, color 0.2s;
 }
-
-/* ... (rest of the CSS remains the same) ... */
-
 .chord-select option { 
   text-align: center; 
   font-size: 1.25em;
   font-family: Georgia, 'Times New Roman', Times, serif; 
 }
-.chord-select.c-selected-c { background: var(--color-c); color: #fff; }
-.chord-select.c-selected-dm { background: var(--color-d); color: #fff; }
-.chord-select.c-selected-em { background: var(--color-e); color: #fff; }
-.chord-select.c-selected-f { background: var(--color-f); color: #fff; }
-.chord-select.c-selected-g { background: var(--color-g); color: #fff; }
-.chord-select.c-selected-am { background: var(--color-a); color: #fff; }
-.chord-select.c-selected-d { background: var(--color-d); color: #fff; }
-.chord-select.c-selected-e { background: var(--color-e); color: #fff; }
-.chord-select.c-selected-bb { background: var(--color-b); color: #fff; }
-
 .chord-select.c-selected-c,
 .chord-select.c-selected-dm,
 .chord-select.c-selected-em,
@@ -709,7 +643,7 @@ input[type="number"].bpm-input:focus {
     --base-box-size: min(85px, 18vw);
     --large-mm-button-size: calc(var(--small-button-size) * 1.8); 
     --font-size-mm: calc(var(--large-mm-button-size) * 0.5);
-    --row1-bottom-pos: calc(var(--box-size) * 0.38); /* Adjust stack up slightly less on smaller screens */
+    --row1-bottom-pos: calc(var(--box-size) * 0.38); 
   }
   .top-row {
     margin-bottom: calc(var(--box-size) * 0.25);
@@ -732,11 +666,6 @@ input[type="number"].bpm-input:focus {
     gap: calc(var(--box-gap) * 0.6);
     margin-bottom: calc(var(--box-size) * 0.2);
   }
-   .ab-toggle-container {
-    width: calc(var(--box-size) * 0.9);
-    max-width: 100px;
-  }
-  .ab-toggle-btn { padding: calc(var(--box-size) * 0.05) 0; }
 }
 
 @media (max-width: 400px) {
@@ -747,11 +676,6 @@ input[type="number"].bpm-input:focus {
     --row1-bottom-pos: calc(var(--box-size) * 0.32); 
   }
   .top-row { gap: calc(var(--box-gap) * 0.5); }
-  .ab-toggle-container {
-    width: calc(var(--box-size) * 0.95);
-    max-width: 90px;
-  }
-  .ab-toggle-btn { padding: calc(var(--box-size) * 0.04) 0; font-size: calc(var(--box-size) * 0.12); }
 }
 
 @media (max-width: 350px) {
@@ -801,44 +725,116 @@ input[type="number"].bpm-input { width: 50px; font-size: 1em; padding: 4px 0; he
   input[type="number"].bpm-input { width: 45px; font-size: 0.9em; height: 24px; }
   .bpm-stepper { height: 24px; }
 }
-.abcd-toggle-container { display: flex; flex-direction: column; width: calc(var(--box-size) * 0.85); max-width: 120px; margin: 10px auto 8px auto; background: #e3f1ff; border-radius: 8px; box-shadow: 0 1px 2px #0001; overflow: hidden; border: 1.5px solid #b5d6f8;}
-.abcd-toggle-row { display: flex; width: 100%;}
-.abcd-toggle-row:first-child { border-bottom: 1px solid #b5d6f8;}
-.abcd-toggle-btn { flex: 1 1 0; background: transparent; border: none; padding: calc(var(--box-size) * 0.05) 0; font-size: calc(var(--box-size) * 0.12); font-family: inherit; font-weight: 600; color: #1976d2; cursor: pointer; transition: background 0.16s, color 0.16s; outline: none; margin: 0;}
-.abcd-toggle-btn:not(:last-child) { border-right: 1px solid #b5d6f8;}
-.abcd-toggle-row:last-child .abcd-toggle-btn:not(:last-child) { border-right: 1px solid #b5d6f8;}
-.abcd-toggle-btn.abcd-active { background: #1976d2; color: #fff; box-shadow: 0 1px 4px #1976d226; z-index: 1;}
-.abcd-toggle-btn:focus-visible { outline: 2px solid #135ba1; z-index: 2;}
+.abcd-toggle-container { 
+  display: flex; 
+  flex-direction: column; 
+  width: calc(var(--box-size) * 0.85); 
+  max-width: 120px; 
+  margin: 10px auto 8px auto; 
+  background: #e3f1ff; 
+  border-radius: 8px; 
+  box-shadow: 0 1px 2px #0001; 
+  overflow: hidden; 
+  border: 1.5px solid #b5d6f8;
+}
+.abcd-toggle-row { 
+  display: flex; 
+  width: 100%;
+}
+.abcd-toggle-row:first-child { 
+  border-bottom: 1px solid #b5d6f8;
+}
+.abcd-toggle-btn { 
+  flex: 1 1 0; 
+  background: transparent; 
+  border: none; 
+  font-family: inherit; 
+  font-weight: 600; 
+  color: #1976d2; 
+  cursor: pointer; 
+  transition: background 0.16s, color 0.16s; 
+  outline: none; 
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+  padding: calc(var(--box-size) * 0.05) calc(var(--box-size) * 0.04); 
+  gap: calc(var(--box-size) * 0.05); 
+  font-size: calc(var(--box-size) * 0.12); 
+}
+.abcd-toggle-row .abcd-toggle-btn:not(:last-child) { 
+  border-right: 1px solid #b5d6f8;
+}
+.abcd-toggle-btn.abcd-active { 
+  background: #1976d2; 
+  color: #fff; 
+  box-shadow: 0 1px 4px #1976d226; 
+  z-index: 1;
+}
+.abcd-toggle-btn:focus-visible { 
+  outline: 2px solid #135ba1; 
+  z-index: 2;
+}
+.abcd-letter {
+  line-height: 1; 
+}
+.abcd-link-icon {
+  font-size: calc(var(--box-size) * 0.10); 
+  line-height: 1;
+  opacity: 0.5; /* Default dim state */
+  transition: opacity 0.15s, color 0.15s, background-color 0.15s, box-shadow 0.15s;
+  cursor: pointer; 
+  padding: calc(var(--box-size) * 0.02); /* Add some padding for the background */
+  border-radius: 50%; /* Make background circular */
+  background-color: transparent; /* Default transparent background */
+  color: inherit; /* Inherit color from parent .abcd-toggle-btn */
+}
+.abcd-link-icon.linked {
+  opacity: 1;
+  background-color: var(--link-active-bg); /* Green background */
+  color: white; /* White icon for contrast on green */
+  box-shadow: var(--link-active-glow);
+}
+/* Ensure icon color is white when parent .abcd-toggle-btn is active */
+.abcd-toggle-btn.abcd-active .abcd-link-icon {
+   color: white; /* Ensure icon is white if parent is active */
+   opacity: 0.7; /* Slightly less prominent if not linked but parent is active */
+}
+.abcd-toggle-btn.abcd-active .abcd-link-icon.linked {
+   opacity: 1; /* Full opacity and it will have its green background */
+   color: white; /* Keep icon white */
+}
+
 @media (max-width: 600px) { .abcd-toggle-container { width: calc(var(--box-size) * 0.9); } }
-@media (max-width: 480px) { .abcd-toggle-container { width: calc(var(--box-size) * 0.95); max-width: 100px; } .abcd-toggle-btn { padding: calc(var(--box-size) * 0.04) 0; font-size: calc(var(--box-size) * 0.11); } }
-@media (max-width: 400px) { .abcd-toggle-container { width: calc(var(--box-size) * 0.98); max-width: 90px; } .abcd-toggle-btn { padding: calc(var(--box-size) * 0.035) 0; font-size: calc(var(--box-size) * 0.10); } }
+@media (max-width: 480px) { .abcd-toggle-container { width: calc(var(--box-size) * 0.95); max-width: 100px; } .abcd-toggle-btn { padding: calc(var(--box-size) * 0.04) calc(var(--box-size) * 0.03); font-size: calc(var(--box-size) * 0.11); gap: calc(var(--box-size) * 0.04); } .abcd-link-icon { font-size: calc(var(--box-size) * 0.09); padding: calc(var(--box-size) * 0.015);}}
+@media (max-width: 400px) { .abcd-toggle-container { width: calc(var(--box-size) * 0.98); max-width: 90px; } .abcd-toggle-btn { padding: calc(var(--box-size) * 0.035) calc(var(--box-size) * 0.025); font-size: calc(var(--box-size) * 0.1); gap: calc(var(--box-size) * 0.035);} .abcd-link-icon { font-size: calc(var(--box-size) * 0.085); padding: calc(var(--box-size) * 0.01);}}
+
 /* Key Selector Dial Styles */
 .key-selector-dial {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  background: #fafdff; /* Similar to waveform dial */
+  background: #fafdff; 
   border-radius: 0.6em;
-  margin-top: 10px; /* Space below ABCD toggles */
+  margin-top: 10px; 
   margin-bottom: 9px; 
   padding: 0.12em 0.46em;
   font-family: 'EB Garamond', Garamond, 'Times New Roman', Times, serif;
   font-weight: 700;
-  font-size: clamp(0.75rem, 1.3vw, 1.06em); /* Same font size as waveform dial */
+  font-size: clamp(0.75rem, 1.3vw, 1.06em); 
   box-shadow: 0 0.5px 2px #0001;
   outline: none;
   user-select: none;
   gap: 0.10em;
   min-width: 0;
   min-height: 0;
-  width: 100%; /* Take full width of its container in the first column */
-  max-width: 300px; /* Or match waveform dial's max-width */
+  width: 100%; 
+  max-width: 300px; 
   box-sizing: border-box;
 }
-
 .key-arrow {
-  font-size: 1.1em; /* Same as waveform arrow */
+  font-size: 1.1em; 
   color: #1976d2;
   cursor: pointer;
   padding: 0.08em 0.25em;
@@ -847,22 +843,21 @@ input[type="number"].bpm-input { width: 50px; font-size: 1em; padding: 4px 0; he
   border-radius: 0.33em;
   display: flex;
   align-items: center;
-  height: 1.4em; /* Match waveform arrow height */
+  height: 1.4em; 
 }
 .key-arrow:active, .key-arrow:focus-visible {
   color: #135ba1;
   background: #e3eafd;
 }
-
 .key-name-display {
-  min-width: 58px; /* Match waveform name width */
+  min-width: 58px; 
   max-width: 120px;
   text-align: center;
-  color: #333; /* Slightly different color for key? Or keep same as waveform name */
+  color: #333; 
   font-family: 'EB Garamond', Garamond, 'Times New Roman', Times, serif;
   font-weight: 700;
-  font-size: 1.1em; /* Slightly larger for emphasis, or keep 1em */
-  letter-spacing: 0.02em; /* Slightly more spacing for clarity */
+  font-size: 1.1em; 
+  letter-spacing: 0.02em; 
   padding: 0.08em 0.4em;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -873,90 +868,37 @@ input[type="number"].bpm-input { width: 50px; font-size: 1em; padding: 4px 0; he
   align-items: center;
   justify-content: center;
 }
-
-/* Responsive adjustments for key selector if needed, similar to waveform dial */
 @media (max-width: 600px) {
   .key-selector-dial {
     font-size: clamp(0.68rem, 1.1vw, 0.96em);
-    max-width: 200px; /* Match waveform dial */
+    max-width: 200px; 
   }
 }
-
 @media (max-width: 400px) {
   .key-selector-dial {
     font-size: clamp(0.60rem, 0.96vw, 0.88em);
-    max-width: 140px; /* Match waveform dial */
+    max-width: 140px; 
     padding: 0.09em 0.19em;
   }
   .key-name-display {
-    min-width: 40px; /* Adjust if needed for smaller key names like 'Db' */
+    min-width: 40px; 
   }
 }
-/* ... your existing CSS rules ... */
 
-/* ================================================================= */
 /* === STYLING FOR CHORD DISPLAY BOXES AND DROPDOWN BACKGROUNDS === */
-/* ================================================================= */
-
-/* 1. Ensure text within the note display boxes (e.g., C, E, G) is white */
 .slot-box .note-rects .note-rect {
   color: white !important; 
 }
-
-/* 2. Background colors for the <select> dropdown elements themselves,
-      based on the ROOT LETTER of the chord. 
-      Uses classes like c-selected-c, c-selected-csharp, c-selected-dbflat etc. */
-
-/* Default styling for all chord select dropdowns (fallback) */
 select.chord-select {
   border: 1px solid #ccc;
   padding: 5px;
-  background-color: #f0f0f0; /* Light gray default */
-  color: #333;               /* Default text color for selected option in box */
+  background-color: #f0f0f0; 
+  color: #333;               
 }
-
-/* --- C-Rooted Chords (e.g., C, Cm, C#, C#m, Cb, Cbm) --- */
-select.chord-select[class*="c-selected-c"] {
-  background-color: #ff392e !important; /* Red */
-  color: white !important;
-}
-
-/* --- D-Rooted Chords (e.g., D, Dm, D#, D#m, Db, Dbm) --- */
-select.chord-select[class*="c-selected-d"] {
-  background-color: #ff9e14 !important; /* Orange */
-  color: black !important;
-}
-
-/* --- E-Rooted Chords (e.g., E, Em, E#, E#m, Eb, Ebm) --- */
-select.chord-select[class*="c-selected-e"] {
-  background-color: #f1dd05 !important; /* Yellow */
-  color: black !important;
-}
-
-/* --- F-Rooted Chords (e.g., F, Fm, F#, F#m, Fb, Fbm) --- */
-select.chord-select[class*="c-selected-f"] {
-  background-color: #2aab2a !important; /* Green */
-  color: black !important;
-}
-
-/* --- G-Rooted Chords (e.g., G, Gm, G#, G#m, Gb, Gbm) --- */
-select.chord-select[class*="c-selected-g"] {
-  background-color: #0ac5bc
-    !important; /* Blue */
-  color: black !important;
-}
-
-/* --- A-Rooted Chords (e.g., A, Am, A#, A#m, Ab, Abm) --- */
-select.chord-select[class*="c-selected-a"] {
-  background-color: #2759ff
-    !important; /* Indigo/Purple */
-  color: black !important;
-}
-
-/* --- B-Rooted Chords (e.g., B, Bm, B#, B#m, Bb, Bbm) --- */
-select.chord-select[class*="c-selected-b"] {
-  background-color: #be1bf5 !important; /* Violet/Pink */
-  color: black !important;
-}
-
-/* ... any other CSS rules ... */
+select.chord-select[class*="c-selected-c"] { background-color: #ff392e !important; color: white !important; }
+select.chord-select[class*="c-selected-d"] { background-color: #ff9e14 !important; color: black !important; }
+select.chord-select[class*="c-selected-e"] { background-color: #f1dd05 !important; color: black !important; }
+select.chord-select[class*="c-selected-f"] { background-color: #2aab2a !important; color: black !important; }
+select.chord-select[class*="c-selected-g"] { background-color: #0ac5bc !important; color: black !important; }
+select.chord-select[class*="c-selected-a"] { background-color: #2759ff !important; color: black !important; }
+select.chord-select[class*="c-selected-b"] { background-color: #be1bf5 !important; color: black !important; }
