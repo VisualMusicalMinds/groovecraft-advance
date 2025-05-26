@@ -27,7 +27,7 @@ const keyChordMap = {
 };
 
 // A/B/C/D toggle variables
-let currentToggle = 'A'; 
+let currentToggle = 'A'; // Represents the progression whose data is loaded in the UI
 let progressionA = ['', '', '', ''], progressionB = ['', '', '', ''], progressionC = ['', '', '', ''], progressionD = ['', '', '', '']; 
 let rhythmBoxesA = Array(8).fill(false), rhythmBoxesB = Array(8).fill(false), rhythmBoxesC = Array(8).fill(false), rhythmBoxesD = Array(8).fill(false); 
 
@@ -38,6 +38,11 @@ let fourthA = [false, false, false, false], fourthB = [false, false, false, fals
 let susA = [false, false, false, false], susB = [false, false, false, false], susC = [false, false, false, false], susD = [false, false, false, false];
 let majSeventhA = [false, false, false, false], majSeventhB = [false, false, false, false], majSeventhC = [false, false, false, false], majSeventhD = [false, false, false, false];
 let majorA = ['none', 'none', 'none', 'none'], majorB = ['none', 'none', 'none', 'none'], majorC = ['none', 'none', 'none', 'none'], majorD = ['none', 'none', 'none', 'none'];
+
+// --- State Variables for Linking Progressions ---
+let progressionLinkStates = { A: false, B: false, C: false, D: false };
+let linkedProgressionSequence = []; 
+let currentLinkedProgressionIndex = 0; 
 
 const chordTypes = {
   'C': 'major', 'Dm': 'minor', 'Em': 'minor', 'F': 'major', 'G': 'major', 'Am': 'minor', 'Bb': 'major',
@@ -129,8 +134,8 @@ const chordFourths = {
 };
 
 const rhythmChordNotes = { 
-  'C':  ['C3', 'C4', 'E4', 'G4', 'C5'], 'Dm': ['D3', 'D4', 'F4', 'A4', 'D5'], 'Em': ['E3', 'E4', 'G4', 'B4', 'E5'], 'F':  ['F3', 'F4', 'A4', 'C5', 'F5'],  'G':  ['G3', 'G4', 'B4', 'D5', 'G5'], 'Am': ['A2', 'A3', 'C4', 'E4', 'A4'], 'Bb': ['Bb2', 'Bb3', 'D4', 'F4', 'Bb4'],
-  'Db': ['Db3','Db4','F4','Ab4','Db5'], 'Ebm':['Eb3','Eb4','Gb4','Bb4','Eb5'], 'Fm': ['F3','F4','Ab4','C5','F5'], 'Gb': ['Gb3', 'Gb4', 'Bb3', 'Db4', 'Gb5'], 'Ab': ['Ab2','Ab3','C4','Eb4','Ab4'], 'Bbm':['Bb2','Bb3','Db4','F4','Bb4'], 'Cb': ['Cb2','Cb3','Eb4','Gb4','Cb4'],
+  'C':  ['C3', 'C4', 'E4', 'G4', 'C5'], 'Dm': ['D3', 'D4', 'F4', 'A4', 'D5'], 'Em': ['E3', 'E4', 'G4', 'B4', 'E5'], 'F':  ['F3', 'F4', 'A4', 'C5', 'F5'],  'G':  ['G3', 'G4', 'B4', 'D5', 'G5'], 'Am': ['A3', 'A4', 'C5', 'E5', 'A5'], 'Bb': ['Bb2', 'Bb3', 'D4', 'F4', 'Bb4'],
+  'Db': ['Db3','Db4','F4','Ab4','Db5'], 'Ebm':['Eb3','Eb4','Gb4','Bb4','Eb5'], 'Fm': ['F3','F4','Ab4','C5','F5'], 'Gb': ['Gb3', 'Gb4', 'Bb3', 'Db4', 'Gb5'], 'Ab': ['Ab2','Ab3','C4','Eb4','Ab4'], 'Bbm':['Bb2','Bb3','Db4','F4','Bb4'], 'Cb': ['Cb3','Cb4','Eb4','Gb4','Cb5'],
   'D':  ['D3', 'D4', 'F#4', 'A4', 'D5'], 'F#m':['F#3','F#4','A4','C#5','F#5'], 'Bm': ['B2','B3','D4','F#4','B4'],
   'Eb': ['Eb3','Eb4','G4','Bb4','Eb5'], 'Gm': ['G3','G4','Bb4','D5','G5'], 'Cm': ['C3','C4','Eb4','G4','C5'],
   'E':  ['E3', 'E4', 'G#4', 'B4', 'E5'], 'G#m':['G#3','G#4','B4','D#5','G#5'], 'C#m':['C#3','C#4','E4','G#4','C#5'],
@@ -220,39 +225,43 @@ function handleWaveformDial(dir) {
   updateWaveformDisplay();
 }
 
+// Fetches all data for a given progression letter (A, B, C, or D)
+function getProgressionData(progLetter) {
+  switch(progLetter) {
+    case 'A': return { p: progressionA, r: rhythmBoxesA, s7: seventhA, s2: secondA, s4: fourthA, sus: susA, maj7: majSeventhA, m: majorA };
+    case 'B': return { p: progressionB, r: rhythmBoxesB, s7: seventhB, s2: secondB, s4: fourthB, sus: susB, maj7: majSeventhB, m: majorB };
+    case 'C': return { p: progressionC, r: rhythmBoxesC, s7: seventhC, s2: secondC, s4: fourthC, sus: susC, maj7: majSeventhC, m: majorC };
+    case 'D': return { p: progressionD, r: rhythmBoxesD, s7: seventhD, s2: secondD, s4: fourthD, sus: susD, maj7: majSeventhD, m: majorD };
+    default:  
+      // Fallback to the current master toggle if an invalid letter is somehow passed
+      // console.warn("Invalid progLetter for getProgressionData:", progLetter, "defaulting to currentToggle:", currentToggle);
+      return getProgressionData(currentToggle); 
+  }
+}
+
+
 function saveCurrentProgression() {
-  // Chord values (progressionA/B/C/D) are the source of truth and are updated directly.
-  // This function now only saves DOM-based states like rhythm boxes and modifiers.
+  // Saves the DOM state (rhythm, modifiers) to the arrays of the currentToggle
+  const currentData = getProgressionData(currentToggle);
+  if (!currentData) return;
+
   const rhythmBoxStates = Array.from(document.querySelectorAll('.bottom-rhythm-box')).map(box => box.classList.contains('active'));
-  const seventhStates = Array.from(document.querySelectorAll('.seventh-btn')).map(btn => btn.classList.contains('active'));
-  const secondStates = Array.from(document.querySelectorAll('.second-btn')).map(btn => btn.classList.contains('active'));
-  const fourthStates = Array.from(document.querySelectorAll('.fourth-btn')).map(btn => btn.classList.contains('active')); 
-  const susStates = Array.from(document.querySelectorAll('.sus-btn')).map(btn => btn.classList.contains('active')); 
-  const majSeventhStates = Array.from(document.querySelectorAll('.maj-seventh-btn')).map(btn => btn.classList.contains('active'));
+  currentData.r.splice(0, currentData.r.length, ...rhythmBoxStates);
+
+  const modifierClasses = ['.seventh-btn', '.second-btn', '.fourth-btn', '.sus-btn', '.maj-seventh-btn'];
+  const modifierArrays = [currentData.s7, currentData.s2, currentData.s4, currentData.sus, currentData.maj7];
+
+  modifierClasses.forEach((className, i) => {
+    const states = Array.from(document.querySelectorAll(className)).map(btn => btn.classList.contains('active'));
+    modifierArrays[i].splice(0, modifierArrays[i].length, ...states);
+  });
   
-  let currentMajorStates = [];
-  const currentToggleArrays = getToggleArrays(); 
+  // Save M/m states
+  const majorStates = [];
   for(let i=0; i<4; i++) {
-      currentMajorStates.push(currentToggleArrays.majorArr[i]);
+      majorStates.push(currentData.m[i]); // Already points to the correct majorA, majorB etc.
   }
-
-  let targetStates;
-  switch (currentToggle) {
-    case 'A': targetStates = { r: rhythmBoxesA, s7: seventhA, s2: secondA, s4: fourthA, sus: susA, maj7: majSeventhA, m: majorA }; break;
-    case 'B': targetStates = { r: rhythmBoxesB, s7: seventhB, s2: secondB, s4: fourthB, sus: susB, maj7: majSeventhB, m: majorB }; break;
-    case 'C': targetStates = { r: rhythmBoxesC, s7: seventhC, s2: secondC, s4: fourthC, sus: susC, maj7: majSeventhC, m: majorC }; break;
-    case 'D': targetStates = { r: rhythmBoxesD, s7: seventhD, s2: secondD, s4: fourthD, sus: susD, maj7: majSeventhD, m: majorD }; break;
-    default: return; 
-  }
-
-  // Note: targetStates.p (progression chords) is NOT updated here.
-  targetStates.r.splice(0, targetStates.r.length, ...rhythmBoxStates);
-  targetStates.s7.splice(0, targetStates.s7.length, ...seventhStates);
-  targetStates.s2.splice(0, targetStates.s2.length, ...secondStates);
-  targetStates.s4.splice(0, targetStates.s4.length, ...fourthStates);
-  targetStates.sus.splice(0, targetStates.sus.length, ...susStates);
-  targetStates.maj7.splice(0, targetStates.maj7.length, ...majSeventhStates);
-  targetStates.m.splice(0, targetStates.m.length, ...currentMajorStates);
+  currentData.m.splice(0, currentData.m.length, ...majorStates);
 }
 
 
@@ -267,19 +276,13 @@ function _updateQualityButtonVisualForSlot(idx, state) {
     }
 }
 
-function loadProgression(toggle) {
-  let p, r, s7, s2, s4, sus, maj7, m; 
-  let sourceArrays;
-  switch(toggle) {
-    case 'A': sourceArrays = { pArr: progressionA, rArr: rhythmBoxesA, s7Arr: seventhA, s2Arr: secondA, s4Arr: fourthA, susArr: susA, maj7Arr: majSeventhA, mArr: majorA }; break;
-    case 'B': sourceArrays = { pArr: progressionB, rArr: rhythmBoxesB, s7Arr: seventhB, s2Arr: secondB, s4Arr: fourthB, susArr: susB, maj7Arr: majSeventhB, mArr: majorB }; break;
-    case 'C': sourceArrays = { pArr: progressionC, rArr: rhythmBoxesC, s7Arr: seventhC, s2Arr: secondC, s4Arr: fourthC, susArr: susC, maj7Arr: majSeventhC, mArr: majorC }; break;
-    case 'D': sourceArrays = { pArr: progressionD, rArr: rhythmBoxesD, s7Arr: seventhD, s2Arr: secondD, s4Arr: fourthD, susArr: susD, maj7Arr: majSeventhD, mArr: majorD }; break;
-    default:  sourceArrays = { pArr: progressionA, rArr: rhythmBoxesA, s7Arr: seventhA, s2Arr: secondA, s4Arr: fourthA, susArr: susA, maj7Arr: majSeventhA, mArr: majorA };
-  }
-  ({ pArr: p, rArr: r, s7Arr: s7, s2Arr: s2, s4Arr: s4, susArr: sus, maj7Arr: maj7, mArr: m } = sourceArrays);
+function loadProgression(progLetter) {
+  const dataToLoad = getProgressionData(progLetter);
+  if (!dataToLoad) return;
 
-  updateChordDropdowns(); 
+  const { p, r, s7, s2, s4, sus, maj7, m } = dataToLoad;
+
+  updateChordDropdowns(); // Ensure dropdowns have options for currentMusicalKey
 
   document.querySelectorAll('.chord-select').forEach((select, idx) => {
     const storedChord = p[idx] || "";
@@ -287,70 +290,94 @@ function loadProgression(toggle) {
     setSlotColorAndStyle(idx, select, storedChord, s7[idx], s2[idx], s4[idx], sus[idx], maj7[idx]); 
   });
   document.querySelectorAll('.bottom-rhythm-box').forEach((box, idx) => box.classList.toggle('active', r[idx]));
-  updateSeventhBtnStates(); updateSecondBtnStates(); updateFourthBtnStates(); updateSusBtnStates(); updateMajSeventhBtnStates();
+  
+  // Update all modifier button visuals based on the loaded progression's state
+  updateSeventhBtnStates(s7); 
+  updateSecondBtnStates(s2); 
+  updateFourthBtnStates(s4); 
+  updateSusBtnStates(sus); 
+  updateMajSeventhBtnStates(maj7);
+  
   m.forEach((state, idx) => _updateQualityButtonVisualForSlot(idx, state || 'none')); 
   updateRhythmPictures();
 }
 
 function switchToggle(toggle) {
-  if (currentToggle === toggle) return;
-  // saveCurrentProgression(); // Not strictly needed here if loadProgression re-reads from the new toggle's master arrays
+  saveCurrentProgression();
+
   currentToggle = toggle;
   document.querySelectorAll('.abcd-toggle-btn').forEach(btn => btn.classList.remove('abcd-active'));
   document.getElementById('toggle' + toggle).classList.add('abcd-active');
-  loadProgression(toggle); 
-}
+  loadProgression(toggle);
 
-function getToggleArrays() {
-  switch(currentToggle) {
-    case 'A': return { p: progressionA, seventhArr: seventhA, secondArr: secondA, majorArr: majorA, fourthArr: fourthA, susArr: susA, majSeventhArr: majSeventhA };
-    case 'B': return { p: progressionB, seventhArr: seventhB, secondArr: secondB, majorArr: majorB, fourthArr: fourthB, susArr: susB, majSeventhArr: majSeventhB };
-    case 'C': return { p: progressionC, seventhArr: seventhC, secondArr: secondC, majorArr: majorC, fourthArr: fourthC, susArr: susC, majSeventhArr: majSeventhC };
-    case 'D': return { p: progressionD, seventhArr: seventhD, secondArr: secondD, majorArr: majorD, fourthArr: fourthD, susArr: susD, majSeventhArr: majSeventhD };
-    default:  return { p: progressionA, seventhArr: seventhA, secondArr: secondA, majorArr: majorA, fourthArr: fourthA, susArr: susA, majSeventhArr: majSeventhA }; 
+  if (isPlaying) { 
+    slotHighlightStep = 0;
+    rhythmStep = 0;
+    pictureHighlightStep = 0;
+    currentLinkedProgressionIndex = 0;
+    startMainAnimation();
   }
 }
 
+
 function toggleMajorMinor(idx) {
-  const arrays = getToggleArrays(); 
+  const arrays = getProgressionData(currentToggle);
   const slot = document.getElementById('slot' + idx);
   const select = slot.querySelector('.chord-select');
-  const chord = arrays.p[idx]; 
-  
+  const chord = arrays.p[idx];
+
   if (!chord || chord === "" || chord === "empty") {
-    arrays.majorArr[idx] = 'none'; 
+    arrays.m[idx] = 'none';
     _updateQualityButtonVisualForSlot(idx, 'none');
     return;
   }
-  
-  if (arrays.majorArr[idx] === 'none' && chordTypes[chord]) {
-      arrays.majorArr[idx] = chordTypes[chord]; 
+
+  // Cycle: none → major → minor → none ...
+  if (arrays.m[idx] === 'none') {
+    arrays.m[idx] = 'major';
+  } else if (arrays.m[idx] === 'major') {
+    arrays.m[idx] = 'minor';
+  } else if (arrays.m[idx] === 'minor') {
+    arrays.m[idx] = 'none';
+  } else {
+    arrays.m[idx] = 'major'; // fallback
   }
 
-  if (arrays.majorArr[idx] === 'major') arrays.majorArr[idx] = 'minor';
-  else if (arrays.majorArr[idx] === 'minor') arrays.majorArr[idx] = 'major'; 
-  else arrays.majorArr[idx] = 'major'; 
+  _updateQualityButtonVisualForSlot(idx, arrays.m[idx]);
 
-  _updateQualityButtonVisualForSlot(idx, arrays.majorArr[idx]); 
-  setSlotColorAndStyle(idx, select, chord, arrays.seventhArr[idx], arrays.secondArr[idx], arrays.fourthArr[idx], arrays.susArr[idx], arrays.majSeventhArr[idx]); 
-  saveCurrentProgression(); // Saves modifiers and majorArr state
+  setSlotColorAndStyle(
+    idx,
+    select,
+    chord,
+    arrays.s7[idx],
+    arrays.s2[idx],
+    arrays.s4[idx],
+    arrays.sus[idx],
+    arrays.maj7[idx]
+  );
+  saveCurrentProgression();
   playChordPreview(idx);
 }
 
-function _updateAllQualityButtonVisualsCurrentToggle() {
-    const { majorArr } = getToggleArrays(); 
-    if(majorArr) { 
-      for (let i = 0; i < 4; i++) _updateQualityButtonVisualForSlot(i, majorArr[i] || 'none');
-    }
+function _updateQualityButtonVisualForSlot(idx, state) {
+  const slot = document.getElementById('slot' + idx);
+  if (!slot) return;
+  const qualityBtn = slot.querySelector('.quality-toggle-btn');
+  if (qualityBtn) {
+    if (state === 'minor') qualityBtn.textContent = 'm';
+    else qualityBtn.textContent = 'M';
+    qualityBtn.classList.toggle('quality-active', state === 'major' || state === 'minor');
+  }
 }
 
 function setSlotColorAndStyle(slotIndex, selectElement, chordToDisplay, addSeventhArg, addSecondArg, addFourthArg, addSusArg, addMajSeventhArg) { 
-  const arrays = getToggleArrays(); // Get arrays for the current toggle
-  const addSeventh = (typeof addSeventhArg === 'boolean') ? addSeventhArg : arrays.seventhArr[slotIndex];
-  const addSecond = (typeof addSecondArg === 'boolean') ? addSecondArg : arrays.secondArr[slotIndex];
-  const addFourth = (typeof addFourthArg === 'boolean') ? addFourthArg : arrays.fourthArr[slotIndex];
-  const addSus = (typeof addSusArg === 'boolean') ? addSusArg : arrays.susArr[slotIndex];
-  const addMajSeventh = (typeof addMajSeventhArg === 'boolean') ? addMajSeventhArg : arrays.majSeventhArr[slotIndex];
+  const currentProgData = getProgressionData(currentToggle); 
+
+  const addSeventh = (typeof addSeventhArg === 'boolean') ? addSeventhArg : currentProgData.s7[slotIndex];
+  const addSecond = (typeof addSecondArg === 'boolean') ? addSecondArg : currentProgData.s2[slotIndex];
+  const addFourth = (typeof addFourthArg === 'boolean') ? addFourthArg : currentProgData.s4[slotIndex];
+  const addSus = (typeof addSusArg === 'boolean') ? addSusArg : currentProgData.sus[slotIndex];
+  const addMajSeventh = (typeof addMajSeventhArg === 'boolean') ? addMajSeventhArg : currentProgData.maj7[slotIndex];
   
   setSlotContent(slotIndex, chordToDisplay, addSeventh, addSecond, addFourth, addSus, addMajSeventh); 
   
@@ -374,7 +401,8 @@ function setSlotContent(slotIndex, chord, addSeventh, addSecond, addFourth, addS
   slot.className = 'slot-box'; 
   if (!chordTones[chord]) { console.warn("Chord tones not defined for:", chord); noteRects.innerHTML = `<div class="note-rect" style="background: #777; color:white; font-size:0.8em; padding: 5px;">${chord}?</div>`; return; }
   let baseTones = [...chordTones[chord]]; 
-  const { majorArr } = getToggleArrays(); const qualityState = majorArr[slotIndex];
+  const { m: majorArr } = getProgressionData(currentToggle); 
+  const qualityState = majorArr[slotIndex];
   let finalNotesForDisplay = [];
   finalNotesForDisplay.push({ note: baseTones[0], type: 'root' });
   if (addSus) {
@@ -415,35 +443,68 @@ function setSlotContent(slotIndex, chord, addSeventh, addSecond, addFourth, addS
   noteRects.innerHTML = rectsHTML;
 }
 
-function _createToggleFunction(type, updateBtnStatesFn, dependencies = null) {
+function _createToggleFunction(modifierKey, updateBtnStatesFn, dependencies = null) {
   return function(idx) {
-    const arrays = getToggleArrays(); const targetArray = arrays[`${type}Arr`]; const wasActive = targetArray[idx]; 
-    targetArray[idx] = !targetArray[idx]; 
-    if (dependencies) {
-      if (type === 'majSeventh' && targetArray[idx] && !arrays.seventhArr[idx]) { arrays.seventhArr[idx] = true; updateSeventhBtnStates(); } 
-      else if (type === 'seventh' && !targetArray[idx] && wasActive && arrays.majSeventhArr[idx]) { arrays.majSeventhArr[idx] = false; updateMajSeventhBtnStates(); }
+    const currentData = getProgressionData(currentToggle);
+    const targetModifierArray = currentData[modifierKey];
+
+    if (!Array.isArray(targetModifierArray) || typeof targetModifierArray[idx] === 'undefined') {
+      console.error(`Modifier array ${modifierKey} or index ${idx} is invalid.`);
+      return;
     }
-    if (type === 'second' && !targetArray[idx] && wasActive) { if (arrays.susArr[idx] && !arrays.fourthArr[idx]) { arrays.susArr[idx] = false; updateSusBtnStates(); } } 
-    else if (type === 'fourth' && !targetArray[idx] && wasActive) { if (arrays.susArr[idx] && !arrays.secondArr[idx]) { arrays.susArr[idx] = false; updateSusBtnStates(); } }
-    updateBtnStatesFn(); 
+    
+    const wasActive = targetModifierArray[idx];
+    targetModifierArray[idx] = !targetModifierArray[idx];
+
+    if (dependencies) {
+      if (modifierKey === 'maj7' && targetModifierArray[idx] && !currentData.s7[idx]) { 
+        currentData.s7[idx] = true; 
+        if (dependencies.updateFnS7) dependencies.updateFnS7(currentData.s7); // Pass the array for update
+      } else if (modifierKey === 's7' && !targetModifierArray[idx] && wasActive && currentData.maj7[idx]) { 
+        currentData.maj7[idx] = false; 
+        if (dependencies.updateFnMaj7) dependencies.updateFnMaj7(currentData.maj7); // Pass the array
+      }
+    }
+    // Simplified Sus logic: if sus is ON, 2nd XOR 4th should ideally be ON.
+    // If 2nd or 4th is turned OFF, and it makes sus meaningless (neither 2 or 4 is on), turn sus OFF.
+    if ((modifierKey === 's2' && !targetModifierArray[idx]) || (modifierKey === 's4' && !targetModifierArray[idx])) {
+        if (currentData.sus[idx] && !currentData.s2[idx] && !currentData.s4[idx]) {
+            currentData.sus[idx] = false;
+            updateSusBtnStates(currentData.sus);
+        }
+    }
+    
+    updateBtnStatesFn(targetModifierArray); // Update the button state for the current modifier
+    
     const select = document.getElementById('slot' + idx).querySelector('.chord-select');
-    const chordToDisplay = arrays.p[idx]; 
-    setSlotColorAndStyle(idx, select, chordToDisplay, arrays.seventhArr[idx], arrays.secondArr[idx], arrays.fourthArr[idx], arrays.susArr[idx], arrays.majSeventhArr[idx]);
+    const chordToDisplay = currentData.p[idx]; 
+    setSlotColorAndStyle(idx, select, chordToDisplay, currentData.s7[idx], currentData.s2[idx], currentData.s4[idx], currentData.sus[idx], currentData.maj7[idx]);
     saveCurrentProgression(); 
     playChordPreview(idx);
   };
 }
-const toggleSeventh = _createToggleFunction('seventh', updateSeventhBtnStates, { type: 'majSeventh' });
-const toggleSecond = _createToggleFunction('second', updateSecondBtnStates); 
-const toggleFourth = _createToggleFunction('fourth', updateFourthBtnStates); 
-const toggleSus = _createToggleFunction('sus', updateSusBtnStates);
-const toggleMajSeventh = _createToggleFunction('majSeventh', updateMajSeventhBtnStates, { type: 'seventh' });
 
-function updateSeventhBtnStates() { const { seventhArr } = getToggleArrays(); document.querySelectorAll('.seventh-btn').forEach((btn, idx) => btn.classList.toggle('active', seventhArr && seventhArr[idx]));}
-function updateSecondBtnStates() { const { secondArr } = getToggleArrays(); document.querySelectorAll('.second-btn').forEach((btn, idx) => btn.classList.toggle('active', secondArr && secondArr[idx]));}
-function updateFourthBtnStates() { const { fourthArr } = getToggleArrays(); document.querySelectorAll('.fourth-btn').forEach((btn, idx) => btn.classList.toggle('active', fourthArr && fourthArr[idx]));}
-function updateSusBtnStates() { const { susArr } = getToggleArrays(); document.querySelectorAll('.sus-btn').forEach((btn, idx) => btn.classList.toggle('active', susArr && susArr[idx]));}
-function updateMajSeventhBtnStates() { const { majSeventhArr } = getToggleArrays(); document.querySelectorAll('.maj-seventh-btn').forEach((btn, idx) => btn.classList.toggle('active', majSeventhArr && majSeventhArr[idx]));}
+function updateModifierButtonVisuals(modifierKey, buttonClassName, progressionModifierArray) {
+  const currentData = getProgressionData(currentToggle);
+  const statesArray = progressionModifierArray || currentData[modifierKey]; // Use passed array or get from currentToggle
+  if (statesArray) {
+    document.querySelectorAll(`.${buttonClassName}`).forEach((btn, idx) => btn.classList.toggle('active', statesArray[idx]));
+  }
+}
+
+function updateSeventhBtnStates(s7Arr) { updateModifierButtonVisuals('s7', 'seventh-btn', s7Arr); }
+function updateSecondBtnStates(s2Arr) { updateModifierButtonVisuals('s2', 'second-btn', s2Arr); }
+function updateFourthBtnStates(s4Arr) { updateModifierButtonVisuals('s4', 'fourth-btn', s4Arr); }
+function updateSusBtnStates(susArr) { updateModifierButtonVisuals('sus', 'sus-btn', susArr); }
+function updateMajSeventhBtnStates(maj7Arr) { updateModifierButtonVisuals('maj7', 'maj-seventh-btn', maj7Arr); }
+
+
+const toggleSeventh = _createToggleFunction('s7', updateSeventhBtnStates, { updateFnMaj7: updateMajSeventhBtnStates });
+const toggleSecond = _createToggleFunction('s2', updateSecondBtnStates); 
+const toggleFourth = _createToggleFunction('s4', updateFourthBtnStates); 
+const toggleSus = _createToggleFunction('sus', updateSusBtnStates);
+const toggleMajSeventh = _createToggleFunction('maj7', updateMajSeventhBtnStates, { updateFnS7: updateSeventhBtnStates });
+
 
 function updateRhythmPictures() {
   for (let pair = 0; pair < 4; ++pair) {
@@ -479,41 +540,87 @@ function setPlaying(playing) {
   if (isPlaying) startMainAnimation(); else stopMainAnimation();
 }
 
+// --- THIS IS THE MAIN CHANGE! ---
 function startMainAnimation() {
   stopMainAnimation();
-  if (typeof startMainAnimation.preservedSteps === "object" && startMainAnimation.preservedSteps.keep) {
-    slotHighlightStep = startMainAnimation.preservedSteps.slotHighlightStep;
-    pictureHighlightStep = startMainAnimation.preservedSteps.pictureHighlightStep;
-    rhythmStep = startMainAnimation.preservedSteps.rhythmStep;
-    startMainAnimation.preservedSteps.keep = false;
-  } else { slotHighlightStep = 0; pictureHighlightStep = 0; rhythmStep = 0; }
-  updateSlotHighlights(); updatePictureHighlights();
+  // Always start playback from the beginning!
+  slotHighlightStep = 0;
+  pictureHighlightStep = 0;
+  rhythmStep = 0;
+  currentLinkedProgressionIndex = 0;
+
+  // If in linked mode, ensure UI displays the first set in the sequence
+  if (linkedProgressionSequence.length > 0) {
+      const firstLinkedProg = linkedProgressionSequence[0];
+      if (currentToggle !== firstLinkedProg) {
+          currentToggle = firstLinkedProg;
+          document.querySelectorAll('.abcd-toggle-btn').forEach(btn => btn.classList.remove('abcd-active'));
+          document.getElementById('toggle' + currentToggle)?.classList.add('abcd-active');
+          loadProgression(currentToggle);
+      }
+  } else {
+      // Set UI to currentToggle
+      document.querySelectorAll('.abcd-toggle-btn').forEach(btn => btn.classList.remove('abcd-active'));
+      document.getElementById('toggle' + currentToggle)?.classList.add('abcd-active');
+      loadProgression(currentToggle);
+  }
+
+  updateSlotHighlights(); 
+  updatePictureHighlights();
+
   const intervalMs = (60 / getBpmInputValue()) * 1000 / 2;
   if (intervalMs > 0 && isFinite(intervalMs)) { playEighthNoteStep(); rhythmInterval = setInterval(playEighthNoteStep, intervalMs); }
 }
 
+// --- Remove all step preservation logic from stopMainAnimation ---
 function stopMainAnimation() {
   if (rhythmInterval) clearInterval(rhythmInterval);
   rhythmInterval = null;
   for (let i = 0; i < slotIds.length; i++) unhighlightSlot(i);
   for (let i = 0; i < 4; i++) unhighlightPicture(i);
+  // No preservation of steps or positions here!
 }
 
+// --- When BPM changes and playback is running, also restart from the beginning ---
 function restartAnimationWithBpm() {
   if (isPlaying) {
-    if (!startMainAnimation.preservedSteps) startMainAnimation.preservedSteps = {};
-    startMainAnimation.preservedSteps.keep = true;
-    startMainAnimation.preservedSteps.slotHighlightStep = slotHighlightStep;
-    startMainAnimation.preservedSteps.pictureHighlightStep = pictureHighlightStep;
-    startMainAnimation.preservedSteps.rhythmStep = rhythmStep;
-    startMainAnimation();
+    // Always restart from the beginning
+    setPlaying(false);
+    setPlaying(true);
   }
 }
 
 function playEighthNoteStep() {
-  const currentSlotIdx = slotHighlightStep % 4;
-  const currentProgArr = getCurrentProgressionArray();
-  const chordName = currentProgArr[currentSlotIdx]; 
+  let playingProgLetter;
+  let isLinkedMode = linkedProgressionSequence.length > 0;
+
+  if (isLinkedMode) {
+    playingProgLetter = linkedProgressionSequence[currentLinkedProgressionIndex];
+
+    if (currentToggle !== playingProgLetter) {
+      // Don't save here, as we are just switching playback context.
+      // The UI for 'currentToggle' was already saved when it was last active.
+      currentToggle = playingProgLetter; 
+      document.querySelectorAll('.abcd-toggle-btn').forEach(btn => btn.classList.remove('abcd-active'));
+      document.getElementById('toggle' + currentToggle)?.classList.add('abcd-active');
+      loadProgression(currentToggle); 
+    }
+  } else {
+    playingProgLetter = currentToggle;
+     // Ensure currentToggle's button is active if not in linked mode
+     if (!document.getElementById('toggle' + currentToggle)?.classList.contains('abcd-active')) {
+        document.querySelectorAll('.abcd-toggle-btn').forEach(btn => btn.classList.remove('abcd-active'));
+        document.getElementById('toggle' + currentToggle)?.classList.add('abcd-active');
+        // loadProgression might be needed if UI somehow got out of sync
+        // loadProgression(currentToggle);
+     }
+  }
+
+  const progData = getProgressionData(playingProgLetter);
+  if (!progData) { console.error("No progression data for playback:", playingProgLetter); return; }
+
+  const currentSlotIdx = slotHighlightStep % 4; 
+  const chordName = progData.p[currentSlotIdx]; 
 
   const currentPair = Math.floor((rhythmStep % 8) / 2);
   const currentWhich = (rhythmStep % 8) % 2;
@@ -525,8 +632,8 @@ function playEighthNoteStep() {
     if (!chordName || chordName === "" || chordName === "empty") { playBassDrum(isNextBoxInactive ? 0.38 : 0.19); } 
     else {
       if (!rhythmChordNotes[chordName]) { console.warn("Playback notes not defined for chord:", chordName); playBassDrum(isNextBoxInactive ? 0.38 : 0.19); return; }
-      const { seventhArr, secondArr, majorArr, fourthArr, susArr, majSeventhArr } = getToggleArrays(); 
-      const addSeventh = seventhArr[currentSlotIdx], addSecond = secondArr[currentSlotIdx], qualityState = majorArr[currentSlotIdx], addFourth = fourthArr[currentSlotIdx], addSus = susArr[currentSlotIdx], addMajSeventh = majSeventhArr[currentSlotIdx];
+      
+      const addSeventh = progData.s7[currentSlotIdx], addSecond = progData.s2[currentSlotIdx], qualityState = progData.m[currentSlotIdx], addFourth = progData.s4[currentSlotIdx], addSus = progData.sus[currentSlotIdx], addMajSeventh = progData.maj7[currentSlotIdx];
       let notesToPlay = []; const baseRhythmNotes = rhythmChordNotes[chordName]; 
       if(!baseRhythmNotes) { console.error("Base rhythm notes missing for", chordName); return; }
 
@@ -555,11 +662,26 @@ function playEighthNoteStep() {
       playTriangleNotes(notesToPlay.filter(n => n), isNextBoxInactive);
     }
   }
-  if (rhythmStep % 2 === 0) { playBrush(); updatePictureHighlights(); pictureHighlightStep = (pictureHighlightStep + 1) % 4; }
-  if (rhythmStep === 0) updateSlotHighlights();
+  
+  updateSlotHighlights(); 
+  if (rhythmStep % 2 === 0) { 
+    playBrush(); 
+    updatePictureHighlights(); 
+    pictureHighlightStep = (pictureHighlightStep + 1) % 4; 
+  }
+
   rhythmStep = (rhythmStep + 1) % 8;
-  if (rhythmStep === 0) slotHighlightStep = (slotHighlightStep + 1) % 4;
+  
+  if (rhythmStep === 0) { 
+    slotHighlightStep = (slotHighlightStep + 1) % 4; 
+
+    if (isLinkedMode && slotHighlightStep === 0) { 
+      currentLinkedProgressionIndex = (currentLinkedProgressionIndex + 1) % linkedProgressionSequence.length;
+      // The next playingProgLetter and UI load will be handled at the start of the next playEighthNoteStep call.
+    }
+  }
 }
+
 
 function updateSlotHighlights() { for (let i = 0; i < slotIds.length; i++) unhighlightSlot(i); if (isPlaying) highlightSlot(slotHighlightStep % 4); }
 function highlightSlot(idx) { document.getElementById(slotIds[idx])?.classList.add('enlarged'); }
@@ -569,38 +691,44 @@ function highlightPicture(idx) { document.getElementById('bottomPic'+idx)?.class
 function unhighlightPicture(idx) { document.getElementById('bottomPic'+idx)?.classList.remove('picture-highlighted'); }
 
 function clearAll() {
-  for (let i = 0; i < 4; i++) {
-    const slot = document.getElementById('slot'+i); if (!slot) continue;
-    const noteRects = slot.querySelector('.note-rects'); if(noteRects) noteRects.innerHTML = '';
-    slot.classList.remove('enlarged');
-    let img = slot.querySelector('.dash-img-slot'); if (img) { img.src = restDashImgUrl; img.alt = "Rhythm Box Rest"; img.style.display = "block"; }
-    slot.querySelector('.seventh-btn')?.classList.remove('active'); slot.querySelector('.second-btn')?.classList.remove('active');
-    slot.querySelector('.fourth-btn')?.classList.remove('active'); slot.querySelector('.sus-btn')?.classList.remove('active'); 
-    slot.querySelector('.maj-seventh-btn')?.classList.remove('active');
-  }
-  document.querySelectorAll('.bottom-rhythm-box').forEach(box => box.classList.remove('active'));
-  updateRhythmPictures();
-  
-  [progressionA, progressionB, progressionC, progressionD].forEach(p => p.fill('')); 
+  // Stop playback before clearing
+  if (isPlaying) setPlaying(false);
+
+  // Reset all progression data arrays
+  progressionA = ['', '', '', '']; progressionB = ['', '', '', '']; progressionC = ['', '', '', '']; progressionD = ['', '', '', ''];
+  rhythmBoxesA = Array(8).fill(false); rhythmBoxesB = Array(8).fill(false); rhythmBoxesC = Array(8).fill(false); rhythmBoxesD = Array(8).fill(false);
   [seventhA, secondA, fourthA, susA, majSeventhA, 
    seventhB, secondB, fourthB, susB, majSeventhB, 
    seventhC, secondC, fourthC, susC, majSeventhC, 
    seventhD, secondD, fourthD, susD, majSeventhD].forEach(arr => arr.fill(false));
   [majorA, majorB, majorC, majorD].forEach(arr => arr.fill('none'));
 
-  updateChordDropdowns(); 
-  
-  document.querySelectorAll('.chord-select').forEach((select, idx) => {
-      select.value = ""; 
-      const arrays = getToggleArrays(); 
-      setSlotColorAndStyle(idx, select, "", arrays.seventhArr[idx], arrays.secondArr[idx], arrays.fourthArr[idx], arrays.susArr[idx], arrays.majSeventhArr[idx]);
+  // Reset link states
+  Object.keys(progressionLinkStates).forEach(progLetter => {
+    progressionLinkStates[progLetter] = false;
+    updateLinkVisuals(progLetter); // Visually unlink
   });
+  updateLinkedProgressionSequence(); // Empties the sequence
 
-  updateSeventhBtnStates(); updateSecondBtnStates(); updateFourthBtnStates(); updateSusBtnStates(); updateMajSeventhBtnStates();
-  _updateAllQualityButtonVisualsCurrentToggle(); 
-  saveCurrentProgression(); 
-  setPlaying(false);
+  // Reset currentToggle to A and load its (now empty) state
+  currentToggle = 'A';
+  document.querySelectorAll('.abcd-toggle-btn').forEach(btn => btn.classList.remove('abcd-active'));
+  document.getElementById('toggleA')?.classList.add('abcd-active');
+  loadProgression('A'); // This will clear the UI based on the empty 'A' arrays
+
+  // Clear rhythm boxes visuals (already done by loadProgression via updateRhythmPictures)
+  // Clear slot visuals (already done by loadProgression via setSlotColorAndStyle -> setSlotContent)
+  
+  // Reset playback counters
+  slotHighlightStep = 0;
+  pictureHighlightStep = 0;
+  rhythmStep = 0;
+  currentLinkedProgressionIndex = 0;
+
+  updateSlotHighlights(); // Clear highlights
+  updatePictureHighlights(); // Clear highlights
 }
+
 
 async function playBrush() {
   if (!document.getElementById('brushToggle')?.checked) return;
@@ -747,13 +875,13 @@ function midiToFreq(n) {
 
 function playChordPreview(idx) {
   if (isPlaying) return;
-  const currentProgArr = getCurrentProgressionArray();
-  const chordName = currentProgArr[idx]; 
+  const currentData = getProgressionData(currentToggle); 
+  const chordName = currentData.p[idx]; 
   
   if (!chordName || chordName === "" || chordName === "empty") return;
   if (!rhythmChordNotes[chordName]) { console.warn("Preview notes not defined for chord:", chordName); return; }
-  const { seventhArr, secondArr, majorArr, fourthArr, susArr, majSeventhArr } = getToggleArrays(); 
-  const addSeventh = seventhArr[idx], addSecond = secondArr[idx], qualityState = majorArr[idx], addFourth = fourthArr[idx], addSus = susArr[idx], addMajSeventh = majSeventhArr[idx];
+  
+  const addSeventh = currentData.s7[idx], addSecond = currentData.s2[idx], qualityState = currentData.m[idx], addFourth = currentData.s4[idx], addSus = currentData.sus[idx], addMajSeventh = currentData.maj7[idx];
   let notesToPlay = []; const baseRhythmNotes = rhythmChordNotes[chordName];
   if(!baseRhythmNotes) { console.error("Base rhythm notes missing for preview", chordName); return; }
 
@@ -790,40 +918,66 @@ function updateChordDropdowns() {
   const chordsForCurrentKey = keyChordMap[currentMusicalKey];
   if (!chordsForCurrentKey) { console.error("Chords not defined for key:", currentMusicalKey); return; }
   document.querySelectorAll('.chord-select').forEach(selectElement => {
+    const currentVal = selectElement.value; 
     selectElement.innerHTML = ''; 
     const defaultOption = document.createElement('option'); defaultOption.value = ""; defaultOption.textContent = "-"; selectElement.appendChild(defaultOption);
     const emptyOption = document.createElement('option'); emptyOption.value = "empty"; emptyOption.textContent = ""; selectElement.appendChild(emptyOption);
     chordsForCurrentKey.forEach(chordData => { const option = document.createElement('option'); option.value = chordData.value; option.textContent = chordData.display; selectElement.appendChild(option); });
+    
+    if (Array.from(selectElement.options).some(opt => opt.value === currentVal) || currentVal === "" || currentVal === "empty") {
+        selectElement.value = currentVal;
+    }
   });
 }
 
-function getCurrentProgressionArray() {
-  switch(currentToggle) {
-    case 'A': return progressionA;
-    case 'B': return progressionB;
-    case 'C': return progressionC;
-    case 'D': return progressionD;
-    default: console.error("Unknown toggle:", currentToggle); return progressionA; 
-  }
-}
-
-
 function handleKeyDial(direction) {
+  saveCurrentProgression(); // Save before changing key context potentially affects dropdowns
   currentKeyIndex = (currentKeyIndex + direction + musicalKeys.length) % musicalKeys.length;
   currentMusicalKey = musicalKeys[currentKeyIndex];
   updateKeyDisplay();
   updateChordDropdowns(); 
 
-  const currentProgArr = getCurrentProgressionArray();
-  const arrays = getToggleArrays(); 
-
-  document.querySelectorAll('.chord-select').forEach((selectElement, idx) => {
-    const storedChord = currentProgArr[idx] || ""; 
-    selectElement.value = storedChord; 
-    setSlotColorAndStyle(idx, selectElement, storedChord, arrays.seventhArr[idx], arrays.secondArr[idx], arrays.fourthArr[idx], arrays.susArr[idx], arrays.majSeventhArr[idx]);
-  });
-  // saveCurrentProgression(); // Not needed here, as only dropdown options changed, not the stored progression.
+  // After dropdowns are updated, reload the current progression's UI
+  // to reflect any chord display changes (e.g. C/I becomes C / IV if key changes)
+  // and to ensure the correct chords are selected in the dropdowns if they are still valid.
+  loadProgression(currentToggle); 
 }
+
+// --- Functions for Progression Linking ---
+function toggleLinkState(progLetter) {
+  progressionLinkStates[progLetter] = !progressionLinkStates[progLetter];
+  updateLinkVisuals(progLetter);
+  updateLinkedProgressionSequence();
+
+  // If playback is active and the sequence changes, reset relevant counters
+  // to ensure smooth transition or restart of the sequence.
+  if (isPlaying) {
+      slotHighlightStep = 0;
+      rhythmStep = 0;
+      currentLinkedProgressionIndex = 0; // Start sequence from beginning
+      // stop and restart animation to apply new sequence immediately
+      stopMainAnimation(); 
+      startMainAnimation();
+  }
+}
+
+function updateLinkVisuals(progLetter) {
+  const icon = document.getElementById('linkIcon' + progLetter);
+  if (icon) {
+    icon.classList.toggle('linked', progressionLinkStates[progLetter]);
+  }
+}
+
+function updateLinkedProgressionSequence() {
+  linkedProgressionSequence = [];
+  ['A', 'B', 'C', 'D'].forEach(progLetter => {
+    if (progressionLinkStates[progLetter]) {
+      linkedProgressionSequence.push(progLetter);
+    }
+  });
+  currentLinkedProgressionIndex = 0; 
+}
+
 
 document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("wave-left").onclick = () => handleWaveformDial(-1);
@@ -832,7 +986,27 @@ document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("wave-right").addEventListener("keydown", (e) => { if (e.key===" "||e.key==="Enter"||e.key==="ArrowRight") { e.preventDefault(); handleWaveformDial(1); e.target.focus(); }});
   updateWaveformDisplay();
 
-  ['A', 'B', 'C', 'D'].forEach(t => { const btn = document.getElementById('toggle' + t); if(btn) { btn.addEventListener('click', () => switchToggle(t)); btn.addEventListener('keydown', (e) => { if (e.key===" "||e.key==="Enter") { e.preventDefault(); switchToggle(t); }}); } });
+  ['A', 'B', 'C', 'D'].forEach(t => { 
+    const btn = document.getElementById('toggle' + t); 
+    if(btn) { 
+      btn.addEventListener('click', () => switchToggle(t)); 
+      btn.addEventListener('keydown', (e) => { if (e.key===" "||e.key==="Enter") { e.preventDefault(); switchToggle(t); }}); 
+    }
+    const linkIcon = document.getElementById('linkIcon' + t);
+    if (linkIcon) {
+      linkIcon.addEventListener('click', (event) => {
+        event.stopPropagation(); 
+        toggleLinkState(t);
+      });
+      linkIcon.addEventListener('keydown', (event) => {
+        if (event.key === " " || event.key === "Enter") {
+          event.preventDefault();
+          event.stopPropagation();
+          toggleLinkState(t);
+        }
+      });
+    }
+  });
 
   const keyLeftBtn = document.getElementById("key-left");
   const keyRightBtn = document.getElementById("key-right");
@@ -842,10 +1016,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
   document.querySelectorAll('.chord-select').forEach((select, idx) => { 
     select.addEventListener('change', function() { 
-      const arrays = getToggleArrays(); 
+      const currentData = getProgressionData(currentToggle); 
       const selectedChordFromDropdown = this.value;
-      arrays.p[idx] = selectedChordFromDropdown; 
-      setSlotColorAndStyle(idx, this, selectedChordFromDropdown, arrays.seventhArr[idx], arrays.secondArr[idx], arrays.fourthArr[idx], arrays.susArr[idx], arrays.majSeventhArr[idx]); 
+      currentData.p[idx] = selectedChordFromDropdown; 
+      setSlotColorAndStyle(idx, this, selectedChordFromDropdown, currentData.s7[idx], currentData.s2[idx], currentData.s4[idx], currentData.sus[idx], currentData.maj7[idx]); 
       playChordPreview(idx); 
       saveCurrentProgression(); 
     }); 
@@ -865,6 +1039,5 @@ document.addEventListener("DOMContentLoaded", function() {
   for (let i = 0; i < slotIds.length; i++) unhighlightSlot(i);
   for (let i = 0; i < 4; i++) unhighlightPicture(i);
   setPlaying(false); 
-  // saveCurrentProgression(); // Initial save is not strictly necessary as arrays are empty/default
-  loadProgression(currentToggle); // This will populate based on initial empty/default states
+  loadProgression(currentToggle); 
 });
