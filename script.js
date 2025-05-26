@@ -129,17 +129,17 @@ const chordFourths = {
 };
 
 const rhythmChordNotes = { 
-  'C':  ['C3', 'C4', 'E4', 'G4', 'C5'], 'Dm': ['D3', 'D4', 'F4', 'A4', 'D5'], 'Em': ['E3', 'E4', 'G4', 'B4', 'E5'], 'F':  ['F3', 'F4', 'A4', 'C5', 'F5'],  'G':  ['G3', 'G4', 'B4', 'D5', 'G5'], 'Am': ['A3', 'A4', 'C5', 'E5', 'A5'], 'Bb': ['Bb2', 'Bb3', 'D4', 'F4', 'Bb4'],
-  'Db': ['Db3','Db4','F4','Ab4','Db5'], 'Ebm':['Eb3','Eb4','Gb4','Bb4','Eb5'], 'Fm': ['F3','F4','Ab4','C5','F5'], 'Gb': ['Gb2','Gb3','Bb3','Db4','Gb4'], 'Ab': ['Ab2','Ab3','C4','Eb4','Ab4'], 'Bbm':['Bb2','Bb3','Db4','F4','Bb4'], 'Cb': ['Cb3','Cb4','Eb4','Gb4','Cb5'],
+  'C':  ['C3', 'C4', 'E4', 'G4', 'C5'], 'Dm': ['D3', 'D4', 'F4', 'A4', 'D5'], 'Em': ['E3', 'E4', 'G4', 'B4', 'E5'], 'F':  ['F3', 'F4', 'A4', 'C5', 'F5'],  'G':  ['G3', 'G4', 'B4', 'D5', 'G5'], 'Am': ['A2', 'A3', 'C4', 'E4', 'A4'], 'Bb': ['Bb2', 'Bb3', 'D4', 'F4', 'Bb4'],
+  'Db': ['Db3','Db4','F4','Ab4','Db5'], 'Ebm':['Eb3','Eb4','Gb4','Bb4','Eb5'], 'Fm': ['F3','F4','Ab4','C5','F5'], 'Gb': ['Gb3', 'Gb4', 'Bb3', 'Db4', 'Gb5'], 'Ab': ['Ab2','Ab3','C4','Eb4','Ab4'], 'Bbm':['Bb2','Bb3','Db4','F4','Bb4'], 'Cb': ['Cb2','Cb3','Eb4','Gb4','Cb4'],
   'D':  ['D3', 'D4', 'F#4', 'A4', 'D5'], 'F#m':['F#3','F#4','A4','C#5','F#5'], 'Bm': ['B2','B3','D4','F#4','B4'],
   'Eb': ['Eb3','Eb4','G4','Bb4','Eb5'], 'Gm': ['G3','G4','Bb4','D5','G5'], 'Cm': ['C3','C4','Eb4','G4','C5'],
   'E':  ['E3', 'E4', 'G#4', 'B4', 'E5'], 'G#m':['G#3','G#4','B4','D#5','G#5'], 'C#m':['C#3','C#4','E4','G#4','C#5'],
-  'Fb': ['Fb3','Fb4','Ab4','Cb5','Fb5'], 'Abm':['Ab2','Ab3','Cb4','Eb4','Ab4'], 
+  'Fb': ['Fb3','Fb4','Ab4','Cb4','Fb5'], 'Abm':['Ab2','Ab3','Cb4','Eb4','Ab4'], 
   'B':  ['B2', 'B3', 'D#4', 'F#4', 'B4'], 'D#m':['D#3','D#4','F#4','A#4','D#5'], 'F#': ['F#3','F#4','A#4','C#5','F#5'], 'A': ['A2','A3','C#4','E4','A4']
 };
 const rhythmChordSeventhNotes = { 
   'C': 'Bb4', 'Dm': 'C5', 'Em': 'D5', 'F': 'Eb5', 'G': 'F5', 'Am': 'G4', 'Bb': 'Ab4',
-  'Db':'Cb5', 'Ebm':'Db5', 'Fm':'Eb5', 'Gb':'Fb5', 'Ab':'Gb5', 'Bbm':'Ab4', 'Cb':'Bbb4',
+  'Db':'Cb4', 'Ebm':'Db5', 'Fm':'Eb5', 'Gb':'Fb5', 'Ab':'Gb4', 'Bbm':'Ab4', 'Cb':'Bbb4',
   'D': 'C5', 'F#m':'E5', 'Bm':'A4',
   'Eb':'Db5', 'Gm':'F5', 'Cm':'Bb4',
   'E': 'D5', 'G#m':'F#5', 'C#m':'B4',
@@ -151,13 +151,13 @@ const rhythmChordMajorSeventhNotes = {
   'Db':'C5', 'Ebm':'D5', 'Fm':'E5', 'Gb':'F4', 'Ab':'G4', 'Bbm':'A4', 'Cb':'Bb4',
   'D': 'C#5', 'F#m':'E#5', 'Bm':'A#4', 
   'Eb':'D5', 'Gm':'F#5', 'Cm':'B4',
-  'E': 'D#5', 'G#m':'F##5', 'C#m':'B#4', 
+  'E': 'D#5', 'G#m':'F##5', 'C#m':'B#5', 
   'Fb':'Eb5', 'Abm': 'G4', 
   'B': 'A#4', 'D#m':'C##5', 'F#':'E#5', 'A':'G#4' 
 };
 const rhythmChordSecondNotes = {
   'C': 'D4', 'Dm': 'E4', 'Em': 'F#4', 'F': 'G4', 'G': 'A4', 'Am': 'B4', 'Bb': 'C4',
-  'Db':'Eb4', 'Ebm':'F4', 'Fm':'G4', 'Gb':'Ab4', 'Ab':'Bb4', 'Bbm':'C5', 'Cb':'Db4',
+  'Db':'Eb4', 'Ebm':'F4', 'Fm':'G4', 'Gb':'Ab4', 'Ab':'Bb4', 'Bbm':'C4', 'Cb':'Db4',
   'D': 'E4', 'F#m':'G#4', 'Bm':'C#4',
   'Eb':'F4', 'Gm':'A4', 'Cm':'D4',
   'E': 'F#4', 'G#m':'A#4', 'C#m':'D#4',
@@ -166,11 +166,11 @@ const rhythmChordSecondNotes = {
 };
 const rhythmChordFourthNotes = {
   'C': 'F4', 'Dm': 'G4', 'Em': 'A4', 'F': 'Bb4', 'G': 'C5', 'Am': 'D5', 'Bb': 'Eb4',
-  'Db':'Gb4', 'Ebm':'Ab4', 'Fm':'Bb4', 'Gb':'Cb4', 'Ab':'Db5', 'Bbm':'Eb5', 'Cb':'Fb4',
+  'Db':'Gb4', 'Ebm':'Ab4', 'Fm':'Bb4', 'Gb':'Cb4', 'Ab':'Db5', 'Bbm':'Eb4', 'Cb':'Fb4',
   'D': 'G4', 'F#m':'B4', 'Bm':'E4',
   'Eb':'Ab4', 'Gm':'C5', 'Cm':'F4',
   'E': 'A4', 'G#m':'C#5', 'C#m':'F#4',
-  'Fb':'Bbb3', 'Abm': 'Db4', 
+  'Fb':'Bbb4', 'Abm': 'Db5', 
   'B': 'E4', 'D#m':'G#4', 'F#':'B3', 'A':'D4' 
 };
 
