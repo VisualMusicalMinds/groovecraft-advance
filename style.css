@@ -892,6 +892,20 @@ input[type="number"].bpm-input { width: 50px; font-size: 1em; padding: 4px 0; he
     min-width: 40px; /* Adjust if needed for smaller key names like 'Db' */
   }
 }
+/* ... your existing CSS rules ... */
+
+/* ================================================================= */
+/* === STYLING FOR CHORD DISPLAY BOXES AND DROPDOWN BACKGROUNDS === */
+/* ================================================================= */
+
+/* 1. Ensure text within the note display boxes (e.g., C, E, G) is white */
+.slot-box .note-rects .note-rect {
+  color: white !important; 
+}
+
+/* 2. Background colors for the <select> dropdown elements themselves,
+      based on the ROOT LETTER of the chord. 
+      Uses classes like c-selected-c, c-selected-csharp, c-selected-dbflat etc. */
 
 /* Default styling for all chord select dropdowns (fallback) */
 select.chord-select {
@@ -944,3 +958,5 @@ select.chord-select[class*="c-selected-b"] {
   background-color: #be1bf5 !important; /* Violet/Pink */
   color: black !important;
 }
+
+/* ... any other CSS rules ... */
