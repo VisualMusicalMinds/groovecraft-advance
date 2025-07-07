@@ -902,3 +902,60 @@ select.chord-select[class*="c-selected-f"] { background-color: #2aab2a !importan
 select.chord-select[class*="c-selected-g"] { background-color: #0ac5bc !important; color: black !important; }
 select.chord-select[class*="c-selected-a"] { background-color: #2759ff !important; color: black !important; }
 select.chord-select[class*="c-selected-b"] { background-color: #be1bf5 !important; color: black !important; }
+/* Song Selector Menu */
+.song-selector-container {
+  width: fit-content; /* Let the container size to its content */
+  /* Align with other main sections if needed, using max-width and auto margins */
+  /* max-width: calc(var(--columns) * var(--box-size) + (var(--columns) - 1) * var(--box-gap)); */
+  /* margin-left: auto; */
+  /* margin-right: auto; */
+  margin-top: var(--box-gap); /* Space above the selector */
+  padding: calc(var(--box-gap) / 1.5); /* Adjusted padding */
+  background-color: #e9eff5; /* A slightly different background, less prominent */
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08); /* Softer shadow */
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+  gap: 12px; /* Increased gap */
+}
+
+.song-select-label {
+  font-weight: 600; /* Slightly less bold */
+  color: #33475b; 
+  font-size: clamp(0.85em, 1.5vw, 1em); /* Adjusted responsive font size */
+  white-space: nowrap; /* Prevent label from wrapping */
+}
+
+.song-select-dropdown {
+  padding: 9px 14px; /* Slightly more padding */
+  border-radius: 6px;
+  border: 1.5px solid #b0c4de; 
+  font-size: clamp(0.85em, 1.5vw, 0.95em); 
+  background-color: #fafdff; 
+  color: #333;
+  cursor: pointer;
+  min-width: 200px; /* Increased min-width for better readability */
+  text-align: center;
+  text-align-last: center; 
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.05); /* Subtle inset shadow */
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.song-select-dropdown:hover {
+  border-color: #9cb3cc; /* Darker border on hover */
+}
+
+.song-select-dropdown:focus {
+  outline: 2px solid #1976d2; 
+  outline-offset: 2px; /* Offset outline slightly */
+  border-color: #1976d2;
+  box-shadow: 0 0 5px rgba(25, 118, 210, 0.3); /* Focus shadow */
+}
+
+.song-select-dropdown option {
+  text-align: left; 
+  background-color: white;
+  color: black;
+  padding: 5px 10px; /* Padding for options in the list */
+}
