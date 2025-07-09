@@ -7,6 +7,78 @@
 </head>
 <body>
   <div class="app-container">
+    <div class="bottom-grid-container" id="bottom-grid-container">
+      <div class="bottom-grid" id="bottom-grid">
+        <div class="play-btn-cell">
+          <div class="play-controls-container">
+            <button id="playPauseBtn" class="circle-play-btn" title="Play" aria-label="Play/Pause" tabindex="0">
+              <svg id="playIcon" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="2 2 20 20" style="display:block;">
+                <polygon points="7,5 19,12 7,19" fill="white"/>
+              </svg>
+              <svg id="pauseIcon" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="2 2 20 20" style="display:none;">
+                <rect x="7" y="5" width="4" height="14" fill="white"/>
+                <rect x="15" y="5" width="4" height="14" fill="white"/>
+              </svg>
+            </button>
+            
+            <div class="bpm-input-block">
+              <div class="bpm-input-row">
+                <input type="number" id="bpmInput" class="bpm-input" min="30" max="300" value="90" inputmode="numeric" autocomplete="off" />
+                <div class="bpm-stepper">
+                  <button type="button" class="bpm-arrow" id="bpmUp" tabindex="0" aria-label="Increment BPM">&#9650;</button>
+                  <button type="button" class="bpm-arrow" id="bpmDown" tabindex="0" aria-label="Decrement BPM">&#9660;</button>
+                </div>
+              </div>
+              <div class="brush-toggle">
+                <input type="checkbox" id="brushToggle" checked title="Toggle Brush Sound" aria-label="Toggle Brush Sound" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="time-signature-cell">
+          <div class="time-signature-container">
+            <button id="time-sig-top" class="time-sig-btn" aria-label="Change time signature numerator">4</button>
+            <div class="time-sig-divider"></div>
+            <div id="time-sig-bottom" class="time-sig-bottom">4</div>
+          </div>
+        </div>
+        <div class="bottom-picture" id="bottomPic0" style="grid-row:1; grid-column:3;">
+          <img class="bottom-picture-img" src="https://eagleviewmusic.com/images/CartoonRhythmBox1.svg" alt="Rhythm Box" />
+        </div>
+        <div class="bottom-picture" id="bottomPic1" style="grid-row:1; grid-column:4;">
+          <img class="bottom-picture-img" src="https://eagleviewmusic.com/images/CartoonRhythmBox1.svg" alt="Rhythm Box" />
+        </div>
+        <div class="bottom-picture" id="bottomPic2" style="grid-row:1; grid-column:5;">
+          <img class="bottom-picture-img" src="https://eagleviewmusic.com/images/CartoonRhythmBox1.svg" alt="Rhythm Box" />
+        </div>
+        <div class="bottom-picture" id="bottomPic3" style="grid-row:1; grid-column:6;">
+          <img class="bottom-picture-img" src="https://eagleviewmusic.com/images/CartoonRhythmBox1.svg" alt="Rhythm Box" />
+        </div>
+        <div class="bottom-picture" id="bottomPic4" style="grid-row:1; grid-column:7;">
+          <img class="bottom-picture-img" src="https://eagleviewmusic.com/images/CartoonRhythmBox1.svg" alt="Rhythm Box" />
+        </div>
+        <div class="rhythm-box-pair" id="rhythm-box-pair-0" style="grid-row:2; grid-column:3;">
+          <div class="bottom-rhythm-box" data-pair="0" data-which="0"><span class="bottom-rhythm-box-text">1</span></div>
+          <div class="bottom-rhythm-box" data-pair="0" data-which="1"><span class="bottom-rhythm-box-text">&amp;</span></div>
+        </div>
+        <div class="rhythm-box-pair" id="rhythm-box-pair-1" style="grid-row:2; grid-column:4;">
+          <div class="bottom-rhythm-box" data-pair="1" data-which="0"><span class="bottom-rhythm-box-text">2</span></div>
+          <div class="bottom-rhythm-box" data-pair="1" data-which="1"><span class="bottom-rhythm-box-text">&amp;</span></div>
+        </div>
+        <div class="rhythm-box-pair" id="rhythm-box-pair-2" style="grid-row:2; grid-column:5;">
+          <div class="bottom-rhythm-box" data-pair="2" data-which="0"><span class="bottom-rhythm-box-text">3</span></div>
+          <div class="bottom-rhythm-box" data-pair="2" data-which="1"><span class="bottom-rhythm-box-text">&amp;</span></div>
+        </div>
+        <div class="rhythm-box-pair" id="rhythm-box-pair-3" style="grid-row:2; grid-column:6;">
+          <div class="bottom-rhythm-box" data-pair="3" data-which="0"><span class="bottom-rhythm-box-text">4</span></div>
+          <div class="bottom-rhythm-box" data-pair="3" data-which="1"><span class="bottom-rhythm-box-text">&amp;</span></div>
+        </div>
+        <div class="rhythm-box-pair" id="rhythm-box-pair-4" style="grid-row:2; grid-column:7;">
+          <div class="bottom-rhythm-box" data-pair="4" data-which="0"><span class="bottom-rhythm-box-text">5</span></div>
+          <div class="bottom-rhythm-box" data-pair="4" data-which="1"><span class="bottom-rhythm-box-text">&amp;</span></div>
+        </div>
+      </div>
+    </div>
     <div class="top-row" id="top-row">
       <div class="box-space">
         <div class="bpm-clear-stack">
@@ -53,162 +125,100 @@
           </div>
         </div>
       </div>
-      <div class="box-space">
+      <div class="box-space" id="box-space-0">
         <div class="slot-box" id="slot0">
-          <div class="note-rects"></div>
+          <div class="note-rects-container">
+            <div class="note-rects primary-note-rects"></div>
+            <div class="note-rects split-note-rects"></div>
+          </div>
           <img class="dash-img-slot" src="https://eagleviewmusic.com/images/CartoonRhythmBox5.svg" alt="Rhythm Box Rest" />
           <div class="mm-toggle"> 
             <button class="quality-toggle-btn" type="button" tabindex="0" title="Toggle Chord Quality (Natural/Major/Minor)" aria-label="Toggle Chord Quality">M</button>
           </div>
           <button class="sus-btn" type="button" tabindex="0" title="Toggle Suspended Chord" aria-label="Toggle Suspended Chord">sus</button>
           <button class="maj-seventh-btn" type="button" tabindex="0" title="Toggle Major 7th" aria-label="Toggle Major 7th">maj</button>
-          <select class="chord-select">
-            <option value="">-</option>
-            <option value="empty"></option>
-            <option value="C">C / I</option>
-            <option value="Dm">Dm / ii</option>
-            <option value="Em">Em / iii</option>
-            <option value="F">F / IV</option>
-            <option value="G">G / V</option>
-            <option value="Am">Am / vi</option>
-            <option value="Bb">Bb / bVII</option>
-          </select>
-          <button class="second-btn" type="button" tabindex="0" title="Add 2nd" aria-label="Toggle 2nd chord">&#50;</button>
-          <button class="fourth-btn" type="button" tabindex="0" title="Add 4th" aria-label="Toggle 4th chord">4</button>
-          <button class="seventh-btn" type="button" tabindex="0" title="Add 7th" aria-label="Toggle 7th chord">&#55;</button>
-        </div>
-      </div>
-      <div class="box-space">
-        <div class="slot-box" id="slot1">
-          <div class="note-rects"></div>
-          <img class="dash-img-slot" src="https://eagleviewmusic.com/images/CartoonRhythmBox5.svg" alt="Rhythm Box Rest" />
-           <div class="mm-toggle">
-            <button class="quality-toggle-btn" type="button" tabindex="0" title="Toggle Chord Quality (Natural/Major/Minor)" aria-label="Toggle Chord Quality">M</button>
-          </div>
-          <button class="sus-btn" type="button" tabindex="0" title="Toggle Suspended Chord" aria-label="Toggle Suspended Chord">sus</button>
-          <button class="maj-seventh-btn" type="button" tabindex="0" title="Toggle Major 7th" aria-label="Toggle Major 7th">maj</button>
-          <select class="chord-select">
-            <option value="">-</option>
-            <option value="empty"></option>
-            <option value="C">C / I</option>
-            <option value="Dm">Dm / ii</option>
-            <option value="Em">Em / iii</option>
-            <option value="F">F / IV</option>
-            <option value="G">G / V</option>
-            <option value="Am">Am / vi</option>
-            <option value="Bb">Bb / bVII</option>
-          </select>
-          <button class="second-btn" type="button" tabindex="0" title="Add 2nd" aria-label="Toggle 2nd chord">&#50;</button>
-          <button class="fourth-btn" type="button" tabindex="0" title="Add 4th" aria-label="Toggle 4th chord">4</button>
-          <button class="seventh-btn" type="button" tabindex="0" title="Add 7th" aria-label="Toggle 7th chord">&#55;</button>
-        </div>
-      </div>
-      <div class="box-space">
-        <div class="slot-box" id="slot2">
-          <div class="note-rects"></div>
-          <img class="dash-img-slot" src="https://eagleviewmusic.com/images/CartoonRhythmBox5.svg" alt="Rhythm Box Rest" />
-           <div class="mm-toggle">
-            <button class="quality-toggle-btn" type="button" tabindex="0" title="Toggle Chord Quality (Natural/Major/Minor)" aria-label="Toggle Chord Quality">M</button>
-          </div>
-          <button class="sus-btn" type="button" tabindex="0" title="Toggle Suspended Chord" aria-label="Toggle Suspended Chord">sus</button>
-          <button class="maj-seventh-btn" type="button" tabindex="0" title="Toggle Major 7th" aria-label="Toggle Major 7th">maj</button>
-          <select class="chord-select">
-            <option value="">-</option>
-            <option value="empty"></option>
-            <option value="C">C / I</option>
-            <option value="Dm">Dm / ii</option>
-            <option value="Em">Em / iii</option>
-            <option value="F">F / IV</option>
-            <option value="G">G / V</option>
-            <option value="Am">Am / vi</option>
-            <option value="Bb">Bb / bVII</option>
-          </select>
-          <button class="second-btn" type="button" tabindex="0" title="Add 2nd" aria-label="Toggle 2nd chord">&#50;</button>
-          <button class="fourth-btn" type="button" tabindex="0" title="Add 4th" aria-label="Toggle 4th chord">4</button>
-          <button class="seventh-btn" type="button" tabindex="0" title="Add 7th" aria-label="Toggle 7th chord">&#55;</button>
-        </div>
-      </div>
-      <div class="box-space">
-        <div class="slot-box" id="slot3">
-          <div class="note-rects"></div>
-          <img class="dash-img-slot" src="https://eagleviewmusic.com/images/CartoonRhythmBox5.svg" alt="Rhythm Box Rest" />
-           <div class="mm-toggle">
-            <button class="quality-toggle-btn" type="button" tabindex="0" title="Toggle Chord Quality (Natural/Major/Minor)" aria-label="Toggle Chord Quality">M</button>
-          </div>
-          <button class="sus-btn" type="button" tabindex="0" title="Toggle Suspended Chord" aria-label="Toggle Suspended Chord">sus</button>
-          <button class="maj-seventh-btn" type="button" tabindex="0" title="Toggle Major 7th" aria-label="Toggle Major 7th">maj</button>
-          <select class="chord-select">
-            <option value="">-</option>
-            <option value="empty"></option>
-            <option value="C">C / I</option>
-            <option value="Dm">Dm / ii</option>
-            <option value="Em">Em / iii</option>
-            <option value="F">F / IV</option>
-            <option value="G">G / V</option>
-            <option value="Am">Am / vi</option>
-            <option value="Bb">Bb / bVII</option>
-          </select>
-          <button class="second-btn" type="button" tabindex="0" title="Add 2nd" aria-label="Toggle 2nd chord">&#50;</button>
-          <button class="fourth-btn" type="button" tabindex="0" title="Add 4th" aria-label="Toggle 4th chord">4</button>
-          <button class="seventh-btn" type="button" tabindex="0" title="Add 7th" aria-label="Toggle 7th chord">&#55;</button>
-        </div>
-      </div>
-    </div>
-    <div class="bottom-grid-container" id="bottom-grid-container">
-      <div class="bottom-grid" id="bottom-grid">
-        <div class="play-btn-cell">
-          <div class="play-controls-container">
-            <button id="playPauseBtn" class="circle-play-btn" title="Play" aria-label="Play/Pause" tabindex="0">
-              <svg id="playIcon" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="2 2 20 20" style="display:block;">
-                <polygon points="7,5 19,12 7,19" fill="white"/>
-              </svg>
-              <svg id="pauseIcon" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="2 2 20 20" style="display:none;">
-                <rect x="7" y="5" width="4" height="14" fill="white"/>
-                <rect x="15" y="5" width="4" height="14" fill="white"/>
-              </svg>
-            </button>
-            
-            <div class="bpm-input-block">
-              <div class="bpm-input-row">
-                <input type="number" id="bpmInput" class="bpm-input" min="30" max="300" value="90" inputmode="numeric" autocomplete="off" />
-                <div class="bpm-stepper">
-                  <button type="button" class="bpm-arrow" id="bpmUp" tabindex="0" aria-label="Increment BPM">&#9650;</button>
-                  <button type="button" class="bpm-arrow" id="bpmDown" tabindex="0" aria-label="Decrement BPM">&#9660;</button>
-                </div>
-              </div>
-              <div class="brush-toggle">
-                <input type="checkbox" id="brushToggle" checked title="Toggle Brush Sound" aria-label="Toggle Brush Sound" />
-              </div>
+          <div class="chord-selection-area">
+            <div class="primary-chord-wrapper">
+              <select class="chord-select primary-chord-select"></select>
+              <button class="add-split-chord-btn" title="Add second chord to measure" aria-label="Add second chord to measure">+</button>
             </div>
+            <select class="chord-select split-chord-select"></select>
           </div>
+          <button class="second-btn" type="button" tabindex="0" title="Add 2nd" aria-label="Toggle 2nd chord">&#50;</button>
+          <button class="fourth-btn" type="button" tabindex="0" title="Add 4th" aria-label="Toggle 4th chord">4</button>
+          <button class="seventh-btn" type="button" tabindex="0" title="Add 7th" aria-label="Toggle 7th chord">&#55;</button>
         </div>
-        <div class="bottom-picture" id="bottomPic0" style="grid-row:1; grid-column:2;">
-          <img class="bottom-picture-img" src="https://eagleviewmusic.com/images/CartoonRhythmBox1.svg" alt="Rhythm Box" />
+      </div>
+      <div class="box-space" id="box-space-1">
+        <div class="slot-box" id="slot1">
+          <div class="note-rects-container">
+            <div class="note-rects primary-note-rects"></div>
+            <div class="note-rects split-note-rects"></div>
+          </div>
+          <img class="dash-img-slot" src="https://eagleviewmusic.com/images/CartoonRhythmBox5.svg" alt="Rhythm Box Rest" />
+           <div class="mm-toggle">
+            <button class="quality-toggle-btn" type="button" tabindex="0" title="Toggle Chord Quality (Natural/Major/Minor)" aria-label="Toggle Chord Quality">M</button>
+          </div>
+          <button class="sus-btn" type="button" tabindex="0" title="Toggle Suspended Chord" aria-label="Toggle Suspended Chord">sus</button>
+          <button class="maj-seventh-btn" type="button" tabindex="0" title="Toggle Major 7th" aria-label="Toggle Major 7th">maj</button>
+          <div class="chord-selection-area">
+            <div class="primary-chord-wrapper">
+              <select class="chord-select primary-chord-select"></select>
+              <button class="add-split-chord-btn" title="Add second chord to measure" aria-label="Add second chord to measure">+</button>
+            </div>
+            <select class="chord-select split-chord-select"></select>
+          </div>
+          <button class="second-btn" type="button" tabindex="0" title="Add 2nd" aria-label="Toggle 2nd chord">&#50;</button>
+          <button class="fourth-btn" type="button" tabindex="0" title="Add 4th" aria-label="Toggle 4th chord">4</button>
+          <button class="seventh-btn" type="button" tabindex="0" title="Add 7th" aria-label="Toggle 7th chord">&#55;</button>
         </div>
-        <div class="bottom-picture" id="bottomPic1" style="grid-row:1; grid-column:3;">
-          <img class="bottom-picture-img" src="https://eagleviewmusic.com/images/CartoonRhythmBox1.svg" alt="Rhythm Box" />
+      </div>
+      <div class="box-space" id="box-space-2">
+        <div class="slot-box" id="slot2">
+          <div class="note-rects-container">
+            <div class="note-rects primary-note-rects"></div>
+            <div class="note-rects split-note-rects"></div>
+          </div>
+          <img class="dash-img-slot" src="https://eagleviewmusic.com/images/CartoonRhythmBox5.svg" alt="Rhythm Box Rest" />
+           <div class="mm-toggle">
+            <button class="quality-toggle-btn" type="button" tabindex="0" title="Toggle Chord Quality (Natural/Major/Minor)" aria-label="Toggle Chord Quality">M</button>
+          </div>
+          <button class="sus-btn" type="button" tabindex="0" title="Toggle Suspended Chord" aria-label="Toggle Suspended Chord">sus</button>
+          <button class="maj-seventh-btn" type="button" tabindex="0" title="Toggle Major 7th" aria-label="Toggle Major 7th">maj</button>
+          <div class="chord-selection-area">
+            <div class="primary-chord-wrapper">
+              <select class="chord-select primary-chord-select"></select>
+              <button class="add-split-chord-btn" title="Add second chord to measure" aria-label="Add second chord to measure">+</button>
+            </div>
+            <select class="chord-select split-chord-select"></select>
+          </div>
+          <button class="second-btn" type="button" tabindex="0" title="Add 2nd" aria-label="Toggle 2nd chord">&#50;</button>
+          <button class="fourth-btn" type="button" tabindex="0" title="Add 4th" aria-label="Toggle 4th chord">4</button>
+          <button class="seventh-btn" type="button" tabindex="0" title="Add 7th" aria-label="Toggle 7th chord">&#55;</button>
         </div>
-        <div class="bottom-picture" id="bottomPic2" style="grid-row:1; grid-column:4;">
-          <img class="bottom-picture-img" src="https://eagleviewmusic.com/images/CartoonRhythmBox1.svg" alt="Rhythm Box" />
-        </div>
-        <div class="bottom-picture" id="bottomPic3" style="grid-row:1; grid-column:5;">
-          <img class="bottom-picture-img" src="https://eagleviewmusic.com/images/CartoonRhythmBox1.svg" alt="Rhythm Box" />
-        </div>
-        <div class="rhythm-box-pair" style="grid-row:2; grid-column:2;">
-          <div class="bottom-rhythm-box" data-pair="0" data-which="0"><span class="bottom-rhythm-box-text">1</span></div>
-          <div class="bottom-rhythm-box" data-pair="0" data-which="1"><span class="bottom-rhythm-box-text">&amp;</span></div>
-        </div>
-        <div class="rhythm-box-pair" style="grid-row:2; grid-column:3;">
-          <div class="bottom-rhythm-box" data-pair="1" data-which="0"><span class="bottom-rhythm-box-text">2</span></div>
-          <div class="bottom-rhythm-box" data-pair="1" data-which="1"><span class="bottom-rhythm-box-text">&amp;</span></div>
-        </div>
-        <div class="rhythm-box-pair" style="grid-row:2; grid-column:4;">
-          <div class="bottom-rhythm-box" data-pair="2" data-which="0"><span class="bottom-rhythm-box-text">3</span></div>
-          <div class="bottom-rhythm-box" data-pair="2" data-which="1"><span class="bottom-rhythm-box-text">&amp;</span></div>
-        </div>
-        <div class="rhythm-box-pair" style="grid-row:2; grid-column:5;">
-          <div class="bottom-rhythm-box" data-pair="3" data-which="0"><span class="bottom-rhythm-box-text">4</span></div>
-          <div class="bottom-rhythm-box" data-pair="3" data-which="1"><span class="bottom-rhythm-box-text">&amp;</span></div>
+      </div>
+      <div class="box-space" id="box-space-3">
+        <div class="slot-box" id="slot3">
+          <div class="note-rects-container">
+            <div class="note-rects primary-note-rects"></div>
+            <div class="note-rects split-note-rects"></div>
+          </div>
+          <img class="dash-img-slot" src="https://eagleviewmusic.com/images/CartoonRhythmBox5.svg" alt="Rhythm Box Rest" />
+           <div class="mm-toggle">
+            <button class="quality-toggle-btn" type="button" tabindex="0" title="Toggle Chord Quality (Natural/Major/Minor)" aria-label="Toggle Chord Quality">M</button>
+          </div>
+          <button class="sus-btn" type="button" tabindex="0" title="Toggle Suspended Chord" aria-label="Toggle Suspended Chord">sus</button>
+          <button class="maj-seventh-btn" type="button" tabindex="0" title="Toggle Major 7th" aria-label="Toggle Major 7th">maj</button>
+          <div class="chord-selection-area">
+            <div class="primary-chord-wrapper">
+              <select class="chord-select primary-chord-select"></select>
+              <button class="add-split-chord-btn" title="Add second chord to measure" aria-label="Add second chord to measure">+</button>
+            </div>
+            <select class="chord-select split-chord-select"></select>
+          </div>
+          <button class="second-btn" type="button" tabindex="0" title="Add 2nd" aria-label="Toggle 2nd chord">&#50;</button>
+          <button class="fourth-btn" type="button" tabindex="0" title="Add 4th" aria-label="Toggle 4th chord">4</button>
+          <button class="seventh-btn" type="button" tabindex="0" title="Add 7th" aria-label="Toggle 7th chord">&#55;</button>
         </div>
       </div>
     </div>
