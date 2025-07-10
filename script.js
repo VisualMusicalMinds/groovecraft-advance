@@ -368,6 +368,7 @@ function loadProgression(progLetter) {
 
     if (splitVal) {
         splitSelect.value = splitVal[idx] || "";
+        setSplitSlotColorAndStyle(idx, splitSelect, splitVal[idx]);
     }
 
     if (splitActive) {
@@ -467,10 +468,20 @@ function setSlotColorAndStyle(slotIndex, selectElement, chordToDisplay, addSeven
   }
 }
 
+function setSplitSlotColorAndStyle(slotIndex, selectElement, chordToDisplay) {
+    selectElement.className = 'chord-select split-chord-select visible'; // ensure base classes are there
+    if (chordToDisplay && chordToDisplay !== "empty" && chordToDisplay !== "") {
+        let chordClass = `c-selected-${chordToDisplay.toLowerCase()}`;
+        chordClass = chordClass.replace('♭', 'flat').replace('♯', 'sharp').replace('#', 'sharp');
+        selectElement.classList.add(chordClass);
+    }
+}
+
 function setSlotContent(slotIndex, chord, addSeventh, addSecond, addFourth, addSus, addMajSeventh) {
     const slot = document.getElementById('slot' + slotIndex);
     const primaryNoteRects = slot.querySelector('.primary-note-rects');
     const splitNoteRects = slot.querySelector('.split-note-rects');
+    const noteRectsContainer = slot.querySelector('.note-rects-container');
     let img = slot.querySelector('.dash-img-slot');
     
     primaryNoteRects.innerHTML = '';
@@ -480,14 +491,16 @@ function setSlotContent(slotIndex, chord, addSeventh, addSecond, addFourth, addS
         if (!img) {
             img = document.createElement('img');
             img.className = 'dash-img-slot';
-            slot.insertBefore(img, slot.querySelector('.note-rects-container'));
+            slot.insertBefore(img, noteRectsContainer);
         }
         img.src = restDashImgUrl;
         img.alt = "Rhythm Box Rest";
         img.style.display = "block";
+        noteRectsContainer.style.display = "none";
         return;
     } else {
         if (img) img.style.display = "none";
+        noteRectsContainer.style.display = "flex";
     }
 
     if (!chordTones[chord]) {
@@ -709,92 +722,127 @@ function restartAnimationWithBpm() {
 }
 
 function playEighthNoteStep() {
-  const numerator = timeSignatureNumerators[currentTimeSignatureIndex];
-  const totalEighthNotes = numerator * 2;
+    const numerator = timeSignatureNumerators[currentTimeSignatureIndex];
+    const totalEighthNotes = numerator * 2;
 
-  let playingProgLetter;
-  let isLinkedMode = linkedProgressionSequence.length > 0;
+    let playingProgLetter;
+    let isLinkedMode = linkedProgressionSequence.length > 0;
 
-  if (isLinkedMode) {
-    playingProgLetter = linkedProgressionSequence[currentLinkedProgressionIndex];
-
-    if (currentToggle !== playingProgLetter) {
-      currentToggle = playingProgLetter; 
-      document.querySelectorAll('.abcd-toggle-btn').forEach(btn => btn.classList.remove('abcd-active'));
-      document.getElementById('toggle' + currentToggle)?.classList.add('abcd-active');
-      loadProgression(currentToggle); 
+    if (isLinkedMode) {
+        playingProgLetter = linkedProgressionSequence[currentLinkedProgressionIndex];
+        if (currentToggle !== playingProgLetter) {
+            currentToggle = playingProgLetter;
+            document.querySelectorAll('.abcd-toggle-btn').forEach(btn => btn.classList.remove('abcd-active'));
+            document.getElementById('toggle' + currentToggle)?.classList.add('abcd-active');
+            loadProgression(currentToggle);
+        }
+    } else {
+        playingProgLetter = currentToggle;
+        if (!document.getElementById('toggle' + currentToggle)?.classList.contains('abcd-active')) {
+            document.querySelectorAll('.abcd-toggle-btn').forEach(btn => btn.classList.remove('abcd-active'));
+            document.getElementById('toggle' + currentToggle)?.classList.add('abcd-active');
+        }
     }
-  } else {
-    playingProgLetter = currentToggle;
-     if (!document.getElementById('toggle' + currentToggle)?.classList.contains('abcd-active')) {
-        document.querySelectorAll('.abcd-toggle-btn').forEach(btn => btn.classList.remove('abcd-active'));
-        document.getElementById('toggle' + currentToggle)?.classList.add('abcd-active');
-     }
-  }
 
-  const progData = getProgressionData(playingProgLetter);
-  if (!progData) { return; }
+    const progData = getProgressionData(playingProgLetter);
+    if (!progData) { return; }
 
-  const currentSlotIdx = slotHighlightStep % 4; 
-  const chordName = progData.p[currentSlotIdx]; 
+    const currentSlotIdx = slotHighlightStep % 4;
+    
+    // --- Determine which chord to play (primary or split) ---
+    let chordNameToPlay = progData.p[currentSlotIdx];
+    let usePrimaryChordModifiers = true;
+    const isSplitActive = progData.splitActive[currentSlotIdx];
+    const splitChordName = progData.splitVal[currentSlotIdx];
 
-  const currentPair = Math.floor((rhythmStep % totalEighthNotes) / 2);
-  const currentWhich = (rhythmStep % totalEighthNotes) % 2;
-  const box = document.querySelector(`.bottom-rhythm-box[data-pair="${currentPair}"][data-which="${currentWhich}"]`);
-  let isNextBoxInactive = false;
-  if (currentWhich === 0 && box && box.classList.contains('active')) { const nextBox = document.querySelector(`.bottom-rhythm-box[data-pair="${currentPair}"][data-which="1"]`); isNextBoxInactive = nextBox && !nextBox.classList.contains('active'); }
-  
-  if (box && box.classList.contains('active')) {
-    if (!chordName || chordName === "" || chordName === "empty") { playBassDrum(isNextBoxInactive ? 0.38 : 0.19); } 
-    else {
-      if (!rhythmChordNotes[chordName]) { playBassDrum(isNextBoxInactive ? 0.38 : 0.19); return; }
-      
-      const addSeventh = progData.s7[currentSlotIdx], addSecond = progData.s2[currentSlotIdx], qualityState = progData.m[currentSlotIdx], addFourth = progData.s4[currentSlotIdx], addSus = progData.sus[currentSlotIdx], addMajSeventh = progData.maj7[currentSlotIdx];
-      let notesToPlay = []; const baseRhythmNotes = rhythmChordNotes[chordName]; 
-      if(!baseRhythmNotes) { return; }
+    if (isSplitActive && splitChordName) {
+        let splitPoint = 0;
+        switch (numerator) {
+            case 4: splitPoint = 4; break; // After beat 2 (4 eighths)
+            case 3: splitPoint = 2; break; // After beat 1 (2 eighths)
+            case 2: splitPoint = 2; break; // After beat 1 (2 eighths)
+            case 5: splitPoint = 5; break; // After 5 eighth notes
+        }
 
-      if(baseRhythmNotes[0]) notesToPlay.push(baseRhythmNotes[0]); 
-      if(baseRhythmNotes[1]) notesToPlay.push(baseRhythmNotes[1]);
-      if (baseRhythmNotes.length > 4 && baseRhythmNotes[4]) notesToPlay.push(baseRhythmNotes[4]); 
-      if(baseRhythmNotes[3]) notesToPlay.push(baseRhythmNotes[3]);
-      if (addSus) {
-        if (addSecond && rhythmChordSecondNotes[chordName]) notesToPlay.push(rhythmChordSecondNotes[chordName]);
-        if (addFourth && chordFourths[chordName]) notesToPlay.push(rhythmChordFourthNotes[chordName]);
-      } else {
-        let thirdNoteToPlay = baseRhythmNotes[2];
-        if (chordAlternateThirds[chordName] && qualityState !== 'none') { 
-            thirdNoteToPlay = chordAlternateThirds[chordName][qualityState === 'major' ? 'majorNote' : 'minorNote']; 
-        } else if (qualityState === 'none' && chordTypes[chordName] && chordAlternateThirds[chordName]) {
-            const defaultQuality = chordTypes[chordName];
-            if (defaultQuality === 'major' || defaultQuality === 'minor') {
-                 thirdNoteToPlay = chordAlternateThirds[chordName][defaultQuality === 'major' ? 'majorNote' : 'minorNote'];
+        if (rhythmStep >= splitPoint) {
+            chordNameToPlay = splitChordName;
+            usePrimaryChordModifiers = false; // Split chord is always a basic triad
+        }
+    }
+    // --- End chord selection logic ---
+
+    const currentPair = Math.floor((rhythmStep % totalEighthNotes) / 2);
+    const currentWhich = (rhythmStep % totalEighthNotes) % 2;
+    const box = document.querySelector(`.bottom-rhythm-box[data-pair="${currentPair}"][data-which="${currentWhich}"]`);
+    let isNextBoxInactive = false;
+    if (currentWhich === 0 && box && box.classList.contains('active')) {
+        const nextBox = document.querySelector(`.bottom-rhythm-box[data-pair="${currentPair}"][data-which="1"]`);
+        isNextBoxInactive = nextBox && !nextBox.classList.contains('active');
+    }
+
+    if (box && box.classList.contains('active')) {
+        if (!chordNameToPlay || chordNameToPlay === "" || chordNameToPlay === "empty") {
+            playBassDrum(isNextBoxInactive ? 0.38 : 0.19);
+        } else {
+            if (!rhythmChordNotes[chordNameToPlay]) {
+                playBassDrum(isNextBoxInactive ? 0.38 : 0.19);
+            } else {
+                let notesToPlay = [];
+                const baseRhythmNotes = rhythmChordNotes[chordNameToPlay];
+                if (baseRhythmNotes) {
+                    if (usePrimaryChordModifiers) {
+                        const addSeventh = progData.s7[currentSlotIdx], addSecond = progData.s2[currentSlotIdx], qualityState = progData.m[currentSlotIdx], addFourth = progData.s4[currentSlotIdx], addSus = progData.sus[currentSlotIdx], addMajSeventh = progData.maj7[currentSlotIdx];
+                        if (baseRhythmNotes[0]) notesToPlay.push(baseRhythmNotes[0]);
+                        if (baseRhythmNotes[1]) notesToPlay.push(baseRhythmNotes[1]);
+                        if (baseRhythmNotes.length > 4 && baseRhythmNotes[4]) notesToPlay.push(baseRhythmNotes[4]);
+                        if (baseRhythmNotes[3]) notesToPlay.push(baseRhythmNotes[3]);
+
+                        if (addSus) {
+                            if (addSecond && rhythmChordSecondNotes[chordNameToPlay]) notesToPlay.push(rhythmChordSecondNotes[chordNameToPlay]);
+                            if (addFourth && rhythmChordFourthNotes[chordNameToPlay]) notesToPlay.push(rhythmChordFourthNotes[chordNameToPlay]);
+                        } else {
+                            let thirdNoteToPlay = baseRhythmNotes[2];
+                            if (chordAlternateThirds[chordNameToPlay] && qualityState !== 'none') {
+                                thirdNoteToPlay = chordAlternateThirds[chordNameToPlay][qualityState === 'major' ? 'majorNote' : 'minorNote'];
+                            } else if (qualityState === 'none' && chordTypes[chordNameToPlay] && chordAlternateThirds[chordNameToPlay]) {
+                                const defaultQuality = chordTypes[chordNameToPlay];
+                                if (defaultQuality === 'major' || defaultQuality === 'minor') {
+                                    thirdNoteToPlay = chordAlternateThirds[chordNameToPlay][defaultQuality === 'major' ? 'majorNote' : 'minorNote'];
+                                }
+                            }
+                            if (thirdNoteToPlay) notesToPlay.push(thirdNoteToPlay);
+                            if (addSecond && rhythmChordSecondNotes[chordNameToPlay]) notesToPlay.push(rhythmChordSecondNotes[chordNameToPlay]);
+                            if (addFourth && rhythmChordFourthNotes[chordNameToPlay]) notesToPlay.push(rhythmChordFourthNotes[chordNameToPlay]);
+                        }
+                        if (addSeventh) {
+                            const seventhNoteToPlay = addMajSeventh && rhythmChordMajorSeventhNotes[chordNameToPlay] ? rhythmChordMajorSeventhNotes[chordNameToPlay] : rhythmChordSeventhNotes[chordNameToPlay];
+                            if (seventhNoteToPlay) notesToPlay.push(seventhNoteToPlay);
+                        }
+                    } else {
+                        // Play only the basic triad for the split chord
+                        notesToPlay = [baseRhythmNotes[0], baseRhythmNotes[1], baseRhythmNotes[2], baseRhythmNotes[3], baseRhythmNotes[4]].filter(n => n);
+                    }
+                }
+                playTriangleNotes(notesToPlay.filter(n => n), isNextBoxInactive);
             }
         }
-        if(thirdNoteToPlay) notesToPlay.push(thirdNoteToPlay);
-        if (addSecond && rhythmChordSecondNotes[chordName]) notesToPlay.push(rhythmChordSecondNotes[chordName]);
-        if (addFourth && chordFourths[chordName]) notesToPlay.push(rhythmChordFourthNotes[chordName]);
-      }
-      if (addSeventh) { const seventhNoteToPlay = addMajSeventh && rhythmChordMajorSeventhNotes[chordName] ? rhythmChordMajorSeventhNotes[chordName] : rhythmChordSeventhNotes[chordName]; if(seventhNoteToPlay) notesToPlay.push(seventhNoteToPlay); }
-      playTriangleNotes(notesToPlay.filter(n => n), isNextBoxInactive);
     }
-  }
-  
-  updateSlotHighlights(); 
-  if (rhythmStep % 2 === 0) { 
-    playBrush(); 
-    updatePictureHighlights(); 
-    pictureHighlightStep = (pictureHighlightStep + 1) % numerator; 
-  }
 
-  rhythmStep = (rhythmStep + 1) % totalEighthNotes;
-  
-  if (rhythmStep === 0) { 
-    slotHighlightStep = (slotHighlightStep + 1) % 4; 
-
-    if (isLinkedMode && slotHighlightStep === 0) { 
-      currentLinkedProgressionIndex = (currentLinkedProgressionIndex + 1) % linkedProgressionSequence.length;
+    updateSlotHighlights();
+    if (rhythmStep % 2 === 0) {
+        playBrush();
+        updatePictureHighlights();
+        pictureHighlightStep = (pictureHighlightStep + 1) % numerator;
     }
-  }
+
+    rhythmStep = (rhythmStep + 1) % totalEighthNotes;
+
+    if (rhythmStep === 0) {
+        slotHighlightStep = (slotHighlightStep + 1) % 4;
+        if (isLinkedMode && slotHighlightStep === 0) {
+            currentLinkedProgressionIndex = (currentLinkedProgressionIndex + 1) % linkedProgressionSequence.length;
+        }
+    }
 }
 
 
@@ -1026,6 +1074,22 @@ function playChordPreview(idx) {
   playTriangleNotes(notesToPlay.filter(n => n)); 
 }
 
+function playSimpleChordPreview(chordName) {
+    if (isPlaying || !chordName || chordName === "" || chordName === "empty") return;
+    if (!rhythmChordNotes[chordName]) return;
+
+    const baseRhythmNotes = rhythmChordNotes[chordName];
+    const notesToPlay = [
+        baseRhythmNotes[0], 
+        baseRhythmNotes[1], 
+        baseRhythmNotes[2], 
+        baseRhythmNotes[3], 
+        baseRhythmNotes[4]
+    ].filter(n => n);
+
+    playTriangleNotes(notesToPlay);
+}
+
 
 function updateKeyDisplay() {
   const keyNameDisplay = document.getElementById("current-key-name");
@@ -1074,14 +1138,57 @@ function updateChordDropdowns() {
     });
 }
 
-function handleKeyDial(direction) {
-  saveCurrentProgression(); 
-  currentKeyIndex = (currentKeyIndex + direction + musicalKeys.length) % musicalKeys.length;
-  currentMusicalKey = musicalKeys[currentKeyIndex];
-  updateKeyDisplay();
-  updateChordDropdowns(); 
-  loadProgression(currentToggle); 
+function transposeChord(chord, oldKey, newKey) {
+    if (!chord || chord === "" || chord === "empty") {
+        return chord; // Don't transpose empty slots
+    }
+
+    const oldKeyChords = keyChordMap[oldKey];
+    const newKeyChords = keyChordMap[newKey];
+
+    if (!oldKeyChords || !newKeyChords) {
+        return chord; // Cannot transpose if key data is missing
+    }
+
+    const chordIndex = oldKeyChords.findIndex(c => c.value === chord);
+
+    if (chordIndex === -1) {
+        // The chord is not diatonic to the old key, so we don't change it.
+        return chord;
+    }
+
+    const newChordData = newKeyChords[chordIndex];
+    return newChordData ? newChordData.value : chord;
 }
+
+
+function handleKeyDial(direction) {
+  const transposeCheckbox = document.getElementById('transpose-checkbox');
+  const oldKey = currentMusicalKey;
+
+  const newKeyIndex = (currentKeyIndex + direction + musicalKeys.length) % musicalKeys.length;
+  const newKey = musicalKeys[newKeyIndex];
+
+  if (transposeCheckbox && transposeCheckbox.checked) {
+      saveCurrentProgression(); // Save the currently displayed UI state before transposing
+
+      ['A', 'B', 'C', 'D'].forEach(progLetter => {
+          const progData = getProgressionData(progLetter);
+          
+          progData.p = progData.p.map(chord => transposeChord(chord, oldKey, newKey));
+          progData.splitVal = progData.splitVal.map(chord => transposeChord(chord, oldKey, newKey));
+      });
+  }
+  
+  // Update the current key regardless of transpose state
+  currentKeyIndex = newKeyIndex;
+  currentMusicalKey = newKey;
+
+  updateKeyDisplay();
+  updateChordDropdowns();
+  loadProgression(currentToggle); // Reload UI with new key context and potentially transposed chords
+}
+
 
 function toggleLinkState(progLetter) {
   progressionLinkStates[progLetter] = !progressionLinkStates[progLetter];
@@ -1231,6 +1338,9 @@ function toggleSplitChord(idx) {
     splitBtn.classList.toggle('active', isActive);
     splitSelect.classList.toggle('visible', isActive);
     
+    // Re-render the slot content to show/hide the split notes
+    setSlotContent(idx, currentData.p[idx], currentData.s7[idx], currentData.s2[idx], currentData.s4[idx], currentData.sus[idx], currentData.maj7[idx]);
+
     saveCurrentProgression();
 }
 
@@ -1287,6 +1397,8 @@ document.addEventListener("DOMContentLoaded", function() {
         const currentData = getProgressionData(currentToggle);
         currentData.splitVal[idx] = this.value;
         setSlotContent(idx, currentData.p[idx], currentData.s7[idx], currentData.s2[idx], currentData.s4[idx], currentData.sus[idx], currentData.maj7[idx]);
+        setSplitSlotColorAndStyle(idx, this, this.value);
+        playSimpleChordPreview(this.value);
         saveCurrentProgression();
     });
 
@@ -1318,6 +1430,34 @@ document.addEventListener("DOMContentLoaded", function() {
   if (timeSigButton) {
     timeSigButton.addEventListener('click', cycleTimeSignature);
   }
+
+  // Save Modal Logic
+  const saveSongBtn = document.getElementById('save-song-btn');
+  const saveModalOverlay = document.getElementById('save-modal-overlay');
+  const closeModalBtn = document.getElementById('close-modal-btn');
+  const cancelSaveBtn = document.getElementById('cancel-save-btn');
+  const submitSaveBtn = document.getElementById('submit-save-btn');
+  
+  function openModal() {
+    saveModalOverlay.classList.remove('modal-hidden');
+  }
+  function closeModal() {
+    saveModalOverlay.classList.add('modal-hidden');
+  }
+
+  saveSongBtn.addEventListener('click', openModal);
+  closeModalBtn.addEventListener('click', closeModal);
+  cancelSaveBtn.addEventListener('click', closeModal);
+  submitSaveBtn.addEventListener('click', () => {
+    // For now, just close the modal. We will add save logic later.
+    console.log("Submit clicked. Closing modal for now.");
+    closeModal();
+  });
+  saveModalOverlay.addEventListener('click', (e) => {
+    if (e.target === saveModalOverlay) {
+      closeModal();
+    }
+  });
   
   // Initial setup
   updateGridForTimeSignature(timeSignatureNumerators[currentTimeSignatureIndex]);
