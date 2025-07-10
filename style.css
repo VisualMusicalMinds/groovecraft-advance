@@ -339,18 +339,18 @@ input[type="number"].bpm-input:focus {
   display: flex;
   flex-direction: column;
   width: 100%;
-  flex: 1 1 auto;
+  flex-grow: 1; /* This is the fix! */
   justify-content: center;
-  min-height: calc(var(--box-size) * 0.45);
   margin-top: calc(var(--box-size) * 0.06);
   margin-bottom: calc(var(--box-size) * 0.035);
   gap: 4px;
+  min-height: 0;
 }
 
 .note-rects { 
   display: flex;
   width: 100%;
-  align-items: center; 
+  align-items: stretch; /* Make rects fill height */
   justify-content: center;
   flex-grow: 1;
 }
@@ -371,13 +371,12 @@ input[type="number"].bpm-input:focus {
   font-size: calc(var(--box-size) * 0.2);
   font-weight: bold;
   color: #fff;
-  height: 100%;
   text-shadow: 0 1px 2px rgba(0,0,0,0.10);
   user-select: none;
   min-width: 0;
-  min-height: calc(var(--box-size) * 0.15);
   padding-top: calc(var(--box-size) * 0.025); 
   box-sizing: border-box; 
+  height: 100%; /* Ensure it fills parent */
 }
 .note-C { background: #F44336; }
 .note-D { background: #FF9800; }
@@ -952,7 +951,7 @@ input[type="number"].bpm-input { width: 50px; font-size: 1em; padding: 4px 0; he
   background: #fafdff; 
   border-radius: 0.6em;
   margin-top: 10px; 
-  margin-bottom: 9px; 
+  margin-bottom: 0px; 
   padding: 0.12em 0.46em;
   font-family: 'EB Garamond', Garamond, 'Times New Roman', Times, serif;
   font-weight: 700;
@@ -1019,6 +1018,26 @@ input[type="number"].bpm-input { width: 50px; font-size: 1em; padding: 4px 0; he
   }
 }
 
+.transpose-control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 8px;
+  user-select: none;
+}
+.transpose-label {
+  font-size: clamp(0.8em, 1.4vw, 0.9em);
+  color: #333;
+  cursor: pointer;
+}
+.transpose-checkbox {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #1976d2;
+}
+
 /* === STYLING FOR CHORD DISPLAY BOXES AND DROPDOWN BACKGROUNDS === */
 .slot-box .note-rects .note-rect {
   color: white !important; 
@@ -1036,10 +1055,18 @@ select.chord-select[class*="c-selected-f"] { background-color: #2aab2a !importan
 select.chord-select[class*="c-selected-g"] { background-color: #0ac5bc !important; color: black !important; }
 select.chord-select[class*="c-selected-a"] { background-color: #2759ff !important; color: black !important; }
 select.chord-select[class*="c-selected-b"] { background-color: #be1bf5 !important; color: black !important; }
-/* Song Selector Menu */
+
+/* Bottom Controls (Song Selector & Save Button) */
+.bottom-controls-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  width: 100%;
+  margin-top: var(--box-gap);
+}
+
 .song-selector-container {
-  width: fit-content; 
-  margin-top: var(--box-gap); 
   padding: calc(var(--box-gap) / 1.5); 
   background-color: #e9eff5; 
   border-radius: 8px;
@@ -1049,14 +1076,12 @@ select.chord-select[class*="c-selected-b"] { background-color: #be1bf5 !importan
   justify-content: center; 
   gap: 12px; 
 }
-
 .song-select-label {
   font-weight: 600; 
   color: #33475b; 
   font-size: clamp(0.85em, 1.5vw, 1em); 
   white-space: nowrap; 
 }
-
 .song-select-dropdown {
   padding: 9px 14px; 
   border-radius: 6px;
@@ -1071,21 +1096,133 @@ select.chord-select[class*="c-selected-b"] { background-color: #be1bf5 !importan
   box-shadow: inset 0 1px 2px rgba(0,0,0,0.05); 
   transition: border-color 0.2s, box-shadow 0.2s;
 }
-
 .song-select-dropdown:hover {
   border-color: #9cb3cc; 
 }
-
 .song-select-dropdown:focus {
   outline: 2px solid #1976d2; 
   outline-offset: 2px; 
   border-color: #1976d2;
   box-shadow: 0 0 5px rgba(25, 118, 210, 0.3); 
 }
-
 .song-select-dropdown option {
   text-align: left; 
   background-color: white;
   color: black;
   padding: 5px 10px; 
+}
+
+.save-btn {
+  background-color: #e9eff5;
+  border: 1.5px solid #b0c4de;
+  color: #33475b;
+  border-radius: 8px;
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  transition: background-color 0.2s, box-shadow 0.2s;
+}
+.save-btn:hover {
+  background-color: #dbe6f0;
+}
+.save-btn:focus-visible {
+  outline: 2px solid #1976d2;
+  outline-offset: 2px;
+}
+
+/* Save Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 1;
+  transition: opacity 0.25s ease-in-out;
+}
+.modal-overlay.modal-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.modal {
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  width: 90%;
+  max-width: 400px;
+  position: relative;
+  transform: scale(1);
+  transition: transform 0.25s ease-in-out;
+}
+.modal-overlay.modal-hidden .modal {
+  transform: scale(0.9);
+}
+.modal-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  color: #888;
+}
+.modal h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #333;
+}
+.modal-content {
+  display: flex;
+  flex-direction: column;
+}
+.modal-content label {
+  margin-bottom: 8px;
+  text-align: left;
+  font-weight: bold;
+  color: #555;
+}
+.modal-content input[type="text"] {
+  padding: 10px;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.modal-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s, box-shadow 0.2s;
+}
+.cancel-btn {
+  background-color: #f0f0f0;
+  color: #333;
+}
+.cancel-btn:hover {
+  background-color: #e0e0e0;
+}
+.submit-btn {
+  background-color: #1976d2;
+  color: white;
+}
+.submit-btn:hover {
+  background-color: #135ba1;
 }
