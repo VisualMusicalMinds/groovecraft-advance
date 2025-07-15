@@ -1226,3 +1226,26 @@ select.chord-select[class*="c-selected-b"] { background-color: #be1bf5 !importan
 .submit-btn:hover {
   background-color: #135ba1;
 }
+.abcd-toggle-btn.abcd-active .abcd-link-icon.linked {
+   opacity: 1; /* Full opacity and it will have its green background */
+   color: white; /* Keep icon white */
+}
+
+/* Add styles for the new textarea */
+#song-summary-textarea {
+  width: 100%;
+  min-height: 150px;
+  margin-top: 5px;
+  padding: 8px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.9em;
+  resize: vertical;
+}
+
+@media (max-width: 600px) { 
+  .abcd-toggle-container { width: calc(var(--box-size) * 0.9); } 
+}
+@media (max-width: 480px) { 
