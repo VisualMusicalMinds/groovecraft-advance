@@ -26,26 +26,42 @@ const optionColors = {
 
 // --- Chord Data for Each Key ---
 const keyChordMap = {
-  'C': [ { value: 'C',  display: 'C / I' }, { value: 'Dm', display: 'Dm / ii' }, { value: 'Em', display: 'Em / iii' }, { value: 'F',  display: 'F / IV' }, { value: 'G',  display: 'G / V' }, { value: 'Am', display: 'Am / vi' }, { value: 'Bb', display: 'Bb / bVII' } ],
-  'Db': [ { value: 'Db', display: 'Db / I' }, { value: 'Ebm',display: 'Ebm / ii' }, { value: 'Fm', display: 'Fm / iii' }, { value: 'Gb', display: 'Gb / IV' }, { value: 'Ab', display: 'Ab / V' }, { value: 'Bbm', display: 'Bbm / vi' }, { value: 'Cb', display: 'Cb / bVII' } ],
-  'D': [ { value: 'D',  display: 'D / I' }, { value: 'Em', display: 'Em / ii' }, { value: 'F#m',display: 'F#m / iii' }, { value: 'G',  display: 'G / IV' }, { value: 'A',  display: 'A / V' }, { value: 'Bm', display: 'Bm / vi' }, { value: 'C', display: 'C / bVII' } ],
-  'Eb': [ { value: 'Eb', display: 'Eb / I' }, { value: 'Fm', display: 'Fm / ii' }, { value: 'Gm', display: 'Gm / iii' }, { value: 'Ab', display: 'Ab / IV' }, { value: 'Bb', display: 'Bb / V' }, { value: 'Cm', display: 'Cm / vi' }, { value: 'Db', display: 'Db / bVII' } ],
-  'E': [ { value: 'E',  display: 'E / I' }, { value: 'F#m',display: 'F#m / ii' }, { value: 'G#m',display: 'G#m / iii' }, { value: 'A',  display: 'A / IV' }, { value: 'B',  display: 'B / V' }, { value: 'C#m', display: 'C#m / vi' }, { value: 'D', display: 'D / bVII' } ],
-  'F': [ { value: 'F',  display: 'F / I' }, { value: 'Gm', display: 'Gm / ii' }, { value: 'Am', display: 'Am / iii' }, { value: 'Bb', display: 'Bb / IV' }, { value: 'C',  display: 'C / V' }, { value: 'Dm', display: 'Dm / vi' }, { value: 'Eb', display: 'Eb / bVII' } ],
-  'Gb': [ { value: 'Gb', display: 'Gb / I' }, { value: 'Abm',display: 'Abm / ii' }, { value: 'Bbm',display: 'Bbm / iii' }, { value: 'Cb', display: 'Cb / IV' },  { value: 'Db', display: 'Db / V' }, { value: 'Ebm', display: 'Ebm / vi' }, { value: 'Fb', display: 'Fb / bVII' } ],
-  'G': [ { value: 'G',  display: 'G / I' }, { value: 'Am', display: 'Am / ii' }, { value: 'Bm', display: 'Bm / iii' }, { value: 'C',  display: 'C / IV' }, { value: 'D',  display: 'D / V' }, { value: 'Em', display: 'Em / vi' }, { value: 'F', display: 'F / bVII' } ],
-  'Ab': [ { value: 'Ab', display: 'Ab / I' }, { value: 'Bbm',display: 'Bbm / ii' }, { value: 'Cm', display: 'Cm / iii' }, { value: 'Db', display: 'Db / IV' }, { value: 'Eb', display: 'Eb / V' }, { value: 'Fm', display: 'Fm / vi' }, { value: 'Gb', display: 'Gb / bVII' } ],
-  'A': [ { value: 'A',  display: 'A / I' }, { value: 'Bm', display: 'Bm / ii' }, { value: 'C#m',display: 'C#m / iii' }, { value: 'D',  display: 'D / IV' }, { value: 'E',  display: 'E / V' }, { value: 'F#m', display: 'F#m / vi' }, { value: 'G', display: 'G / bVII' } ],
-  'Bb': [ { value: 'Bb', display: 'Bb / I' }, { value: 'Cm', display: 'Cm / ii' }, { value: 'Dm', display: 'Dm / iii' }, { value: 'Eb', display: 'Eb / IV' }, { value: 'F',  display: 'F / V' }, { value: 'Gm', display: 'Gm / vi' }, { value: 'Ab', display: 'Ab / bVII' } ],
-  'B': [ { value: 'B',  display: 'B / I' }, { value: 'C#m',display: 'C#m / ii' }, { value: 'D#m',display: 'D#m / iii' }, { value: 'E',  display: 'E / IV' }, { value: 'F#', display: 'F# / V' }, { value: 'G#m', display: 'G#m / vi' }, { value: 'A', display: 'A / bVII' } ],
+  'C': [ { value: 'C',  display: 'C / I' }, { value: 'Dm', display: 'Dm / ii' }, { value: 'Em', display: 'Em / iii' }, { value: 'F',  display: 'F / IV' }, { value: 'G',  display: 'G / V' }, { value: 'Am', display: 'Am / vi' }, { value: 'Bdim', display: 'Bdim / vii°' } ],
+  'Db': [ { value: 'Db', display: 'Db / I' }, { value: 'Ebm',display: 'Ebm / ii' }, { value: 'Fm', display: 'Fm / iii' }, { value: 'Gb', display: 'Gb / IV' }, { value: 'Ab', display: 'Ab / V' }, { value: 'Bbm',display: 'Bbm / vi' }, { value: 'Cdim', display: 'Cdim / vii°' } ],
+  'D': [ { value: 'D',  display: 'D / I' }, { value: 'Em', display: 'Em / ii' }, { value: 'F#m',display: 'F#m / iii' }, { value: 'G',  display: 'G / IV' }, { value: 'A',  display: 'A / V' }, { value: 'Bm', display: 'Bm / vi' }, { value: 'C#dim',display: 'C#dim / vii°' } ],
+  'Eb': [ { value: 'Eb', display: 'Eb / I' }, { value: 'Fm', display: 'Fm / ii' }, { value: 'Gm', display: 'Gm / iii' }, { value: 'Ab', display: 'Ab / IV' }, { value: 'Bb', display: 'Bb / V' }, { value: 'Cm', display: 'Cm / vi' }, { value: 'Ddim', display: 'Ddim / vii°' } ],
+  'E': [ { value: 'E',  display: 'E / I' }, { value: 'F#m',display: 'F#m / ii' }, { value: 'G#m',display: 'G#m / iii' }, { value: 'A',  display: 'A / IV' }, { value: 'B',  display: 'B / V' }, { value: 'C#m',display: 'C#m / vi' }, { value: 'D#dim',display: 'D#dim / vii°' } ],
+  'F': [ { value: 'F',  display: 'F / I' }, { value: 'Gm', display: 'Gm / ii' }, { value: 'Am', display: 'Am / iii' }, { value: 'Bb', display: 'Bb / IV' }, { value: 'C',  display: 'C / V' }, { value: 'Dm', display: 'Dm / vi' }, { value: 'Edim', display: 'Edim / vii°' } ],
+  'Gb': [ { value: 'Gb', display: 'Gb / I' }, { value: 'Abm',display: 'Abm / ii' }, { value: 'Bbm',display: 'Bbm / iii' }, { value: 'Cb', display: 'Cb / IV' },  { value: 'Db', display: 'Db / V' }, { value: 'Ebm',display: 'Ebm / vi' }, { value: 'Fdim', display: 'Fdim / vii°' } ],
+  'G': [ { value: 'G',  display: 'G / I' }, { value: 'Am', display: 'Am / ii' }, { value: 'Bm', display: 'Bm / iii' }, { value: 'C',  display: 'C / IV' }, { value: 'D',  display: 'D / V' }, { value: 'Em', display: 'Em / vi' }, { value: 'F#dim',display: 'F#dim / vii°' } ],
+  'Ab': [ { value: 'Ab', display: 'Ab / I' }, { value: 'Bbm',display: 'Bbm / ii' }, { value: 'Cm', display: 'Cm / iii' }, { value: 'Db', display: 'Db / IV' }, { value: 'Eb', display: 'Eb / V' }, { value: 'Fm', display: 'Fm / vi' }, { value: 'Gdim', display: 'Gdim / vii°' } ],
+  'A': [ { value: 'A',  display: 'A / I' }, { value: 'Bm', display: 'Bm / ii' }, { value: 'C#m',display: 'C#m / iii' }, { value: 'D',  display: 'D / IV' }, { value: 'E',  display: 'E / V' }, { value: 'F#m',display: 'F#m / vi' }, { value: 'G#dim',display: 'G#dim / vii°' } ],
+  'Bb': [ { value: 'Bb', display: 'Bb / I' }, { value: 'Cm', display: 'Cm / ii' }, { value: 'Dm', display: 'Dm / iii' }, { value: 'Eb', display: 'Eb / IV' }, { value: 'F',  display: 'F / V' }, { value: 'Gm', display: 'Gm / vi' }, { value: 'Adim', display: 'Adim / vii°' } ],
+  'B': [ { value: 'B',  display: 'B / I' }, { value: 'C#m',display: 'C#m / ii' }, { value: 'D#m',display: 'D#m / iii' }, { value: 'E',  display: 'E / IV' }, { value: 'F#', display: 'F# / V' }, { value: 'G#m',display: 'G#m / vi' }, { value: 'A#dim',display: 'A#dim / vii°' } ]
 };
+
+// --- Create a master list of all unique chords ---
+const allChords = [...new Set(Object.values(keyChordMap).flat().map(c => c.value))].sort();
+const allChordOptions = allChords.map(chordValue => {
+    // Find the best display name (e.g., from the key of C if possible)
+    let displayName = chordValue;
+    for (const key in keyChordMap) {
+        const found = keyChordMap[key].find(c => c.value === chordValue);
+        if (found) {
+            displayName = found.display;
+            break; 
+        }
+    }
+    return { value: chordValue, display: displayName };
+});
+
 
 // A/B/C/D toggle variables
 let currentToggle = 'A'; // Represents the progression whose data is loaded in the UI
 let progressionA = ['', '', '', ''], progressionB = ['', '', '', ''], progressionC = ['', '', '', ''], progressionD = ['', '', '', '']; 
 let rhythmBoxesA = Array(10).fill(false), rhythmBoxesB = Array(10).fill(false), rhythmBoxesC = Array(10).fill(false), rhythmBoxesD = Array(10).fill(false); 
 
-// Chord modifier states
+// Chord modifier states for PRIMARY chords
 let seventhA = [false, false, false, false], seventhB = [false, false, false, false], seventhC = [false, false, false, false], seventhD = [false, false, false, false]; 
 let secondA = [false, false, false, false], secondB = [false, false, false, false], secondC = [false, false, false, false], secondD = [false, false, false, false]; 
 let fourthA = [false, false, false, false], fourthB = [false, false, false, false], fourthC = [false, false, false, false], fourthD = [false, false, false, false]; 
@@ -53,9 +69,18 @@ let susA = [false, false, false, false], susB = [false, false, false, false], su
 let majSeventhA = [false, false, false, false], majSeventhB = [false, false, false, false], majSeventhC = [false, false, false, false], majSeventhD = [false, false, false, false];
 let majorA = ['none', 'none', 'none', 'none'], majorB = ['none', 'none', 'none', 'none'], majorC = ['none', 'none', 'none', 'none'], majorD = ['none', 'none', 'none', 'none'];
 
-// Split Chord State
+// Split Chord State for PRIMARY chords
 let splitChordActiveA = [false, false, false, false], splitChordActiveB = [false, false, false, false], splitChordActiveC = [false, false, false, false], splitChordActiveD = [false, false, false, false];
 let splitChordValueA = ['', '', '', ''], splitChordValueB = ['', '', '', ''], splitChordValueC = ['', '', '', ''], splitChordValueD = ['', '', '', ''];
+
+// Chord modifier states for SPLIT chords
+let splitSeventhA = [false, false, false, false], splitSeventhB = [false, false, false, false], splitSeventhC = [false, false, false, false], splitSeventhD = [false, false, false, false];
+let splitSecondA = [false, false, false, false], splitSecondB = [false, false, false, false], splitSecondC = [false, false, false, false], splitSecondD = [false, false, false, false];
+let splitFourthA = [false, false, false, false], splitFourthB = [false, false, false, false], splitFourthC = [false, false, false, false], splitFourthD = [false, false, false, false];
+let splitSusA = [false, false, false, false], splitSusB = [false, false, false, false], splitSusC = [false, false, false, false], splitSusD = [false, false, false, false];
+let splitMajSeventhA = [false, false, false, false], splitMajSeventhB = [false, false, false, false], splitMajSeventhC = [false, false, false, false], splitMajSeventhD = [false, false, false, false];
+let splitMajorA = ['none', 'none', 'none', 'none'], splitMajorB = ['none', 'none', 'none', 'none'], splitMajorC = ['none', 'none', 'none', 'none'], splitMajorD = ['none', 'none', 'none', 'none'];
+
 
 // --- State Variables for Linking Progressions ---
 let progressionLinkStates = { A: false, B: false, C: false, D: false };
@@ -150,17 +175,30 @@ const chordAlternateThirds = {
   'D#m':{ 'major': 'F♯♯','minor':'F♯','majorNote': 'F##5','minorNote':'F#5'}, 
   'Fb': { 'major': 'A♭','minor': 'A♭♭','majorNote': 'Ab4','minorNote': 'Abb4'}, 
   'F#': { 'major': 'A♯','minor': 'A',  'majorNote': 'A#4','minorNote': 'A4'  },
-  'Abm':{ 'major': 'C', 'minor': 'C♭', 'majorNote': 'C5', 'minorNote': 'Cb4' } 
+  'Abm':{ 'major': 'C', 'minor': 'C♭', 'majorNote': 'C5', 'minorNote': 'Cb4' },
+  'Bdim': { 'major': 'D♯', 'minor': 'D', 'majorNote': 'D#4', 'minorNote': 'D4' },
+  'Cdim': { 'major': 'E', 'minor': 'E♭', 'majorNote': 'E4', 'minorNote': 'Eb4' },
+  'C#dim': { 'major': 'E♯', 'minor': 'E', 'majorNote': 'E#4', 'minorNote': 'E4' },
+  'Ddim': { 'major': 'F♯', 'minor': 'F', 'majorNote': 'F#4', 'minorNote': 'F4' },
+  'D#dim': { 'major': 'F♯♯', 'minor': 'F♯', 'majorNote': 'F##4', 'minorNote': 'F#4' },
+  'Edim': { 'major': 'G♯', 'minor': 'G', 'majorNote': 'G#4', 'minorNote': 'G4' },
+  'Fdim': { 'major': 'A', 'minor': 'A♭', 'majorNote': 'A4', 'minorNote': 'Ab4' },
+  'F#dim': { 'major': 'A♯', 'minor': 'A', 'majorNote': 'A#4', 'minorNote': 'A4' },
+  'Gdim': { 'major': 'B', 'minor': 'B♭', 'majorNote': 'B4', 'minorNote': 'Bb4' },
+  'G#dim': { 'major': 'B♯', 'minor': 'B', 'majorNote': 'B#4', 'minorNote': 'B4' },
+  'Adim': { 'major': 'C♯', 'minor': 'C', 'majorNote': 'C#5', 'minorNote': 'C5' },
+  'A#dim': { 'major': 'C♯♯', 'minor': 'C♯', 'majorNote': 'C##5', 'minorNote': 'C#5' }
 };
 
 const chordTones = { 
   'C': ['C', 'E', 'G'], 'Dm': ['D', 'F', 'A'], 'Em': ['E', 'G', 'B'], 'F': ['F', 'A', 'C'], 'G': ['G', 'B', 'D'], 'Am': ['A', 'C', 'E'], 'Bb': ['B♭', 'D', 'F'],
-  'Db': ['D♭', 'F', 'A♭'], 'Ebm': ['E♭', 'G♭', 'B♭'], 'Fm': ['F', 'A♭', 'C'], 'Gb': ['G♭', 'B♭', 'D♭'], 'Ab': ['A♭', 'C', 'E♭'], 'Bbm': ['B♭', 'D♭', 'F'], 'Cb': ['C♭', 'E♭', 'G♭'],
+  'Db': ['D♭', 'F', 'A♭'], 'Ebm': ['E♭', 'G♭', 'B♭'], 'Fm': ['F', 'A♭', 'C'], 'Gb': ['G♭', 'B♭', 'D♭'], 'Ab': ['A♭', 'C', 'E♭'], 'Bbm': ['B♭', 'D♭', 'F'], 'Cb': ['C♭', 'E♭', 'B♭'],
   'D': ['D', 'F♯', 'A'], 'F#m': ['F♯', 'A', 'C♯'], 'Bm': ['B', 'D', 'F♯'],
   'Eb': ['E♭', 'G', 'B♭'], 'Gm': ['G', 'B♭', 'D'], 'Cm': ['C', 'E♭', 'G'],
   'E': ['E', 'G♯', 'B'], 'G#m': ['G♯', 'B', 'D♯'], 'C#m': ['C♯', 'E', 'G♯'],
   'Fb': ['F♭', 'A♭', 'C♭'], 'Abm': ['A♭', 'C♭', 'E♭'], 
-  'B': ['B', 'D♯', 'F♯'], 'D#m': ['D♯', 'F♯', 'A♯'], 'F#': ['F♯', 'A♯', 'C♯'], 'A': ['A', 'C♯', 'E']
+  'B': ['B', 'D♯', 'F♯'], 'D#m': ['D♯', 'F♯', 'A♯'], 'F#': ['F♯', 'A♯', 'C♯'], 'A': ['A', 'C♯', 'E'],
+  'Bdim': ['B', 'D', 'F'], 'Cdim': ['C', 'E♭', 'G♭'], 'C#dim': ['C♯', 'E', 'G'], 'Ddim': ['D', 'F', 'A♭'], 'D#dim': ['D♯', 'F♯', 'A'], 'Edim': ['E', 'G', 'B♭'], 'Fdim': ['F', 'A♭', 'C♭'], 'F#dim': ['F♯', 'A', 'C'], 'Gdim': ['G', 'B♭', 'D♭'], 'G#dim': ['G♯', 'B', 'D'], 'Adim': ['A', 'C', 'E♭'], 'A#dim': ['A♯', 'C♯', 'E']
 };
 
 const chordSevenths = { 
@@ -170,7 +208,8 @@ const chordSevenths = {
   'Eb': 'D♭', 'Gm': 'F', 'Cm': 'B♭',
   'E': 'D', 'G#m': 'F♯', 'C#m': 'B',
   'Fb': 'E♭♭', 'Abm': 'G♭', 
-  'B': 'A', 'D#m': 'C♯', 'F#': 'E', 'A': 'G'
+  'B': 'A', 'D#m': 'C♯', 'F#': 'E', 'A': 'G',
+  'Bdim': 'A', 'Cdim': 'B♭', 'C#dim': 'B', 'Ddim': 'C', 'D#dim': 'C♯', 'Edim': 'D', 'Fdim': 'E♭', 'F#dim': 'E', 'Gdim': 'F', 'G#dim': 'F♯', 'Adim': 'G', 'A#dim': 'G♯'
 };
 const chordMajorSevenths = { 
   'C': 'B', 'Dm': 'C♯', 'Em': 'D♯', 'F': 'E', 'G': 'F♯', 'Am': 'G♯', 'Bb': 'A',
@@ -179,7 +218,8 @@ const chordMajorSevenths = {
   'Eb': 'D', 'Gm': 'F♯', 'Cm': 'B',
   'E': 'D♯', 'G#m': 'F♯♯', 'C#m': 'B♯',
   'Fb': 'E♭', 'Abm': 'G', 
-  'B': 'A♯', 'D#m': 'C♯♯', 'F#': 'E♯', 'A': 'G♯'
+  'B': 'A♯', 'D#m': 'C♯♯', 'F#': 'E♯', 'A': 'G♯',
+  'Bdim': 'A♯', 'Cdim': 'B', 'C#dim': 'B♯', 'Ddim': 'C♯', 'D#dim': 'C♯♯', 'Edim': 'D♯', 'Fdim': 'E', 'F#dim': 'E♯', 'Gdim': 'F♯', 'G#dim': 'F♯♯', 'Adim': 'G♯', 'A#dim': 'G♯♯'
 };
 const chordSeconds = { 
   'C': 'D', 'Dm': 'E', 'Em': 'F♯', 'F': 'G', 'G': 'A', 'Am': 'B', 'Bb': 'C',
@@ -188,7 +228,8 @@ const chordSeconds = {
   'Eb': 'F', 'Gm': 'A', 'Cm': 'D',
   'E': 'F♯', 'G#m': 'A♯', 'C#m': 'D♯',
   'Fb': 'G♭', 'Abm': 'B♭', 
-  'B': 'C♯', 'D#m': 'E♯', 'F#': 'G♯', 'A': 'B'
+  'B': 'C♯', 'D#m': 'E♯', 'F#': 'G♯', 'A': 'B',
+  'Bdim': 'C♯', 'Cdim': 'D', 'C#dim': 'D♯', 'Ddim': 'E', 'D#dim': 'E♯', 'Edim': 'F♯', 'Fdim': 'G', 'F#dim': 'G♯', 'Gdim': 'A', 'G#dim': 'A♯', 'Adim': 'B', 'A#dim': 'B♯'
 };
 const chordFourths = { 
   'C': 'F', 'Dm': 'G', 'Em': 'A', 'F': 'B♭', 'G': 'C', 'Am': 'D', 'Bb': 'E♭',
@@ -197,17 +238,19 @@ const chordFourths = {
   'Eb': 'A♭', 'Gm': 'C', 'Cm': 'F',
   'E': 'A', 'G#m': 'C♯', 'C#m': 'F♯',
   'Fb': 'B♭♭', 'Abm': 'D♭', 
-  'B': 'E', 'D#m': 'G♯', 'F#': 'B', 'A': 'D'
+  'B': 'E', 'D#m': 'G♯', 'F#': 'B', 'A': 'D',
+  'Bdim': 'E', 'Cdim': 'F', 'C#dim': 'F♯', 'Ddim': 'G', 'D#dim': 'G♯', 'Edim': 'A', 'Fdim': 'B♭', 'F#dim': 'B', 'Gdim': 'C', 'G#dim': 'C♯', 'Adim': 'D', 'A#dim': 'D♯'
 };
 
 const rhythmChordNotes = { 
-  'C':  ['C3', 'C4', 'E4', 'G4', 'C5'], 'Dm': ['D3', 'D4', 'F4', 'A4', 'D5'], 'Em': ['E3', 'E4', 'G4', 'B4', 'E5'], 'F':  ['F3', 'F4', 'A4', 'C5', 'F5'],  'G':  ['G3', 'G4', 'B4', 'D5', 'G5'], 'Am': ['A2','A3','C4','E4','A4'], 'Bb': ['Bb2','Bb3','D4','F4','Bb4'],
+  'C': ['C3', 'C4', 'E4', 'G4', 'C5'], 'Dm': ['D3', 'D4', 'F4', 'A4', 'D5'], 'Em': ['E3', 'E4', 'G4', 'B4', 'E5'], 'F':  ['F3', 'F4', 'A4', 'C5', 'F5'],  'G':  ['G3', 'G4', 'B4', 'D5', 'G5'], 'Am': ['A2', 'A3', 'C4', 'E4', 'A4'], 'Bb': ['Bb2', 'Bb3', 'D4', 'F4', 'Bb4'],
   'Db': ['Db3','Db4','F4','Ab4','Db5'], 'Ebm':['Eb3','Eb4','Gb4','Bb4','Eb5'], 'Fm': ['F3','F4','Ab4','C5','F5'], 'Gb': ['Gb3', 'Gb4', 'Bb3', 'Db4', 'Gb5'], 'Ab': ['Ab2','Ab3','C4','Eb4','Ab4'], 'Bbm':['Bb2','Bb3','Db4','F4','Bb4'], 'Cb': ['Cb3','Cb4','Eb4','Gb4','Cb5'],
   'D':  ['D3', 'D4', 'F#4', 'A4', 'D5'], 'F#m':['F#3','F#4','A4','C#5','F#5'], 'Bm': ['B2','B3','D4','F#4','B4'],
   'Eb': ['Eb3','Eb4','G4','Bb4','Eb5'], 'Gm': ['G3','G4','Bb4','D5','G5'], 'Cm': ['C3','C4','Eb4','G4','C5'],
   'E':  ['E3', 'E4', 'G#4', 'B4', 'E5'], 'G#m':['G#3','G#4','B4','D#5','G#5'], 'C#m':['C#3','C#4','E4','G#4','C#5'],
   'Fb': ['Fb3','Fb4','Ab4','Cb4','Fb5'], 'Abm':['Ab2','Ab3','Cb4','Eb4','Ab4'], 
-  'B':  ['B2', 'B3', 'D#4', 'F#4', 'B4'], 'D#m':['D#3','D#4','F#4','A#4','D#5'], 'F#': ['F#3','F#4','A#4','C#5','F#5'], 'A': ['A2','A3','C#4','E4','A4']
+  'B':  ['B2', 'B3', 'D#4', 'F#4', 'B4'], 'D#m':['D#3','D#4','F#4','A#4','D#5'], 'F#': ['F#3','F#4','A#4','C#5','F#5'], 'A': ['A2','A3','C#4','E4','A4'],
+  'Bdim': ['B2', 'B3', 'D4', 'F4', 'B4'], 'Cdim': ['C3', 'C4', 'Eb4', 'Gb4', 'C5'], 'C#dim': ['C#3', 'C#4', 'E4', 'G4', 'C#5'], 'Ddim': ['D3', 'D4', 'F4', 'Ab4', 'D5'], 'D#dim': ['D#3', 'D#4', 'F#4', 'A4', 'D#5'], 'Edim': ['E3', 'E4', 'G4', 'Bb4', 'E5'], 'Fdim': ['F3', 'F4', 'Ab4', 'Cb5', 'F5'], 'F#dim': ['F#3', 'F#4', 'A4', 'C5', 'F#5'], 'Gdim': ['G3', 'G4', 'Bb4', 'Db5', 'G5'], 'G#dim': ['G#3', 'G#4', 'B4', 'D5', 'G#5'], 'Adim': ['A2', 'A3', 'C4', 'Eb4', 'A4'], 'A#dim': ['A#2', 'A#3', 'C#4', 'E4', 'A#4']
 };
 const rhythmChordSeventhNotes = { 
   'C': 'Bb4', 'Dm': 'C5', 'Em': 'D5', 'F': 'Eb5', 'G': 'F5', 'Am': 'G4', 'Bb': 'Ab4',
@@ -216,7 +259,8 @@ const rhythmChordSeventhNotes = {
   'Eb':'Db5', 'Gm':'F5', 'Cm':'Bb4',
   'E': 'D5', 'G#m':'F#5', 'C#m':'B4',
   'Fb':'Ebb5', 'Abm': 'Gb4', 
-  'B': 'A4', 'D#m':'C#5', 'F#':'E5', 'A':'G4'
+  'B': 'A4', 'D#m':'C#5', 'F#':'E5', 'A':'G4',
+  'Bdim': 'A4', 'Cdim': 'Bb4', 'C#dim': 'B4', 'Ddim': 'C5', 'D#dim': 'C#5', 'Edim': 'D5', 'Fdim': 'Eb5', 'F#dim': 'E5', 'Gdim': 'F5', 'G#dim': 'F#5', 'Adim': 'G4', 'A#dim': 'G#4'
 };
 const rhythmChordMajorSeventhNotes = { 
   'C': 'B4', 'Dm': 'C#5', 'Em': 'D#5', 'F': 'E5', 'G': 'F#4', 'Am': 'G#4', 'Bb': 'A4',
@@ -225,7 +269,8 @@ const rhythmChordMajorSeventhNotes = {
   'Eb':'D5', 'Gm':'F#5', 'Cm':'B4',
   'E': 'D#5', 'G#m':'F##5', 'C#m':'B#5', 
   'Fb':'Eb5', 'Abm': 'G4', 
-  'B': 'A#4', 'D#m':'C##5', 'F#':'E#5', 'A':'G#4' 
+  'B': 'A#4', 'D#m':'C##5', 'F#':'E#5', 'A':'G#4',
+  'Bdim': 'A#4', 'Cdim': 'B4', 'C#dim': 'B#4', 'Ddim': 'C#5', 'D#dim': 'C##5', 'Edim': 'D#5', 'Fdim': 'E5', 'F#dim': 'E#5', 'Gdim': 'F#5', 'G#dim': 'F##5', 'Adim': 'G#4', 'A#dim': 'G##4'
 };
 const rhythmChordSecondNotes = {
   'C': 'D4', 'Dm': 'E4', 'Em': 'F#4', 'F': 'G4', 'G': 'A4', 'Am': 'B4', 'Bb': 'C4',
@@ -234,7 +279,8 @@ const rhythmChordSecondNotes = {
   'Eb':'F4', 'Gm':'A4', 'Cm':'D4',
   'E': 'F#4', 'G#m':'A#4', 'C#m':'D#4',
   'Fb':'Gb4', 'Abm': 'Bb3', 
-  'B': 'C#4', 'D#m':'E#4', 'F#':'G#4', 'A':'B3' 
+  'B': 'C#4', 'D#m':'E#4', 'F#':'G#4', 'A':'B3',
+  'Bdim': 'C#4', 'Cdim': 'D4', 'C#dim': 'D#4', 'Ddim': 'E4', 'D#dim': 'E#4', 'Edim': 'F#4', 'Fdim': 'G4', 'F#dim': 'G#4', 'Gdim': 'A4', 'G#dim': 'A#4', 'Adim': 'B3', 'A#dim': 'B#3'
 };
 const rhythmChordFourthNotes = {
   'C': 'F4', 'Dm': 'G4', 'Em': 'A4', 'F': 'Bb4', 'G': 'C5', 'Am': 'D5', 'Bb': 'Eb4',
@@ -243,7 +289,8 @@ const rhythmChordFourthNotes = {
   'Eb':'Ab4', 'Gm':'C5', 'Cm':'F4',
   'E': 'A4', 'G#m':'C#5', 'C#m':'F#4',
   'Fb':'Bbb4', 'Abm': 'Db5', 
-  'B': 'E4', 'D#m':'G#4', 'F#':'B3', 'A':'D4' 
+  'B': 'E4', 'D#m':'G#4', 'F#':'B3', 'A':'D4',
+  'Bdim': 'E4', 'Cdim': 'F4', 'C#dim': 'F#4', 'Ddim': 'G4', 'D#dim': 'G#4', 'Edim': 'A4', 'Fdim': 'Bb4', 'F#dim': 'B3', 'Gdim': 'C5', 'G#dim': 'C#5', 'Adim': 'D4', 'A#dim': 'D#4'
 };
 
 const noteColorClass = {
@@ -294,10 +341,26 @@ function handleWaveformDial(dir) {
 
 function getProgressionData(progLetter) {
   switch(progLetter) {
-    case 'A': return { p: progressionA, r: rhythmBoxesA, s7: seventhA, s2: secondA, s4: fourthA, sus: susA, maj7: majSeventhA, m: majorA, splitActive: splitChordActiveA, splitVal: splitChordValueA };
-    case 'B': return { p: progressionB, r: rhythmBoxesB, s7: seventhB, s2: secondB, s4: fourthB, sus: susB, maj7: majSeventhB, m: majorB, splitActive: splitChordActiveB, splitVal: splitChordValueB };
-    case 'C': return { p: progressionC, r: rhythmBoxesC, s7: seventhC, s2: secondC, s4: fourthC, sus: susC, maj7: majSeventhC, m: majorC, splitActive: splitChordActiveC, splitVal: splitChordValueC };
-    case 'D': return { p: progressionD, r: rhythmBoxesD, s7: seventhD, s2: secondD, s4: fourthD, sus: susD, maj7: majSeventhD, m: majorD, splitActive: splitChordActiveD, splitVal: splitChordValueD };
+    case 'A': return { 
+        p: progressionA, r: rhythmBoxesA, s7: seventhA, s2: secondA, s4: fourthA, sus: susA, maj7: majSeventhA, m: majorA, 
+        splitActive: splitChordActiveA, splitVal: splitChordValueA, 
+        splitS7: splitSeventhA, splitS2: splitSecondA, splitS4: splitFourthA, splitSus: splitSusA, splitMaj7: splitMajSeventhA, splitM: splitMajorA 
+    };
+    case 'B': return { 
+        p: progressionB, r: rhythmBoxesB, s7: seventhB, s2: secondB, s4: fourthB, sus: susB, maj7: majSeventhB, m: majorB, 
+        splitActive: splitChordActiveB, splitVal: splitChordValueB,
+        splitS7: splitSeventhB, splitS2: splitSecondB, splitS4: splitFourthB, splitSus: splitSusB, splitMaj7: splitMajSeventhB, splitM: splitMajorB
+    };
+    case 'C': return { 
+        p: progressionC, r: rhythmBoxesC, s7: seventhC, s2: secondC, s4: fourthC, sus: susC, maj7: majSeventhC, m: majorC, 
+        splitActive: splitChordActiveC, splitVal: splitChordValueC,
+        splitS7: splitSeventhC, splitS2: splitSecondC, splitS4: splitFourthC, splitSus: splitSusC, splitMaj7: splitMajSeventhC, splitM: splitMajorC
+    };
+    case 'D': return { 
+        p: progressionD, r: rhythmBoxesD, s7: seventhD, s2: secondD, s4: fourthD, sus: susD, maj7: majSeventhD, m: majorD, 
+        splitActive: splitChordActiveD, splitVal: splitChordValueD,
+        splitS7: splitSeventhD, splitS2: splitSecondD, splitS4: splitFourthD, splitSus: splitSusD, splitMaj7: splitMajSeventhD, splitM: splitMajorD
+    };
     default:  
       return getProgressionData(currentToggle); 
   }
@@ -362,23 +425,16 @@ function loadProgression(progLetter) {
     const splitSelect = slot.querySelector('.split-chord-select');
     const splitBtn = slot.querySelector('.add-split-chord-btn');
 
-    const storedChord = p[idx] || "";
-    primarySelect.value = storedChord; 
-    setSlotColorAndStyle(idx, primarySelect, storedChord, s7[idx], s2[idx], s4[idx], sus[idx], maj7[idx]); 
+    primarySelect.value = p[idx] || ""; 
+    splitSelect.value = splitVal[idx] || "";
+    setSplitSlotColorAndStyle(idx, splitSelect, splitVal[idx]);
 
-    if (splitVal) {
-        splitSelect.value = splitVal[idx] || "";
-        setSplitSlotColorAndStyle(idx, splitSelect, splitVal[idx]);
-    }
-
-    if (splitActive) {
-        const isActive = splitActive[idx];
-        slot.classList.toggle('split-active', isActive);
-        splitBtn.classList.toggle('active', isActive);
-        splitSelect.classList.toggle('visible', isActive);
-    }
-    // Explicitly call setSlotContent again to render split notes after everything is set
-    setSlotContent(idx, storedChord, s7[idx], s2[idx], s4[idx], sus[idx], maj7[idx]);
+    const isActive = splitActive[idx];
+    slot.classList.toggle('split-active', isActive);
+    splitBtn.classList.toggle('active', isActive);
+    splitSelect.classList.toggle('visible', isActive);
+    
+    setSlotContent(idx);
   });
 
   document.querySelectorAll('.bottom-rhythm-box').forEach((box, idx) => box.classList.toggle('active', r[idx]));
@@ -413,8 +469,6 @@ function switchToggle(toggle) {
 
 function toggleMajorMinor(idx) {
   const arrays = getProgressionData(currentToggle);
-  const slot = document.getElementById('slot' + idx);
-  const select = slot.querySelector('.primary-chord-select');
   const chord = arrays.p[idx];
 
   if (!chord || chord === "" || chord === "empty") {
@@ -435,37 +489,9 @@ function toggleMajorMinor(idx) {
 
   _updateQualityButtonVisualForSlot(idx, arrays.m[idx]);
 
-  setSlotColorAndStyle(
-    idx,
-    select,
-    chord,
-    arrays.s7[idx],
-    arrays.s2[idx],
-    arrays.s4[idx],
-    arrays.sus[idx],
-    arrays.maj7[idx]
-  );
+  setSlotContent(idx);
   saveCurrentProgression();
   playChordPreview(idx);
-}
-
-function setSlotColorAndStyle(slotIndex, selectElement, chordToDisplay, addSeventhArg, addSecondArg, addFourthArg, addSusArg, addMajSeventhArg) { 
-  const currentProgData = getProgressionData(currentToggle); 
-
-  const addSeventh = (typeof addSeventhArg === 'boolean') ? addSeventhArg : currentProgData.s7[slotIndex];
-  const addSecond = (typeof addSecondArg === 'boolean') ? addSecondArg : currentProgData.s2[slotIndex];
-  const addFourth = (typeof addFourthArg === 'boolean') ? addFourthArg : currentProgData.s4[slotIndex];
-  const addSus = (typeof addSusArg === 'boolean') ? addSusArg : currentProgData.sus[slotIndex];
-  const addMajSeventh = (typeof addMajSeventhArg === 'boolean') ? addMajSeventhArg : currentProgData.maj7[slotIndex];
-  
-  setSlotContent(slotIndex, chordToDisplay, addSeventh, addSecond, addFourth, addSus, addMajSeventh); 
-  
-  selectElement.className = 'chord-select primary-chord-select'; 
-  if (chordToDisplay && chordToDisplay !== "empty" && chordToDisplay !== "") {
-    let chordClass = `c-selected-${chordToDisplay.toLowerCase()}`;
-    chordClass = chordClass.replace('♭', 'flat').replace('♯', 'sharp').replace('#', 'sharp'); 
-    selectElement.classList.add(chordClass);
-  }
 }
 
 function setSplitSlotColorAndStyle(slotIndex, selectElement, chordToDisplay) {
@@ -477,8 +503,70 @@ function setSplitSlotColorAndStyle(slotIndex, selectElement, chordToDisplay) {
     }
 }
 
-function setSlotContent(slotIndex, chord, addSeventh, addSecond, addFourth, addSus, addMajSeventh) {
+function buildNotesForDisplay(chord, addSeventh, addSecond, addFourth, addSus, addMajSeventh, qualityState) {
+    if (!chord || !chordTones[chord]) {
+        return [{ note: chord || '?', type: 'unknown' }];
+    }
+
+    let finalNotes = [];
+    const baseTones = [...chordTones[chord]];
+    finalNotes.push({ note: baseTones[0], type: 'root' });
+
+    if (addSus) {
+        if (addSecond && chordSeconds[chord]) finalNotes.push({ note: chordSeconds[chord], type: '2nd' });
+        if (addFourth && chordFourths[chord]) finalNotes.push({ note: chordFourths[chord], type: '4th' });
+    } else {
+        let thirdNote = baseTones[1];
+        if (chordAlternateThirds[chord] && (qualityState === 'major' || qualityState === 'minor')) {
+            thirdNote = chordAlternateThirds[chord][qualityState];
+        } else if (qualityState === 'none' && chordTypes[chord]) {
+            const defaultQuality = chordTypes[chord];
+            if (chordAlternateThirds[chord] && (defaultQuality === 'major' || defaultQuality === 'minor')) {
+                thirdNote = chordAlternateThirds[chord][defaultQuality];
+            }
+        }
+        finalNotes.push({ note: thirdNote, type: '3rd' });
+
+        if (addSecond && chordSeconds[chord]) {
+            const rootIndex = finalNotes.findIndex(n => n.type === 'root');
+            finalNotes.splice(rootIndex + 1, 0, { note: chordSeconds[chord], type: '2nd' });
+        }
+        if (addFourth && chordFourths[chord]) {
+            const thirdIndex = finalNotes.findIndex(n => n.type === '3rd');
+            finalNotes.splice(thirdIndex !== -1 ? thirdIndex + 1 : finalNotes.length, 0, { note: chordFourths[chord], type: '4th' });
+        }
+    }
+
+    if (baseTones[2]) finalNotes.push({ note: baseTones[2], type: '5th' });
+
+    if (addSeventh) {
+        const seventhNote = addMajSeventh && chordMajorSevenths[chord] ? chordMajorSevenths[chord] : chordSevenths[chord];
+        if (seventhNote) finalNotes.push({ note: seventhNote, type: '7th' });
+    }
+
+    const noteOrder = { 'root': 1, '2nd': 2, '3rd': 3, '4th': 4, '5th': 5, '7th': 6 };
+    finalNotes.sort((a, b) => (noteOrder[a.type] || 99) - (noteOrder[b.type] || 99));
+    return finalNotes;
+}
+
+function generateNoteRectsHTML(notes) {
+    return notes.map(item => {
+        const note = item.note;
+        if (!note) return '';
+        const typeClass = item.type ? `note-${item.type}` : 'note-default';
+        const baseLetter = note.charAt(0);
+        let colorClassKey = note.replace('♭', 'flat').replace('♯', 'sharp').replace('#', 'sharp');
+        const colorClass = noteColorClass[colorClassKey] || noteColorClass[baseLetter] || 'note-default';
+        let accidentalHtml = '';
+        if (note.includes('♯') || note.includes('#')) accidentalHtml = `<span class="accidental sharp">♯</span>`;
+        else if (note.includes('♭') || note.includes('b')) accidentalHtml = `<span class="accidental flat">♭</span>`;
+        return `<div class="note-rect ${typeClass} ${colorClass}">${baseLetter}${accidentalHtml}</div>`;
+    }).filter(html => html !== '').join('');
+}
+
+function setSlotContent(slotIndex) {
     const slot = document.getElementById('slot' + slotIndex);
+    const primarySelect = slot.querySelector('.primary-chord-select');
     const primaryNoteRects = slot.querySelector('.primary-note-rects');
     const splitNoteRects = slot.querySelector('.split-note-rects');
     const noteRectsContainer = slot.querySelector('.note-rects-container');
@@ -487,7 +575,18 @@ function setSlotContent(slotIndex, chord, addSeventh, addSecond, addFourth, addS
     primaryNoteRects.innerHTML = '';
     splitNoteRects.innerHTML = '';
 
-    if (chord === "" || chord === "empty") {
+    const progData = getProgressionData(currentToggle);
+    const primaryChord = progData.p[slotIndex];
+
+    // Set primary chord dropdown color
+    primarySelect.className = 'chord-select primary-chord-select'; 
+    if (primaryChord && primaryChord !== "empty") {
+        let chordClass = `c-selected-${primaryChord.toLowerCase()}`;
+        chordClass = chordClass.replace('♭', 'flat').replace('♯', 'sharp').replace('#', 'sharp'); 
+        primarySelect.classList.add(chordClass);
+    }
+
+    if (!primaryChord || primaryChord === "empty") {
         if (!img) {
             img = document.createElement('img');
             img.className = 'dash-img-slot';
@@ -503,83 +602,18 @@ function setSlotContent(slotIndex, chord, addSeventh, addSecond, addFourth, addS
         noteRectsContainer.style.display = "flex";
     }
 
-    if (!chordTones[chord]) {
-        primaryNoteRects.innerHTML = `<div class="note-rect" style="background: #777; color:white; font-size:0.8em; padding: 5px;">${chord}</div>`;
-        return;
-    }
+    const primaryNotes = buildNotesForDisplay(
+        primaryChord, progData.s7[slotIndex], progData.s2[slotIndex], progData.s4[slotIndex], 
+        progData.sus[slotIndex], progData.maj7[slotIndex], progData.m[slotIndex]
+    );
+    primaryNoteRects.innerHTML = generateNoteRectsHTML(primaryNotes);
 
-    let baseTones = [...chordTones[chord]];
-    const { m: majorArr, splitActive, splitVal } = getProgressionData(currentToggle);
-    const qualityState = majorArr[slotIndex];
-    let finalNotesForDisplay = [];
-    finalNotesForDisplay.push({ note: baseTones[0], type: 'root' });
-
-    if (addSus) {
-        if (addSecond && chordSeconds[chord]) finalNotesForDisplay.push({ note: chordSeconds[chord], type: '2nd' });
-        if (addFourth && chordFourths[chord]) finalNotesForDisplay.push({ note: chordFourths[chord], type: '4th' });
-    } else {
-        let thirdNote = baseTones[1];
-        if (chordAlternateThirds[chord] && (qualityState === 'major' || qualityState === 'minor')) {
-            thirdNote = chordAlternateThirds[chord][qualityState];
-        } else if (qualityState === 'none' && chordTypes[chord]) {
-            const defaultQuality = chordTypes[chord];
-            if (chordAlternateThirds[chord] && (defaultQuality === 'major' || defaultQuality === 'minor')) {
-                thirdNote = chordAlternateThirds[chord][defaultQuality];
-            }
-        }
-        finalNotesForDisplay.push({ note: thirdNote, type: '3rd' });
-
-        if (addSecond && chordSeconds[chord]) {
-            const rootIndex = finalNotesForDisplay.findIndex(n => n.type === 'root');
-            finalNotesForDisplay.splice(rootIndex + 1, 0, { note: chordSeconds[chord], type: '2nd' });
-        }
-        if (addFourth && chordFourths[chord]) {
-            const thirdIndex = finalNotesForDisplay.findIndex(n => n.type === '3rd');
-            finalNotesForDisplay.splice(thirdIndex !== -1 ? thirdIndex + 1 : finalNotesForDisplay.length, 0, { note: chordFourths[chord], type: '4th' });
-        }
-    }
-
-    if (baseTones[2]) finalNotesForDisplay.push({ note: baseTones[2], type: '5th' });
-
-    if (addSeventh) {
-        const seventhNote = addMajSeventh && chordMajorSevenths[chord] ? chordMajorSevenths[chord] : chordSevenths[chord];
-        if (seventhNote) finalNotesForDisplay.push({ note: seventhNote, type: '7th' });
-    }
-
-    const noteOrder = { 'root': 1, '2nd': 2, '3rd': 3, '4th': 4, '5th': 5, '7th': 6 };
-    finalNotesForDisplay.sort((a, b) => (noteOrder[a.type] || 99) - (noteOrder[b.type] || 99));
-
-    let primaryRectsHTML = finalNotesForDisplay.map(item => {
-        const note = item.note;
-        if (!note) return '';
-        const typeClass = `note-${item.type}`;
-        const baseLetter = note.charAt(0);
-        let colorClassKey = note.replace('♭', 'flat').replace('♯', 'sharp').replace('#', 'sharp');
-        const colorClass = noteColorClass[colorClassKey] || noteColorClass[baseLetter] || 'note-default';
-        let accidentalHtml = '';
-        if (note.includes('♯') || note.includes('#')) accidentalHtml = `<span class="accidental sharp">♯</span>`;
-        else if (note.includes('♭') || note.includes('b')) accidentalHtml = `<span class="accidental flat">♭</span>`;
-        return `<div class="note-rect ${typeClass} ${colorClass}">${baseLetter}${accidentalHtml}</div>`;
-    }).filter(html => html !== '').join('');
-    primaryNoteRects.innerHTML = primaryRectsHTML;
-
-    // --- Render Split Chord Notes ---
-    if (splitActive[slotIndex] && splitVal[slotIndex]) {
-        const splitChordName = splitVal[slotIndex];
-        if (chordTones[splitChordName]) {
-            const splitChordBaseTones = chordTones[splitChordName];
-            let splitRectsHTML = splitChordBaseTones.map(note => {
-                if (!note) return '';
-                const baseLetter = note.charAt(0);
-                let colorClassKey = note.replace('♭', 'flat').replace('♯', 'sharp').replace('#', 'sharp');
-                const colorClass = noteColorClass[colorClassKey] || noteColorClass[baseLetter] || 'note-default';
-                let accidentalHtml = '';
-                if (note.includes('♯') || note.includes('#')) accidentalHtml = `<span class="accidental sharp">♯</span>`;
-                else if (note.includes('♭') || note.includes('b')) accidentalHtml = `<span class="accidental flat">♭</span>`;
-                return `<div class="note-rect ${colorClass}">${baseLetter}${accidentalHtml}</div>`;
-            }).join('');
-            splitNoteRects.innerHTML = splitRectsHTML;
-        }
+    if (progData.splitActive[slotIndex] && progData.splitVal[slotIndex]) {
+        const splitNotes = buildNotesForDisplay(
+            progData.splitVal[slotIndex], progData.splitS7[slotIndex], progData.splitS2[slotIndex], progData.splitS4[slotIndex], 
+            progData.splitSus[slotIndex], progData.splitMaj7[slotIndex], progData.splitM[slotIndex]
+        );
+        splitNoteRects.innerHTML = generateNoteRectsHTML(splitNotes);
     }
 }
 
@@ -612,10 +646,7 @@ function _createToggleFunction(modifierKey, updateBtnStatesFn, dependencies = nu
     }
     
     updateBtnStatesFn(targetModifierArray); 
-    
-    const select = document.getElementById('slot' + idx).querySelector('.primary-chord-select');
-    const chordToDisplay = currentData.p[idx]; 
-    setSlotColorAndStyle(idx, select, chordToDisplay, currentData.s7[idx], currentData.s2[idx], currentData.s4[idx], currentData.sus[idx], currentData.maj7[idx]);
+    setSlotContent(idx);
     saveCurrentProgression(); 
     playChordPreview(idx);
   };
@@ -721,6 +752,49 @@ function restartAnimationWithBpm() {
   }
 }
 
+function getNotesToPlayForChord(chordName, isSplit, slotIdx, progData) {
+    if (!chordName || !rhythmChordNotes[chordName]) return [];
+
+    const s7 = isSplit ? progData.splitS7[slotIdx] : progData.s7[slotIdx];
+    const s2 = isSplit ? progData.splitS2[slotIdx] : progData.s2[slotIdx];
+    const s4 = isSplit ? progData.splitS4[slotIdx] : progData.s4[slotIdx];
+    const sus = isSplit ? progData.splitSus[slotIdx] : progData.sus[slotIdx];
+    const maj7 = isSplit ? progData.splitMaj7[slotIdx] : progData.maj7[slotIdx];
+    const quality = isSplit ? progData.splitM[slotIdx] : progData.m[slotIdx];
+
+    let notesToPlay = [];
+    const baseRhythmNotes = rhythmChordNotes[chordName];
+    if (!baseRhythmNotes) return [];
+
+    if (baseRhythmNotes[0]) notesToPlay.push(baseRhythmNotes[0]);
+    if (baseRhythmNotes[1]) notesToPlay.push(baseRhythmNotes[1]);
+    if (baseRhythmNotes.length > 4 && baseRhythmNotes[4]) notesToPlay.push(baseRhythmNotes[4]);
+    if (baseRhythmNotes[3]) notesToPlay.push(baseRhythmNotes[3]);
+
+    if (sus) {
+        if (s2 && rhythmChordSecondNotes[chordName]) notesToPlay.push(rhythmChordSecondNotes[chordName]);
+        if (s4 && rhythmChordFourthNotes[chordName]) notesToPlay.push(rhythmChordFourthNotes[chordName]);
+    } else {
+        let thirdNoteToPlay = baseRhythmNotes[2];
+        if (chordAlternateThirds[chordName] && quality !== 'none') {
+            thirdNoteToPlay = chordAlternateThirds[chordName][quality === 'major' ? 'majorNote' : 'minorNote'];
+        } else if (quality === 'none' && chordTypes[chordName] && chordAlternateThirds[chordName]) {
+            const defaultQuality = chordTypes[chordName];
+            if (defaultQuality === 'major' || defaultQuality === 'minor') {
+                thirdNoteToPlay = chordAlternateThirds[chordName][defaultQuality === 'major' ? 'majorNote' : 'minorNote'];
+            }
+        }
+        if (thirdNoteToPlay) notesToPlay.push(thirdNoteToPlay);
+        if (s2 && rhythmChordSecondNotes[chordName]) notesToPlay.push(rhythmChordSecondNotes[chordName]);
+        if (s4 && rhythmChordFourthNotes[chordName]) notesToPlay.push(rhythmChordFourthNotes[chordName]);
+    }
+    if (s7) {
+        const seventhNoteToPlay = maj7 && rhythmChordMajorSeventhNotes[chordName] ? rhythmChordMajorSeventhNotes[chordName] : rhythmChordSeventhNotes[chordName];
+        if (seventhNoteToPlay) notesToPlay.push(seventhNoteToPlay);
+    }
+    return notesToPlay.filter(n => n);
+}
+
 function playEighthNoteStep() {
     const numerator = timeSignatureNumerators[currentTimeSignatureIndex];
     const totalEighthNotes = numerator * 2;
@@ -738,92 +812,36 @@ function playEighthNoteStep() {
         }
     } else {
         playingProgLetter = currentToggle;
-        if (!document.getElementById('toggle' + currentToggle)?.classList.contains('abcd-active')) {
-            document.querySelectorAll('.abcd-toggle-btn').forEach(btn => btn.classList.remove('abcd-active'));
-            document.getElementById('toggle' + currentToggle)?.classList.add('abcd-active');
-        }
     }
 
     const progData = getProgressionData(playingProgLetter);
-    if (!progData) { return; }
+    if (!progData) return;
 
     const currentSlotIdx = slotHighlightStep % 4;
-    
-    // --- Determine which chord to play (primary or split) ---
     let chordNameToPlay = progData.p[currentSlotIdx];
-    let usePrimaryChordModifiers = true;
-    const isSplitActive = progData.splitActive[currentSlotIdx];
-    const splitChordName = progData.splitVal[currentSlotIdx];
+    let isPlayingSplit = false;
 
-    if (isSplitActive && splitChordName) {
-        let splitPoint = 0;
-        switch (numerator) {
-            case 4: splitPoint = 4; break; // After beat 2 (4 eighths)
-            case 3: splitPoint = 2; break; // After beat 1 (2 eighths)
-            case 2: splitPoint = 2; break; // After beat 1 (2 eighths)
-            case 5: splitPoint = 5; break; // After 5 eighth notes
-        }
-
+    if (progData.splitActive[currentSlotIdx] && progData.splitVal[currentSlotIdx]) {
+        const splitPoint = Math.floor(totalEighthNotes / 2);
         if (rhythmStep >= splitPoint) {
-            chordNameToPlay = splitChordName;
-            usePrimaryChordModifiers = false; // Split chord is always a basic triad
+            chordNameToPlay = progData.splitVal[currentSlotIdx];
+            isPlayingSplit = true;
         }
     }
-    // --- End chord selection logic ---
 
     const currentPair = Math.floor((rhythmStep % totalEighthNotes) / 2);
     const currentWhich = (rhythmStep % totalEighthNotes) % 2;
     const box = document.querySelector(`.bottom-rhythm-box[data-pair="${currentPair}"][data-which="${currentWhich}"]`);
-    let isNextBoxInactive = false;
-    if (currentWhich === 0 && box && box.classList.contains('active')) {
-        const nextBox = document.querySelector(`.bottom-rhythm-box[data-pair="${currentPair}"][data-which="1"]`);
-        isNextBoxInactive = nextBox && !nextBox.classList.contains('active');
-    }
 
     if (box && box.classList.contains('active')) {
-        if (!chordNameToPlay || chordNameToPlay === "" || chordNameToPlay === "empty") {
-            playBassDrum(isNextBoxInactive ? 0.38 : 0.19);
+        if (!chordNameToPlay || chordNameToPlay === "empty") {
+            playBassDrum();
         } else {
-            if (!rhythmChordNotes[chordNameToPlay]) {
-                playBassDrum(isNextBoxInactive ? 0.38 : 0.19);
+            const notesToPlay = getNotesToPlayForChord(chordNameToPlay, isPlayingSplit, currentSlotIdx, progData);
+            if (notesToPlay.length > 0) {
+                playTriangleNotes(notesToPlay);
             } else {
-                let notesToPlay = [];
-                const baseRhythmNotes = rhythmChordNotes[chordNameToPlay];
-                if (baseRhythmNotes) {
-                    if (usePrimaryChordModifiers) {
-                        const addSeventh = progData.s7[currentSlotIdx], addSecond = progData.s2[currentSlotIdx], qualityState = progData.m[currentSlotIdx], addFourth = progData.s4[currentSlotIdx], addSus = progData.sus[currentSlotIdx], addMajSeventh = progData.maj7[currentSlotIdx];
-                        if (baseRhythmNotes[0]) notesToPlay.push(baseRhythmNotes[0]);
-                        if (baseRhythmNotes[1]) notesToPlay.push(baseRhythmNotes[1]);
-                        if (baseRhythmNotes.length > 4 && baseRhythmNotes[4]) notesToPlay.push(baseRhythmNotes[4]);
-                        if (baseRhythmNotes[3]) notesToPlay.push(baseRhythmNotes[3]);
-
-                        if (addSus) {
-                            if (addSecond && rhythmChordSecondNotes[chordNameToPlay]) notesToPlay.push(rhythmChordSecondNotes[chordNameToPlay]);
-                            if (addFourth && rhythmChordFourthNotes[chordNameToPlay]) notesToPlay.push(rhythmChordFourthNotes[chordNameToPlay]);
-                        } else {
-                            let thirdNoteToPlay = baseRhythmNotes[2];
-                            if (chordAlternateThirds[chordNameToPlay] && qualityState !== 'none') {
-                                thirdNoteToPlay = chordAlternateThirds[chordNameToPlay][qualityState === 'major' ? 'majorNote' : 'minorNote'];
-                            } else if (qualityState === 'none' && chordTypes[chordNameToPlay] && chordAlternateThirds[chordNameToPlay]) {
-                                const defaultQuality = chordTypes[chordNameToPlay];
-                                if (defaultQuality === 'major' || defaultQuality === 'minor') {
-                                    thirdNoteToPlay = chordAlternateThirds[chordNameToPlay][defaultQuality === 'major' ? 'majorNote' : 'minorNote'];
-                                }
-                            }
-                            if (thirdNoteToPlay) notesToPlay.push(thirdNoteToPlay);
-                            if (addSecond && rhythmChordSecondNotes[chordNameToPlay]) notesToPlay.push(rhythmChordSecondNotes[chordNameToPlay]);
-                            if (addFourth && rhythmChordFourthNotes[chordNameToPlay]) notesToPlay.push(rhythmChordFourthNotes[chordNameToPlay]);
-                        }
-                        if (addSeventh) {
-                            const seventhNoteToPlay = addMajSeventh && rhythmChordMajorSeventhNotes[chordNameToPlay] ? rhythmChordMajorSeventhNotes[chordNameToPlay] : rhythmChordSeventhNotes[chordNameToPlay];
-                            if (seventhNoteToPlay) notesToPlay.push(seventhNoteToPlay);
-                        }
-                    } else {
-                        // Play only the basic triad for the split chord
-                        notesToPlay = [baseRhythmNotes[0], baseRhythmNotes[1], baseRhythmNotes[2], baseRhythmNotes[3], baseRhythmNotes[4]].filter(n => n);
-                    }
-                }
-                playTriangleNotes(notesToPlay.filter(n => n), isNextBoxInactive);
+                playBassDrum();
             }
         }
     }
@@ -864,33 +882,42 @@ function unhighlightPicture(idx) { document.getElementById('bottomPic'+idx)?.cla
 function clearAll() {
   if (isPlaying) setPlaying(false);
 
+  // Clear Primary
   progressionA = ['', '', '', '']; progressionB = ['', '', '', '']; progressionC = ['', '', '', '']; progressionD = ['', '', '', ''];
-  rhythmBoxesA = Array(10).fill(false); rhythmBoxesB = Array(10).fill(false); rhythmBoxesC = Array(10).fill(false); rhythmBoxesD = Array(10).fill(false);
+  rhythmBoxesA.fill(false); rhythmBoxesB.fill(false); rhythmBoxesC.fill(false); rhythmBoxesD.fill(false);
   [seventhA, secondA, fourthA, susA, majSeventhA, 
    seventhB, secondB, fourthB, susB, majSeventhB, 
    seventhC, secondC, fourthC, susC, majSeventhC, 
    seventhD, secondD, fourthD, susD, majSeventhD].forEach(arr => arr.fill(false));
   [majorA, majorB, majorC, majorD].forEach(arr => arr.fill('none'));
-
   [splitChordActiveA, splitChordActiveB, splitChordActiveC, splitChordActiveD].forEach(arr => arr.fill(false));
   [splitChordValueA, splitChordValueB, splitChordValueC, splitChordValueD].forEach(arr => arr.fill(''));
 
+  // Clear Split Chord Modifiers
+  [splitSeventhA, splitSecondA, splitFourthA, splitSusA, splitMajSeventhA,
+   splitSeventhB, splitSecondB, splitFourthB, splitSusB, splitMajSeventhB,
+   splitSeventhC, splitSecondC, splitFourthC, splitSusC, splitMajSeventhC,
+   splitSeventhD, splitSecondD, splitFourthD, splitSusD, splitMajSeventhD].forEach(arr => arr.fill(false));
+  [splitMajorA, splitMajorB, splitMajorC, splitMajorD].forEach(arr => arr.fill('none'));
+
+  // Clear Links
   Object.keys(progressionLinkStates).forEach(progLetter => {
     progressionLinkStates[progLetter] = false;
     updateLinkVisuals(progLetter); 
   });
   updateLinkedProgressionSequence(); 
 
+  // Reset UI
   currentToggle = 'A';
   document.querySelectorAll('.abcd-toggle-btn').forEach(btn => btn.classList.remove('abcd-active'));
   document.getElementById('toggleA')?.classList.add('abcd-active');
   loadProgression('A'); 
   
+  // Reset playback state
   slotHighlightStep = 0;
   pictureHighlightStep = 0;
   rhythmStep = 0;
   currentLinkedProgressionIndex = 0;
-
   updateSlotHighlights(); 
   updatePictureHighlights(); 
 }
@@ -1043,50 +1070,14 @@ function playChordPreview(idx) {
   if (isPlaying) return;
   const currentData = getProgressionData(currentToggle); 
   const chordName = currentData.p[idx]; 
-  
   if (!chordName || chordName === "" || chordName === "empty") return;
-  if (!rhythmChordNotes[chordName]) { return; }
-  
-  const addSeventh = currentData.s7[idx], addSecond = currentData.s2[idx], qualityState = currentData.m[idx], addFourth = currentData.s4[idx], addSus = currentData.sus[idx], addMajSeventh = currentData.maj7[idx];
-  let notesToPlay = []; const baseRhythmNotes = rhythmChordNotes[chordName];
-  if(!baseRhythmNotes) { return; }
-
-  if(baseRhythmNotes[0]) notesToPlay.push(baseRhythmNotes[0]); if(baseRhythmNotes[1]) notesToPlay.push(baseRhythmNotes[1]);
-  if (baseRhythmNotes.length > 4 && baseRhythmNotes[4]) notesToPlay.push(baseRhythmNotes[4]); if(baseRhythmNotes[3]) notesToPlay.push(baseRhythmNotes[3]);
-  if (addSus) {
-    if (addSecond && rhythmChordSecondNotes[chordName]) notesToPlay.push(rhythmChordSecondNotes[chordName]);
-    if (addFourth && chordFourths[chordName]) notesToPlay.push(rhythmChordFourthNotes[chordName]);
-  } else {
-    let thirdNoteToPlay = baseRhythmNotes[2];
-    if (chordAlternateThirds[chordName] && qualityState !== 'none') { 
-        thirdNoteToPlay = chordAlternateThirds[chordName][qualityState === 'major' ? 'majorNote' : 'minorNote']; 
-    } else if (qualityState === 'none' && chordTypes[chordName] && chordAlternateThirds[chordName]) {
-        const defaultQuality = chordTypes[chordName];
-        if (defaultQuality === 'major' || defaultQuality === 'minor') {
-             thirdNoteToPlay = chordAlternateThirds[chordName][defaultQuality === 'major' ? 'majorNote' : 'minorNote'];
-        }
-    }
-    if(thirdNoteToPlay) notesToPlay.push(thirdNoteToPlay);
-    if (addSecond && rhythmChordSecondNotes[chordName]) notesToPlay.push(rhythmChordSecondNotes[chordName]);
-    if (addFourth && chordFourths[chordName]) notesToPlay.push(rhythmChordFourthNotes[chordName]);
-  }
-  if (addSeventh) { const seventhNoteToPlay = addMajSeventh && rhythmChordMajorSeventhNotes[chordName] ? rhythmChordMajorSeventhNotes[chordName] : rhythmChordSeventhNotes[chordName]; if(seventhNoteToPlay) notesToPlay.push(seventhNoteToPlay); }
-  playTriangleNotes(notesToPlay.filter(n => n)); 
+  const notesToPlay = getNotesToPlayForChord(chordName, false, idx, currentData);
+  playTriangleNotes(notesToPlay);
 }
 
 function playSimpleChordPreview(chordName) {
     if (isPlaying || !chordName || chordName === "" || chordName === "empty") return;
-    if (!rhythmChordNotes[chordName]) return;
-
-    const baseRhythmNotes = rhythmChordNotes[chordName];
-    const notesToPlay = [
-        baseRhythmNotes[0], 
-        baseRhythmNotes[1], 
-        baseRhythmNotes[2], 
-        baseRhythmNotes[3], 
-        baseRhythmNotes[4]
-    ].filter(n => n);
-
+    const notesToPlay = getNotesToPlayForChord(chordName, false, -1, {}); // -1 index and empty progData as it's a simple preview
     playTriangleNotes(notesToPlay);
 }
 
@@ -1097,46 +1088,69 @@ function updateKeyDisplay() {
 }
 
 function updateChordDropdowns() {
-    const chordsForCurrentKey = keyChordMap[currentMusicalKey];
-    if (!chordsForCurrentKey) {
-        return;
-    }
+    const chordsForCurrentKey = keyChordMap[currentMusicalKey] || [];
+    const diatonicChordValues = new Set(chordsForCurrentKey.map(c => c.value));
+
     document.querySelectorAll('.chord-select').forEach(selectElement => {
         const currentVal = selectElement.value;
-        selectElement.innerHTML = ''; 
+        const hasCurrentVal = allChordOptions.some(opt => opt.value === currentVal);
         
+        selectElement.innerHTML = ''; 
+
+        // Add default and empty options
         const defaultOption = document.createElement('option');
         defaultOption.value = "";
         defaultOption.textContent = "-";
         selectElement.appendChild(defaultOption);
-
         const emptyOption = document.createElement('option');
         emptyOption.value = "empty";
         emptyOption.textContent = "";
         selectElement.appendChild(emptyOption);
 
+        // Add an optgroup for diatonic chords
+        const diatonicGroup = document.createElement('optgroup');
+        diatonicGroup.label = `${currentMusicalKey} Major Scale Chords`;
         chordsForCurrentKey.forEach(chordData => {
-            const option = document.createElement('option');
-            option.value = chordData.value;
-            option.textContent = chordData.display;
-
-            const rootNote = chordData.value.charAt(0);
-            const colorInfo = optionColors[rootNote];
-            if (colorInfo) {
-                option.style.backgroundColor = colorInfo.background;
-                option.style.color = colorInfo.text;
-            }
-            
-            selectElement.appendChild(option);
+            const option = createChordOption(chordData);
+            diatonicGroup.appendChild(option);
         });
-
-        if (Array.from(selectElement.options).some(opt => opt.value === currentVal) || currentVal === "" || currentVal === "empty") {
+        selectElement.appendChild(diatonicGroup);
+        
+        // Add an optgroup for other chords if necessary
+        const otherChords = allChordOptions.filter(c => !diatonicChordValues.has(c.value));
+        if (otherChords.length > 0) {
+            const nonDiatonicGroup = document.createElement('optgroup');
+            nonDiatonicGroup.label = "Other Chords";
+            otherChords.forEach(chordData => {
+                const option = createChordOption(chordData);
+                nonDiatonicGroup.appendChild(option);
+            });
+            selectElement.appendChild(nonDiatonicGroup);
+        }
+        
+        // Restore the selected value
+        if (hasCurrentVal) {
             selectElement.value = currentVal;
         } else {
-            selectElement.value = ""; 
+            selectElement.value = "";
         }
     });
 }
+
+function createChordOption(chordData) {
+    const option = document.createElement('option');
+    option.value = chordData.value;
+    option.textContent = chordData.display;
+
+    const rootNote = chordData.value.replace(/m|dim|sus|maj7/g, '').replace(/#|♯/g, 'sharp').replace(/b|♭/g, 'flat').charAt(0);
+    const colorInfo = optionColors[rootNote.toUpperCase()];
+     if (colorInfo) {
+        option.style.backgroundColor = colorInfo.background;
+        option.style.color = colorInfo.text;
+    }
+    return option;
+}
+
 
 function transposeChord(chord, oldKey, newKey) {
     if (!chord || chord === "" || chord === "empty") {
@@ -1163,6 +1177,7 @@ function transposeChord(chord, oldKey, newKey) {
 
 
 function handleKeyDial(direction) {
+  // A transpose checkbox could be added to the HTML to enable this functionality
   const transposeCheckbox = document.getElementById('transpose-checkbox');
   const oldKey = currentMusicalKey;
 
@@ -1185,8 +1200,9 @@ function handleKeyDial(direction) {
   currentMusicalKey = newKey;
 
   updateKeyDisplay();
+  // We don't need to save/load here, just update the dropdowns and the UI will reflect the new key context
   updateChordDropdowns();
-  loadProgression(currentToggle); // Reload UI with new key context and potentially transposed chords
+  loadProgression(currentToggle); 
 }
 
 
@@ -1233,7 +1249,7 @@ function loadSong(songId) {
     setPlaying(false); 
   }
   
-  saveCurrentProgression(); 
+  clearAll();
 
   const bpmInputElement = document.getElementById('bpmInput');
   if (bpmInputElement) {
@@ -1255,8 +1271,10 @@ function loadSong(songId) {
     const songProgDetails = songData.progressions[progLetter];
 
     if (targetData && songProgDetails) {
+      targetData.p.splice(0, 4, ...(songProgDetails.chords || ["", "", "", ""]));
+      targetData.r.splice(0, targetData.r.length, ...(songProgDetails.rhythm || Array(8).fill(false)));
+      
       for (let i = 0; i < 4; i++) { 
-        targetData.p[i] = songProgDetails.chords[i] || "";
         const modifiers = songProgDetails.modifiers[i] || {};
         targetData.s7[i] = modifiers.seventh || false;
         targetData.s2[i] = modifiers.second || false;
@@ -1265,34 +1283,21 @@ function loadSong(songId) {
         targetData.maj7[i] = modifiers.majSeventh || false;
         targetData.m[i] = modifiers.quality || 'none';
       }
-      targetData.r.splice(0, targetData.r.length, ...(songProgDetails.rhythm || Array(8).fill(false)));
     }
   });
 
   if (songId === "eagle-view-song") { 
     ['A', 'B', 'C', 'D'].forEach(progLetter => {
-      if (!progressionLinkStates[progLetter]) { 
-        progressionLinkStates[progLetter] = true;
-        updateLinkVisuals(progLetter);
-      }
+      progressionLinkStates[progLetter] = true;
+      updateLinkVisuals(progLetter);
     });
     updateLinkedProgressionSequence(); 
   }
 
   currentToggle = 'A';
   document.querySelectorAll('.abcd-toggle-btn').forEach(btn => btn.classList.remove('abcd-active'));
-  const toggleABtn = document.getElementById('toggleA');
-  if (toggleABtn) {
-    toggleABtn.classList.add('abcd-active');
-  }
+  document.getElementById('toggleA')?.classList.add('abcd-active');
   loadProgression('A'); 
-
-  slotHighlightStep = 0;
-  pictureHighlightStep = 0;
-  rhythmStep = 0;
-  currentLinkedProgressionIndex = 0;
-  updateSlotHighlights();
-  updatePictureHighlights();
 }
 
 function updateGridForTimeSignature(numerator) {
@@ -1338,10 +1343,186 @@ function toggleSplitChord(idx) {
     splitBtn.classList.toggle('active', isActive);
     splitSelect.classList.toggle('visible', isActive);
     
-    // Re-render the slot content to show/hide the split notes
-    setSlotContent(idx, currentData.p[idx], currentData.s7[idx], currentData.s2[idx], currentData.s4[idx], currentData.sus[idx], currentData.maj7[idx]);
+    setSlotContent(idx);
 
     saveCurrentProgression();
+}
+
+function _generateChordString(baseChord, progData, idx, isSplit) {
+    if (!baseChord || baseChord === 'empty') return '--';
+
+    const s2 = isSplit ? progData.splitS2[idx] : progData.s2[idx];
+    const s4 = isSplit ? progData.splitS4[idx] : progData.s4[idx];
+    const maj7 = isSplit ? progData.splitMaj7[idx] : progData.maj7[idx];
+    const s7 = isSplit ? progData.splitS7[idx] : progData.s7[idx];
+    const m = isSplit ? progData.splitM[idx] : progData.m[idx];
+    const sus = isSplit ? progData.splitSus[idx] : progData.sus[idx];
+
+    let chordStr = baseChord;
+    const appendedMods = [];
+    const parenMods = [];
+
+    if (s2) appendedMods.push('2');
+    if (s4) appendedMods.push('4');
+    if (maj7) appendedMods.push('maj7');
+    else if (s7) appendedMods.push('7');
+
+    if (m === 'major') parenMods.push('M');
+    if (m === 'minor') parenMods.push('m');
+    if (sus) parenMods.push('sus');
+
+    chordStr += appendedMods.join('');
+    if (parenMods.length > 0) {
+        chordStr += `(${parenMods.join(',')})`;
+    }
+    return chordStr;
+}
+
+function generateSongSummary() {
+    saveCurrentProgression();
+
+    const bpm = getBpmInputValue();
+    const timeSig = `${timeSignatureNumerators[currentTimeSignatureIndex]}/4`;
+    const key = currentMusicalKey;
+
+    let summary = `BPM: ${bpm} | Time Signature: ${timeSig} | Key: ${key}\n\n`;
+
+    ['A', 'B', 'C', 'D'].forEach(progLetter => {
+        const progData = getProgressionData(progLetter);
+        const linkStatus = progressionLinkStates[progLetter] ? 'linked' : 'unlinked';
+        summary += `[Section ${progLetter}, ${linkStatus}]\n`;
+
+        const rhythmText = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
+        const activeRhythm = progData.r.map((isActive, i) => isActive ? rhythmText[i] : '').join('');
+        summary += `  [Rhythm: ${activeRhythm || 'none'}]\n`;
+
+        const chordsSummary = progData.p.map((chord, idx) => {
+            let primaryStr = _generateChordString(chord, progData, idx, false);
+            if (progData.splitActive[idx] && progData.splitVal[idx]) {
+                const splitStr = _generateChordString(progData.splitVal[idx], progData, idx, true);
+                primaryStr += `/${splitStr}`;
+            }
+            return primaryStr;
+        }).join(', ');
+
+        summary += `  [Chords: ${chordsSummary}]\n\n`;
+    });
+
+    return summary;
+}
+
+function _parseAndApplyModifiers(chordToken, progData, idx, isSplit) {
+    if (!chordToken) return;
+    
+    let remainingToken = chordToken;
+    const parenMatch = remainingToken.match(/\((.*)\)/);
+    const parenMods = parenMatch ? parenMatch[1] : '';
+    if (parenMatch) remainingToken = remainingToken.replace(parenMatch[0], '');
+
+    const mainPartMatch = remainingToken.match(/([A-G][b#]?[a-z]*)(.*)/);
+    if (!mainPartMatch) return;
+
+    const baseChord = mainPartMatch[1];
+    const appendedMods = mainPartMatch[2];
+
+    const s7 = appendedMods.includes('maj7') || appendedMods.includes('7');
+    const maj7 = appendedMods.includes('maj7');
+    const s2 = appendedMods.includes('2');
+    const s4 = appendedMods.includes('4');
+    const m = parenMods.includes('M') ? 'major' : (parenMods.includes('m') ? 'minor' : 'none');
+    const sus = parenMods.includes('sus');
+
+    if (isSplit) {
+        progData.splitVal[idx] = baseChord;
+        progData.splitS7[idx] = s7;
+        progData.splitMaj7[idx] = maj7;
+        progData.splitS2[idx] = s2;
+        progData.splitS4[idx] = s4;
+        progData.splitM[idx] = m;
+        progData.splitSus[idx] = sus;
+        progData.splitActive[idx] = true;
+    } else {
+        progData.p[idx] = baseChord;
+        progData.s7[idx] = s7;
+        progData.maj7[idx] = maj7;
+        progData.s2[idx] = s2;
+        progData.s4[idx] = s4;
+        progData.m[idx] = m;
+        progData.sus[idx] = sus;
+    }
+}
+
+function parseAndLoadSongSummary(summaryText) {
+    try {
+        clearAll();
+        const lines = summaryText.split('\n');
+
+        const headerMatch = lines[0].match(/BPM: (\d+).*Time Signature: (\d+)\/4.*Key: (C#|Db|D#|Eb|F#|Gb|G#|Ab|A#|Bb|A|B|C|D|E|F|G)/);
+        if (headerMatch) {
+            setBpmInputValue(clampBpm(parseInt(headerMatch[1], 10)));
+            const timeSigNum = parseInt(headerMatch[2], 10);
+            const timeSigIndex = timeSignatureNumerators.indexOf(timeSigNum);
+            if (timeSigIndex !== -1) {
+                currentTimeSignatureIndex = timeSigIndex;
+                document.getElementById('time-sig-top').textContent = timeSigNum;
+                updateGridForTimeSignature(timeSigNum);
+            }
+            const keyName = headerMatch[3];
+            const keyIndex = musicalKeys.indexOf(keyName);
+            if (keyIndex !== -1) {
+                currentKeyIndex = keyIndex;
+                currentMusicalKey = musicalKeys[currentKeyIndex];
+                updateKeyDisplay();
+            }
+        }
+
+        const sectionRegex = /\[Section ([A-D]), (linked|unlinked)\]/;
+        const rhythmRegex = /\[Rhythm: ([0-9]*)\]/;
+        const chordsRegex = /\[Chords: (.*)\]/;
+        
+        for (let i = 1; i < lines.length; i++) {
+            const sectionMatch = lines[i].match(sectionRegex);
+            if (sectionMatch) {
+                const progLetter = sectionMatch[1];
+                const isLinked = sectionMatch[2] === 'linked';
+                const progData = getProgressionData(progLetter);
+                progressionLinkStates[progLetter] = isLinked;
+
+                const rhythmMatch = (lines[i + 1] || '').match(rhythmRegex);
+                if (rhythmMatch) {
+                    const rhythmStr = rhythmMatch[1] || '';
+                    const rhythmMap = {'1':0, '2':1, '3':2, '4':3, '5':4, '6':5, '7':6, '8':7, '9':8, '0':9};
+                    progData.r.fill(false);
+                    for (const char of rhythmStr) {
+                        if (rhythmMap[char] !== undefined) progData.r[rhythmMap[char]] = true;
+                    }
+                }
+
+                const chordsMatch = (lines[i + 2] || '').match(chordsRegex);
+                if (chordsMatch) {
+                    const chordsStr = chordsMatch[1].split(', ');
+                    chordsStr.forEach((chordToken, idx) => {
+                        if (idx >= 4 || chordToken === '--') return;
+
+                        const [primaryToken, splitToken] = chordToken.split('/');
+                        _parseAndApplyModifiers(primaryToken, progData, idx, false);
+                        if (splitToken) {
+                            _parseAndApplyModifiers(splitToken, progData, idx, true);
+                        }
+                    });
+                }
+            }
+        }
+        
+        updateChordDropdowns();
+        ['A', 'B', 'C', 'D'].forEach(updateLinkVisuals);
+        updateLinkedProgressionSequence();
+        loadProgression(currentToggle);
+        
+    } catch (error) {
+        console.error("Failed to parse song summary:", error);
+        alert("Could not load the song from the text. Please check the format.");
+    }
 }
 
 
@@ -1387,7 +1568,7 @@ document.addEventListener("DOMContentLoaded", function() {
     primarySelect.addEventListener('change', function() { 
       const currentData = getProgressionData(currentToggle); 
       currentData.p[idx] = this.value; 
-      setSlotColorAndStyle(idx, this, this.value, currentData.s7[idx], currentData.s2[idx], currentData.s4[idx], currentData.sus[idx], currentData.maj7[idx]); 
+      setSlotContent(idx);
       playChordPreview(idx); 
       saveCurrentProgression(); 
     }); 
@@ -1396,8 +1577,7 @@ document.addEventListener("DOMContentLoaded", function() {
     splitSelect.addEventListener('change', function() {
         const currentData = getProgressionData(currentToggle);
         currentData.splitVal[idx] = this.value;
-        setSlotContent(idx, currentData.p[idx], currentData.s7[idx], currentData.s2[idx], currentData.s4[idx], currentData.sus[idx], currentData.maj7[idx]);
-        setSplitSlotColorAndStyle(idx, this, this.value);
+        setSlotContent(idx);
         playSimpleChordPreview(this.value);
         saveCurrentProgression();
     });
@@ -1412,10 +1592,10 @@ document.addEventListener("DOMContentLoaded", function() {
   document.querySelectorAll('.sus-btn').forEach((btn, idx) => { btn.addEventListener('click', function() { toggleSus(idx); }); btn.addEventListener('keydown', function(e) { if (e.key===" "||e.key==="Enter") { e.preventDefault(); toggleSus(idx); }}); });
   document.querySelectorAll('.maj-seventh-btn').forEach((btn, idx) => { btn.addEventListener('click', function() { toggleMajSeventh(idx); }); btn.addEventListener('keydown', function(e) { if (e.key===" "||e.key==="Enter") { e.preventDefault(); toggleMajSeventh(idx); }}); });
   document.querySelectorAll('.slot-box .quality-toggle-btn').forEach((btn, idx) => { btn.addEventListener('click', function() { toggleMajorMinor(idx); }); btn.addEventListener('keydown', function(e) { if (e.key===" "||e.key==="Enter") { e.preventDefault(); toggleMajorMinor(idx); }}); });
-  document.querySelectorAll('.bottom-rhythm-box').forEach(box => { function toggleActive(e) { e.preventDefault(); box.classList.toggle('active'); updateRhythmPictures(); saveCurrentProgression(); } box.addEventListener('click', toggleActive); box.addEventListener('keydown', (e) => { if (e.key===" "||e.key==="Enter") toggleActive(e); }); });
-  const playPauseBtn = document.getElementById('playPauseBtn'); if(playPauseBtn) { function togglePlay(e) { e.preventDefault(); setPlaying(!isPlaying); } playPauseBtn.addEventListener('click', togglePlay); playPauseBtn.addEventListener('keydown', (e) => { if (e.key===" "||e.key==="Enter") togglePlay(e); }); }
-  const bpmInput = document.getElementById('bpmInput'), bpmUp = document.getElementById('bpmUp'), bpmDown = document.getElementById('bpmDown'); if(bpmInput && bpmUp && bpmDown) { bpmInput.addEventListener('change', () => { setBpmInputValue(clampBpm(getBpmInputValue())); restartAnimationWithBpm(); }); bpmUp.onclick = () => { setBpmInputValue(clampBpm(getBpmInputValue()+1)); restartAnimationWithBpm(); }; bpmDown.onclick = () => { setBpmInputValue(clampBpm(getBpmInputValue()-1)); restartAnimationWithBpm(); }; }
-  const clearButton = document.getElementById('clear'); if(clearButton) { clearButton.addEventListener('click', clearAll); clearButton.addEventListener('touchstart', (e)=>{e.preventDefault();clearAll();}); clearButton.addEventListener('keydown', (e) => { if (e.key===" "||e.key==="Enter") { e.preventDefault(); clearAll(); }}); }
+  document.querySelectorAll('.bottom-rhythm-box').forEach(box => { function toggleActive(e) { e.preventDefault(); box.classList.toggle('active'); updateRhythmPictures(); saveCurrentProgression(); } box.addEventListener('click', toggleActive); box.addEventListener('touchstart', toggleActive); box.addEventListener('keydown', e => { if (e.key === " " || e.key === "Enter") toggleActive(e); }); });
+  const playPauseBtn = document.getElementById('playPauseBtn'); if(playPauseBtn) { function togglePlay(e) { e.preventDefault(); setPlaying(!isPlaying); } playPauseBtn.addEventListener('click', togglePlay); playPauseBtn.addEventListener('keydown', e => { if (e.key === " " || e.key === "Enter") togglePlay(e); }); }
+  const bpmInput = document.getElementById('bpmInput'), bpmUp = document.getElementById('bpmUp'), bpmDown = document.getElementById('bpmDown'); if(bpmInput && bpmUp && bpmDown) { bpmInput.addEventListener('change', () => { setBpmInputValue(clampBpm(getBpmInputValue())); restartAnimationWithBpm(); }); bpmUp.addEventListener('click', () => { setBpmInputValue(clampBpm(getBpmInputValue() + 1)); restartAnimationWithBpm(); }); bpmDown.addEventListener('click', () => { setBpmInputValue(clampBpm(getBpmInputValue() - 1)); restartAnimationWithBpm(); }); }
+  const clearButton = document.getElementById('clear'); if(clearButton) { clearButton.addEventListener('click', clearAll); clearButton.addEventListener('touchstart', (e)=>{e.preventDefault();clearAll();}); clearButton.addEventListener('keydown', (e)=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();clearAll();}}); }
 
   const songSelectDropdown = document.getElementById('song-select');
   if (songSelectDropdown) {
@@ -1437,8 +1617,10 @@ document.addEventListener("DOMContentLoaded", function() {
   const closeModalBtn = document.getElementById('close-modal-btn');
   const cancelSaveBtn = document.getElementById('cancel-save-btn');
   const submitSaveBtn = document.getElementById('submit-save-btn');
+  const summaryTextarea = document.getElementById('song-summary-textarea');
   
   function openModal() {
+    summaryTextarea.value = generateSongSummary();
     saveModalOverlay.classList.remove('modal-hidden');
   }
   function closeModal() {
@@ -1449,8 +1631,7 @@ document.addEventListener("DOMContentLoaded", function() {
   closeModalBtn.addEventListener('click', closeModal);
   cancelSaveBtn.addEventListener('click', closeModal);
   submitSaveBtn.addEventListener('click', () => {
-    // For now, just close the modal. We will add save logic later.
-    console.log("Submit clicked. Closing modal for now.");
+    parseAndLoadSongSummary(summaryTextarea.value);
     closeModal();
   });
   saveModalOverlay.addEventListener('click', (e) => {
