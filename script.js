@@ -243,14 +243,14 @@ const chordFourths = {
 };
 
 const rhythmChordNotes = { 
-  'C': ['C3', 'C4', 'E4', 'G4', 'C5'], 'Dm': ['D3', 'D4', 'F4', 'A4', 'D5'], 'Em': ['E3', 'E4', 'G4', 'B4', 'E5'], 'F':  ['F3', 'F4', 'A4', 'C5', 'F5'],  'G':  ['G3', 'G4', 'B4', 'D5', 'G5'], 'Am': ['A2', 'A3', 'C4', 'E4', 'A4'], 'Bb': ['Bb2', 'Bb3', 'D4', 'F4', 'Bb4'],
+  'C': ['C3', 'C4', 'E4', 'G4', 'C5'], 'Dm': ['D3', 'D4', 'F4', 'A4', 'D5'], 'Em': ['E3', 'E4', 'G4', 'B4', 'E5'], 'F':  ['F3', 'F4', 'A4', 'C5', 'F5'],  'G':  ['G3', 'G4', 'B4', 'D5', 'G5'], 'Am': ['A2', 'A3', 'C4', 'E4', 'A4'], 'Bb': ['Bb2','Bb3','D4','F4','Bb4'],
   'Db': ['Db3','Db4','F4','Ab4','Db5'], 'Ebm':['Eb3','Eb4','Gb4','Bb4','Eb5'], 'Fm': ['F3','F4','Ab4','C5','F5'], 'Gb': ['Gb3', 'Gb4', 'Bb3', 'Db4', 'Gb5'], 'Ab': ['Ab2','Ab3','C4','Eb4','Ab4'], 'Bbm':['Bb2','Bb3','Db4','F4','Bb4'], 'Cb': ['Cb3','Cb4','Eb4','Gb4','Cb5'],
   'D':  ['D3', 'D4', 'F#4', 'A4', 'D5'], 'F#m':['F#3','F#4','A4','C#5','F#5'], 'Bm': ['B2','B3','D4','F#4','B4'],
   'Eb': ['Eb3','Eb4','G4','Bb4','Eb5'], 'Gm': ['G3','G4','Bb4','D5','G5'], 'Cm': ['C3','C4','Eb4','G4','C5'],
   'E':  ['E3', 'E4', 'G#4', 'B4', 'E5'], 'G#m':['G#3','G#4','B4','D#5','G#5'], 'C#m':['C#3','C#4','E4','G#4','C#5'],
   'Fb': ['Fb3','Fb4','Ab4','Cb4','Fb5'], 'Abm':['Ab2','Ab3','Cb4','Eb4','Ab4'], 
   'B':  ['B2', 'B3', 'D#4', 'F#4', 'B4'], 'D#m':['D#3','D#4','F#4','A#4','D#5'], 'F#': ['F#3','F#4','A#4','C#5','F#5'], 'A': ['A2','A3','C#4','E4','A4'],
-  'Bdim': ['B2', 'B3', 'D4', 'F4', 'B4'], 'Cdim': ['C3', 'C4', 'Eb4', 'Gb4', 'C5'], 'C#dim': ['C#3', 'C#4', 'E4', 'G4', 'C#5'], 'Ddim': ['D3', 'D4', 'F4', 'Ab4', 'D5'], 'D#dim': ['D#3', 'D#4', 'F#4', 'A4', 'D#5'], 'Edim': ['E3', 'E4', 'G4', 'Bb4', 'E5'], 'Fdim': ['F3', 'F4', 'Ab4', 'Cb5', 'F5'], 'F#dim': ['F#3', 'F#4', 'A4', 'C5', 'F#5'], 'Gdim': ['G3', 'G4', 'Bb4', 'Db5', 'G5'], 'G#dim': ['G#3', 'G#4', 'B4', 'D5', 'G#5'], 'Adim': ['A2', 'A3', 'C4', 'Eb4', 'A4'], 'A#dim': ['A#2', 'A#3', 'C#4', 'E4', 'A#4']
+  'Bdim': ['B2', 'B3', 'D4', 'F4', 'B4'], 'Cdim': ['C3', 'C4', 'Eb4', 'Gb4', 'C5'], 'C#dim': ['C#3', 'C#4', 'E4', 'G4', 'C#5'], 'Ddim': ['D3', 'D4', 'F4', 'Ab4', 'D5'], 'D#dim': ['D#3', 'D#4', 'F#4', 'A4', 'D#5'], 'Edim': ['E3', 'E4', 'G4', 'Bb4', 'E5'], 'Fdim': ['F3', 'F4', 'Ab4', 'Cb4', 'F5'], 'F#dim': ['F#3', 'F#4', 'A4', 'C5', 'F#5'], 'Gdim': ['G2', 'G3', 'Bb3', 'Db4', 'G4'], 'G#dim': ['G#2', 'G#3', 'B3', 'D4', 'G#4'], 'Adim': ['A2', 'A3', 'C4', 'Eb4', 'A4'], 'A#dim': ['A#2', 'A#3', 'C#4', 'E4', 'A#4']
 };
 const rhythmChordSeventhNotes = { 
   'C': 'Bb4', 'Dm': 'C5', 'Em': 'D5', 'F': 'Eb5', 'G': 'F5', 'Am': 'G4', 'Bb': 'Ab4',
@@ -329,9 +329,7 @@ async function ensureAudio() {
   }
   if (!customVoiceWave) setupCustomVoiceWave();
   if (ctx.state !== "running") await ctx.resume();
-}
-
-function updateWaveformDisplay() { document.getElementById("waveform-name").textContent = currentWaveform; }
+}function updateWaveformDisplay() { document.getElementById("waveform-name").textContent = currentWaveform; }
 
 function handleWaveformDial(dir) {
   currentWaveformIndex = (currentWaveformIndex + dir + waveforms.length) % waveforms.length;
@@ -1385,16 +1383,15 @@ function generateSongSummary() {
     const timeSig = `${timeSignatureNumerators[currentTimeSignatureIndex]}/4`;
     const key = currentMusicalKey;
 
-    let summary = `BPM: ${bpm} | Time Signature: ${timeSig} | Key: ${key}\n\n`;
+    let summaryLines = [];
+    summaryLines.push(`[BPM: ${bpm}; Time Signature: ${timeSig}; Key: ${key}]`);
 
     ['A', 'B', 'C', 'D'].forEach(progLetter => {
         const progData = getProgressionData(progLetter);
         const linkStatus = progressionLinkStates[progLetter] ? 'linked' : 'unlinked';
-        summary += `[Section ${progLetter}, ${linkStatus}]\n`;
-
+        
         const rhythmText = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
         const activeRhythm = progData.r.map((isActive, i) => isActive ? rhythmText[i] : '').join('');
-        summary += `  [Rhythm: ${activeRhythm || 'none'}]\n`;
 
         const chordsSummary = progData.p.map((chord, idx) => {
             let primaryStr = _generateChordString(chord, progData, idx, false);
@@ -1405,16 +1402,16 @@ function generateSongSummary() {
             return primaryStr;
         }).join(', ');
 
-        summary += `  [Chords: ${chordsSummary}]\n\n`;
+        summaryLines.push(`[Section ${progLetter}, ${linkStatus}; Rhythm: ${activeRhythm}; Chords: ${chordsSummary}]`);
     });
 
-    return summary;
+    return summaryLines.join('\n');
 }
 
 function _parseAndApplyModifiers(chordToken, progData, idx, isSplit) {
-    if (!chordToken) return;
+    if (!chordToken || chordToken.trim() === '--') return;
     
-    let remainingToken = chordToken;
+    let remainingToken = chordToken.trim();
     const parenMatch = remainingToken.match(/\((.*)\)/);
     const parenMods = parenMatch ? parenMatch[1] : '';
     if (parenMatch) remainingToken = remainingToken.replace(parenMatch[0], '');
@@ -1455,70 +1452,72 @@ function _parseAndApplyModifiers(chordToken, progData, idx, isSplit) {
 function parseAndLoadSongSummary(summaryText) {
     try {
         clearAll();
-        const lines = summaryText.split('\n');
+        const lines = summaryText.split('\n').filter(line => line.trim() !== '');
 
-        const headerMatch = lines[0].match(/BPM: (\d+).*Time Signature: (\d+)\/4.*Key: (C#|Db|D#|Eb|F#|Gb|G#|Ab|A#|Bb|A|B|C|D|E|F|G)/);
-        if (headerMatch) {
-            setBpmInputValue(clampBpm(parseInt(headerMatch[1], 10)));
-            const timeSigNum = parseInt(headerMatch[2], 10);
-            const timeSigIndex = timeSignatureNumerators.indexOf(timeSigNum);
-            if (timeSigIndex !== -1) {
-                currentTimeSignatureIndex = timeSigIndex;
-                document.getElementById('time-sig-top').textContent = timeSigNum;
-                updateGridForTimeSignature(timeSigNum);
+        // Parse Header
+        const headerLine = lines.find(line => line.includes('BPM:'));
+        if (headerLine) {
+            const headerContent = headerLine.slice(1, -1);
+            const parts = headerContent.split(';').reduce((acc, part) => {
+                const [key, value] = part.split(':').map(s => s.trim());
+                if (key && value) acc[key] = value;
+                return acc;
+            }, {});
+
+            if (parts['BPM']) setBpmInputValue(clampBpm(parseInt(parts['BPM'], 10)));
+            if (parts['Time Signature']) {
+                const timeSigNum = parseInt(parts['Time Signature'].split('/')[0], 10);
+                const timeSigIndex = timeSignatureNumerators.indexOf(timeSigNum);
+                if (timeSigIndex !== -1) {
+                    currentTimeSignatureIndex = timeSigIndex;
+                    document.getElementById('time-sig-top').textContent = timeSigNum;
+                    updateGridForTimeSignature(timeSigNum);
+                }
             }
-            const keyName = headerMatch[3];
-            const keyIndex = musicalKeys.indexOf(keyName);
-            if (keyIndex !== -1) {
-                currentKeyIndex = keyIndex;
-                currentMusicalKey = musicalKeys[currentKeyIndex];
-                updateKeyDisplay();
+            if (parts['Key']) {
+                const keyIndex = musicalKeys.indexOf(parts['Key']);
+                if (keyIndex !== -1) {
+                    currentKeyIndex = keyIndex;
+                    currentMusicalKey = musicalKeys[currentKeyIndex];
+                    updateKeyDisplay();
+                }
             }
         }
 
-        const sectionRegex = /\[Section ([A-D]), (linked|unlinked)\]/;
-        const rhythmRegex = /\[Rhythm: ([0-9]*)\]/;
-        const chordsRegex = /\[Chords: (.*)\]/;
-        
-        for (let i = 1; i < lines.length; i++) {
-            const sectionMatch = lines[i].match(sectionRegex);
+        // Parse Sections
+        const sectionLines = lines.filter(line => line.includes('Section'));
+        sectionLines.forEach(line => {
+            const sectionMatch = line.match(/\[Section ([A-D]), (linked|unlinked); Rhythm: (.*?); Chords: (.*?)\]/);
             if (sectionMatch) {
-                const progLetter = sectionMatch[1];
-                const isLinked = sectionMatch[2] === 'linked';
+                const [, progLetter, linkStatus, rhythmStr, chordsStr] = sectionMatch;
                 const progData = getProgressionData(progLetter);
-                progressionLinkStates[progLetter] = isLinked;
 
-                const rhythmMatch = (lines[i + 1] || '').match(rhythmRegex);
-                if (rhythmMatch) {
-                    const rhythmStr = rhythmMatch[1] || '';
-                    const rhythmMap = {'1':0, '2':1, '3':2, '4':3, '5':4, '6':5, '7':6, '8':7, '9':8, '0':9};
-                    progData.r.fill(false);
-                    for (const char of rhythmStr) {
-                        if (rhythmMap[char] !== undefined) progData.r[rhythmMap[char]] = true;
+                progressionLinkStates[progLetter] = (linkStatus === 'linked');
+
+                const rhythmMap = {'1':0, '2':1, '3':2, '4':3, '5':4, '6':5, '7':6, '8':7, '9':8, '0':9};
+                progData.r.fill(false);
+                for (const char of rhythmStr) {
+                    if (rhythmMap[char] !== undefined) progData.r[rhythmMap[char]] = true;
+                }
+
+                const chordTokens = chordsStr.split(',').map(s => s.trim());
+                chordTokens.forEach((chordToken, idx) => {
+                    if (idx >= 4) return;
+                    const [primaryToken, splitToken] = chordToken.split('/');
+                    _parseAndApplyModifiers(primaryToken, progData, idx, false);
+                    if (splitToken) {
+                        _parseAndApplyModifiers(splitToken, progData, idx, true);
                     }
-                }
-
-                const chordsMatch = (lines[i + 2] || '').match(chordsRegex);
-                if (chordsMatch) {
-                    const chordsStr = chordsMatch[1].split(', ');
-                    chordsStr.forEach((chordToken, idx) => {
-                        if (idx >= 4 || chordToken === '--') return;
-
-                        const [primaryToken, splitToken] = chordToken.split('/');
-                        _parseAndApplyModifiers(primaryToken, progData, idx, false);
-                        if (splitToken) {
-                            _parseAndApplyModifiers(splitToken, progData, idx, true);
-                        }
-                    });
-                }
+                });
             }
-        }
-        
+        });
+
+        // Update UI
         updateChordDropdowns();
         ['A', 'B', 'C', 'D'].forEach(updateLinkVisuals);
         updateLinkedProgressionSequence();
         loadProgression(currentToggle);
-        
+
     } catch (error) {
         console.error("Failed to parse song summary:", error);
         alert("Could not load the song from the text. Please check the format.");
@@ -1586,16 +1585,16 @@ document.addEventListener("DOMContentLoaded", function() {
     splitBtn.addEventListener('click', () => toggleSplitChord(idx));
   });
 
-  document.querySelectorAll('.seventh-btn').forEach((btn, idx) => { btn.addEventListener('click', function() { toggleSeventh(idx); }); btn.addEventListener('keydown', function(e) { if (e.key===" "||e.key==="Enter") { e.preventDefault(); toggleSeventh(idx); }}); });
-  document.querySelectorAll('.second-btn').forEach((btn, idx) => { btn.addEventListener('click', function() { toggleSecond(idx); }); btn.addEventListener('keydown', function(e) { if (e.key===" "||e.key==="Enter") { e.preventDefault(); toggleSecond(idx); }}); });
-  document.querySelectorAll('.fourth-btn').forEach((btn, idx) => { btn.addEventListener('click', function() { toggleFourth(idx); }); btn.addEventListener('keydown', function(e) { if (e.key===" "||e.key==="Enter") { e.preventDefault(); toggleFourth(idx); }}); });
-  document.querySelectorAll('.sus-btn').forEach((btn, idx) => { btn.addEventListener('click', function() { toggleSus(idx); }); btn.addEventListener('keydown', function(e) { if (e.key===" "||e.key==="Enter") { e.preventDefault(); toggleSus(idx); }}); });
-  document.querySelectorAll('.maj-seventh-btn').forEach((btn, idx) => { btn.addEventListener('click', function() { toggleMajSeventh(idx); }); btn.addEventListener('keydown', function(e) { if (e.key===" "||e.key==="Enter") { e.preventDefault(); toggleMajSeventh(idx); }}); });
-  document.querySelectorAll('.slot-box .quality-toggle-btn').forEach((btn, idx) => { btn.addEventListener('click', function() { toggleMajorMinor(idx); }); btn.addEventListener('keydown', function(e) { if (e.key===" "||e.key==="Enter") { e.preventDefault(); toggleMajorMinor(idx); }}); });
-  document.querySelectorAll('.bottom-rhythm-box').forEach(box => { function toggleActive(e) { e.preventDefault(); box.classList.toggle('active'); updateRhythmPictures(); saveCurrentProgression(); } box.addEventListener('click', toggleActive); box.addEventListener('touchstart', toggleActive); box.addEventListener('keydown', e => { if (e.key === " " || e.key === "Enter") toggleActive(e); }); });
-  const playPauseBtn = document.getElementById('playPauseBtn'); if(playPauseBtn) { function togglePlay(e) { e.preventDefault(); setPlaying(!isPlaying); } playPauseBtn.addEventListener('click', togglePlay); playPauseBtn.addEventListener('keydown', e => { if (e.key === " " || e.key === "Enter") togglePlay(e); }); }
-  const bpmInput = document.getElementById('bpmInput'), bpmUp = document.getElementById('bpmUp'), bpmDown = document.getElementById('bpmDown'); if(bpmInput && bpmUp && bpmDown) { bpmInput.addEventListener('change', () => { setBpmInputValue(clampBpm(getBpmInputValue())); restartAnimationWithBpm(); }); bpmUp.addEventListener('click', () => { setBpmInputValue(clampBpm(getBpmInputValue() + 1)); restartAnimationWithBpm(); }); bpmDown.addEventListener('click', () => { setBpmInputValue(clampBpm(getBpmInputValue() - 1)); restartAnimationWithBpm(); }); }
-  const clearButton = document.getElementById('clear'); if(clearButton) { clearButton.addEventListener('click', clearAll); clearButton.addEventListener('touchstart', (e)=>{e.preventDefault();clearAll();}); clearButton.addEventListener('keydown', (e)=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();clearAll();}}); }
+  document.querySelectorAll('.seventh-btn').forEach((btn, idx) => { btn.addEventListener('click', function() { toggleSeventh(idx); }); btn.addEventListener('keydown', function(e) { if (e.key===" "||e.key==="Enter") { e.preventDefault(); toggleSeventh(idx); } }); });
+  document.querySelectorAll('.second-btn').forEach((btn, idx) => { btn.addEventListener('click', function() { toggleSecond(idx); }); btn.addEventListener('keydown', function(e) { if (e.key===" "||e.key==="Enter") { e.preventDefault(); toggleSecond(idx); } }); });
+  document.querySelectorAll('.fourth-btn').forEach((btn, idx) => { btn.addEventListener('click', function() { toggleFourth(idx); }); btn.addEventListener('keydown', function(e) { if (e.key===" "||e.key==="Enter") { e.preventDefault(); toggleFourth(idx); } }); });
+  document.querySelectorAll('.sus-btn').forEach((btn, idx) => { btn.addEventListener('click', function() { toggleSus(idx); }); btn.addEventListener('keydown', function(e) { if (e.key===" "||e.key==="Enter") { e.preventDefault(); toggleSus(idx); } }); });
+  document.querySelectorAll('.maj-seventh-btn').forEach((btn, idx) => { btn.addEventListener('click', function() { toggleMajSeventh(idx); }); btn.addEventListener('keydown', function(e) { if (e.key===" "||e.key==="Enter") { e.preventDefault(); toggleMajSeventh(idx); } }); });
+  document.querySelectorAll('.slot-box .quality-toggle-btn').forEach((btn, idx) => { btn.addEventListener('click', function() { toggleMajorMinor(idx); }); btn.addEventListener('keydown', function(e) { if (e.key===" "||e.key==="Enter") { e.preventDefault(); toggleMajorMinor(idx); } }); });
+  document.querySelectorAll('.bottom-rhythm-box').forEach(box => { function toggleActive(e) { e.preventDefault(); box.classList.toggle('active'); updateRhythmPictures(); saveCurrentProgression(); } box.addEventListener('click', toggleActive); box.addEventListener('touchstart', toggleActive); });
+  const playPauseBtn = document.getElementById('playPauseBtn'); if(playPauseBtn) { function togglePlay(e) { e.preventDefault(); setPlaying(!isPlaying); } playPauseBtn.addEventListener('click', togglePlay); playPauseBtn.addEventListener('keydown', (e) => { if (e.key===" "||e.key==="Enter") { togglePlay(e); } }); }
+  const bpmInput = document.getElementById('bpmInput'), bpmUp = document.getElementById('bpmUp'), bpmDown = document.getElementById('bpmDown'); if(bpmInput && bpmUp && bpmDown) { bpmInput.addEventListener('change', restartAnimationWithBpm); bpmUp.addEventListener('click', ()=>{ setBpmInputValue(clampBpm(getBpmInputValue()+1)); restartAnimationWithBpm(); }); bpmDown.addEventListener('click', ()=>{ setBpmInputValue(clampBpm(getBpmInputValue()-1)); restartAnimationWithBpm(); }); }
+  const clearButton = document.getElementById('clear'); if(clearButton) { clearButton.addEventListener('click', clearAll); clearButton.addEventListener('touchstart', (e)=>{e.preventDefault();clearAll();}); }
 
   const songSelectDropdown = document.getElementById('song-select');
   if (songSelectDropdown) {
@@ -1618,6 +1617,7 @@ document.addEventListener("DOMContentLoaded", function() {
   const cancelSaveBtn = document.getElementById('cancel-save-btn');
   const submitSaveBtn = document.getElementById('submit-save-btn');
   const summaryTextarea = document.getElementById('song-summary-textarea');
+  const copySummaryBtn = document.getElementById('copy-summary-btn');
   
   function openModal() {
     summaryTextarea.value = generateSongSummary();
@@ -1638,6 +1638,21 @@ document.addEventListener("DOMContentLoaded", function() {
     if (e.target === saveModalOverlay) {
       closeModal();
     }
+  });
+
+  copySummaryBtn.addEventListener('click', () => {
+    navigator.clipboard.writeText(summaryTextarea.value).then(() => {
+      const copyIcon = copySummaryBtn.querySelector('.copy-icon');
+      const checkIcon = copySummaryBtn.querySelector('.check-icon');
+      copyIcon.style.display = 'none';
+      checkIcon.style.display = 'inline-block';
+      setTimeout(() => {
+        copyIcon.style.display = 'inline-block';
+        checkIcon.style.display = 'none';
+      }, 2000);
+    }).catch(err => {
+      console.error('Failed to copy text: ', err);
+    });
   });
   
   // Initial setup
