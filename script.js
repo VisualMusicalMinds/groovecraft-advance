@@ -94,42 +94,244 @@ const songs = {
     progressions: {
       A: { 
         chords: ["D", "G", "A", "G"],
-        rhythm: [true, false, false, true, true, false, true, false], // 1, 4, 5, 7
+        rhythm: [true, false, false, true, true, false, true, false],
         modifiers: [ 
-          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' }, // D
-          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' }, // G
-          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' }, // A
-          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' }  // G
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' }
         ]
       },
       B: { 
         chords: ["D", "G", "A", "D"],
-        rhythm: [true, false, false, true, true, false, true, false], // 1, 4, 5, 7
+        rhythm: [true, false, false, true, true, false, true, false],
         modifiers: [ 
-          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' }, // D
-          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' }, // G
-          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' }, // A
-          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' }  // D
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' }
         ]
       },
       C: { 
         chords: ["A", "D", "A", "D"],
-        rhythm: [true, true, false, true, false, true, true, false], // 1, 2, 4, 6, 7
+        rhythm: [true, true, false, true, false, true, true, false],
         modifiers: [ 
-          { seventh: true,  second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' }, // A7
-          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' }, // D
-          { seventh: true,  second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' }, // A7
-          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' }  // D
+          { seventh: true,  second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: true,  second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' }
         ]
       },
       D: { 
         chords: ["A", "D", "E", "A"],
-        rhythm: [true, true, false, true, false, true, true, true], // 1, 2, 4, 6, 7, 8
+        rhythm: [true, true, false, true, false, true, true, true],
         modifiers: [ 
-          { seventh: true,  second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },  // A7
-          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },  // D
-          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'major'}, // E (major)
-          { seventh: true,  second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' }   // A7
+          { seventh: true,  second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'major'},
+          { seventh: true,  second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' }
+        ]
+      }
+    }
+  },
+  "shake-the-papaya": {
+    key: "E",
+    bpm: 120,
+    progressions: {
+      A: { 
+        chords: ["E", "F#m", "B", "E"],
+        rhythm: [true, true, false, true, true, false, true, false],
+        modifiers: [ 
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: true, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' }
+        ]
+      },
+      B: { 
+        chords: ["", "", "", ""],
+        rhythm: Array(8).fill(false),
+        modifiers: [ 
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' }
+        ]
+      },
+      C: { 
+        chords: ["", "", "", ""],
+        rhythm: Array(8).fill(false),
+        modifiers: [ 
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' }
+        ]
+      },
+      D: { 
+        chords: ["", "", "", ""],
+        rhythm: Array(8).fill(false),
+        modifiers: [ 
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' }
+        ]
+      }
+    }
+  },
+  "count-on-me": {
+    key: "C",
+    bpm: 86,
+    progressions: {
+      A: { 
+        chords: ["C", "Em", "Am", "F"],
+        splitVal: ["", "", "G", ""],
+        splitActive: [false, false, true, false],
+        rhythm: [true, false, false, true, false, true, true, true],
+        modifiers: [ 
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' }
+        ]
+      },
+      B: { 
+        chords: ["C", "Em", "Am", "F"],
+        splitVal: ["", "", "G", ""],
+        splitActive: [false, false, true, false],
+        rhythm: [true, false, false, true, false, true, true, true],
+        modifiers: [ 
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' }
+        ]
+      },
+      C: { 
+        chords: ["C", "Em", "Am", "F"],
+        splitVal: ["", "", "G", ""],
+        splitActive: [false, false, true, false],
+        rhythm: [true, false, false, true, false, true, true, true],
+        modifiers: [ 
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' }
+        ]
+      },
+      D: { 
+        chords: ["Dm", "Em", "F", "G"],
+        rhythm: [true, false, false, true, false, true, true, true],
+        modifiers: [ 
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' }
+        ]
+      }
+    }
+  },
+  "country-roads": {
+    key: "G",
+    bpm: 86,
+    progressions: {
+      A: { 
+        chords: ["G", "Em", "D", "C"],
+        splitVal: ["", "", "", "G"],
+        splitActive: [false, false, false, true],
+        rhythm: [true, false, false, true, true, false, true, false],
+        modifiers: [ 
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' }
+        ]
+      },
+      B: { 
+        chords: ["G", "Em", "D", "C"],
+        splitVal: ["", "", "", "G"],
+        splitActive: [false, false, false, true],
+        rhythm: [true, false, false, true, true, false, true, false],
+        modifiers: [ 
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' }
+        ]
+      },
+      C: { 
+        chords: ["G", "D", "Em", "C"],
+        rhythm: [true, false, false, true, true, false, true, false],
+        modifiers: [ 
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' }
+        ]
+      },
+      D: { 
+        chords: ["G", "D", "C", "G"],
+        rhythm: [true, false, false, true, true, false, true, false],
+        modifiers: [ 
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' },
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' }
+        ]
+      }
+    }
+  },
+  "yesterday": {
+    key: "C",
+    bpm: 80,
+    progressions: {
+      A: { 
+        chords: ["F", "Em", "Dm", "Bb"],
+        splitVal: ["", "A7", "Dm7", "C7"],
+        splitActive: [false, true, true, true],
+        rhythm: [true, false, false, true, true, false, true, false],
+        modifiers: [ 
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' }, // F
+          { seventh: true, second: false, fourth: false, sus: false, majSeventh: false, quality: 'minor' }, // Em7
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'minor' }, // Dm
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' }  // Bb
+        ]
+      },
+      B: { 
+        chords: ["F", "Dm", "Bb", "Em"],
+        splitVal: ["", "G7", "F", "A7"],
+        splitActive: [false, true, true, true],
+        rhythm: [true, false, false, true, true, false, true, false],
+        modifiers: [ 
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' }, // F
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'minor' }, // Dm
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' }, // Bb
+          { seventh: true, second: false, fourth: false, sus: false, majSeventh: false, quality: 'minor' }  // Em7
+        ]
+      },
+      C: { 
+        chords: ["Dm", "Gm", "F", "Em"],
+        splitVal: ["Bb", "C", "", "A7"],
+        splitActive: [true, true, false, true],
+        rhythm: [true, false, false, true, true, false, true, false],
+        modifiers: [ 
+          { seventh: true, second: false, fourth: false, sus: false, majSeventh: false, quality: 'minor' }, // Dm7
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'minor' }, // Gm
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' }, // F
+          { seventh: true, second: false, fourth: false, sus: false, majSeventh: false, quality: 'minor' }  // Em7
+        ]
+      },
+      D: { 
+        chords: ["Dm", "Gm", "F", "F"],
+        splitVal: ["Bb", "C", "", ""],
+        splitActive: [true, true, false, false],
+        rhythm: [true, false, false, true, true, false, true, false],
+        modifiers: [ 
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'minor' }, // Dm
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'minor' }, // Gm
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' }, // F
+          { seventh: false, second: false, fourth: false, sus: false, majSeventh: false, quality: 'none' }  // F
         ]
       }
     }
@@ -1284,7 +1486,7 @@ function loadSong(songId) {
     }
   });
 
-  if (songId === "eagle-view-song") { 
+  if (songId === "eagle-view-song" || songId === "count-on-me" || songId === "country-roads" || songId === "yesterday") {  
     ['A', 'B', 'C', 'D'].forEach(progLetter => {
       progressionLinkStates[progLetter] = true;
       updateLinkVisuals(progLetter);
